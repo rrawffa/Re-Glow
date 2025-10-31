@@ -394,29 +394,58 @@
 
     <!-- Education Catalog -->
     <section class="catalog-section" id="catalog">
-        <div style="text-align: center; margin: 40px 0;">
+        <div class="section-header">
             <h2>Education Catalog</h2>
             <p>Expand your knowledge with our curated collection of sustainability content</p>
         </div>
 
+        @if($konten->count() > 0)
         <div class="catalog-grid">
             @foreach($konten as $item)
             <div class="catalog-card">
+                {{-- Tampilkan gambar cover jika ada --}}
+                @if($item->gambar_cover)
+                <img src="{{ asset('storage/' . $item->gambar_cover) }}" 
+                     alt="{{ $item->judul }}" 
+                     style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">
+                @endif
+
                 <h3>{{ $item->judul }}</h3>
-                <p>{{ $item->ringkasan }}</p>
-                <div style="color: #666; margin: 10px 0;">Published: {{ date('F d, Y', strtotime($item->tanggal_upload)) }}</div>
+                <p>{{ Str::limit($item->ringkasan, 150) }}</p>
+                
+                <div class="card-meta">
+                    <span>📅 {{ \Carbon\Carbon::parse($item->tanggal_upload)->format('F d, Y') }}</span>
+                    @if($item->waktu_baca)
+                    <span>⏱️ {{ $item->waktu_baca }} min read</span>
+                    @endif
+                    @if($item->penulis)
+                    <span>✍️ {{ $item->penulis }}</span>
+                    @endif
+                </div>
+                
                 <div class="card-footer">
-                    <a href="#" style="color: green; text-decoration: none;">Read More →</a>
+                    <a href="{{ url('/education/' . $item->id_konten) }}" class="read-more">
+                        Read More →
+                    </a>
                     <div class="card-reactions">
-                        <span>❤️</span>
-                        <span>👍</span>
-                        <span>🔥</span>
+                        <span title="Reactions">❤️ {{ $item->jumlah_reaksi ?? 0 }}</span>
+                        <span title="Thumbs Up">👍</span>
+                        <span title="Fire">🔥</span>
                     </div>
                 </div>
             </div>
             @endforeach
         </div>
-        <button class="load-more">Load More</button>
+        @else
+        <div style="text-align: center; padding: 3rem; background: var(--pink-light); border-radius: 12px;">
+            <h3 style="color: var(--green-dark); margin-bottom: 1rem;">No Content Available</h3>
+            <p style="color: var(--text-gray);">Educational content will be available soon.</p>
+        </div>
+        @endif
+
+        <button class="load-more">
+            Load More Articles
+        </button>
     </section>
     
     <!-- Footer -->

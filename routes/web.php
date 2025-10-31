@@ -6,11 +6,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// routes/web.php
-Route::get('/education', function () {
-    return view('education.index'); // Memanggil file index.blade.php di folder education
+Route::get('/education', 'App\Http\Controllers\EducationController@index');
+Route::get('/education/{id}', 'App\Http\Controllers\EducationController@show');
+
+Route::get('/test-db', function () {
+    try {
+        $db   = DB::select("SELECT DATABASE() as db");
+        $tbl  = DB::select('SHOW TABLES');
+        return [
+            'database' => $db,
+            'tables'   => $tbl,
+        ];
+    } catch (\Exception $e) {
+        return $e->getMessage();
+    }
 });
 
-Route::get('/education/{id}', function ($id) {
-    return view('education.show', ['id' => $id]); // Memanggil show.blade.php
+Route::get('/env-test', function () {
+    return env('DB_DATABASE');
 });

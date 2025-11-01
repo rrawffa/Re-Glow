@@ -16,7 +16,7 @@
             font-family: 'DM Sans', sans-serif;
             background: linear-gradient(135deg, #fef5f8 0%, #fff 100%);
             min-height: 100vh;
-            overflow-x: hidden; /* Allow vertical scrolling */
+            overflow-x: hidden;
         }
 
         h1, h2 {
@@ -66,8 +66,8 @@
             padding: 60px;
             color: white;
             min-width: 0;
-            overflow-y: auto; /* Allow scrolling when needed */
-            max-height: 100vh; /* Ensure it doesn't exceed viewport */
+            overflow-y: auto;
+            max-height: 100vh;
         }
 
         .register-form {
@@ -201,9 +201,19 @@
             text-decoration: underline;
         }
 
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+
         @media (max-width: 768px) {
             body {
-                overflow-x: hidden; /* Allow vertical scrolling on mobile */
+                overflow-x: hidden;
             }
 
             .container {
@@ -223,8 +233,8 @@
                 padding: 40px 30px;
                 width: 100vw;
                 flex: none;
-                overflow-y: auto; /* Allow scrolling on mobile */
-                max-height: 60vh; /* Limit height on mobile */
+                overflow-y: auto;
+                max-height: 60vh;
             }
 
             .logo-text {
@@ -251,13 +261,11 @@
             }
         }
 
-        /* Allow scrolling on all devices */
         html, body {
             overflow-x: hidden;
-            height: auto; /* Change from 100% to auto */
+            height: auto;
         }
 
-        /* Smooth scroll behavior */
         html {
             scroll-behavior: smooth;
         }
@@ -275,12 +283,26 @@
                 @csrf
                 <h2>Start Your Journey now!</h2>
 
+                @if(session('success'))
+                <div class="success-message">
+                    {{ session('success') }}
+                </div>
+                @endif
+
+                @if($errors->any())
+                <div class="error-message show" style="display: block; margin-bottom: 15px;">
+                    @foreach($errors->all() as $error)
+                        {{ $error }}<br>
+                    @endforeach
+                </div>
+                @endif
+
                 <div class="form-group">
                     <div class="input-wrapper">
                         <span class="input-icon">👤</span>
-                        <input type="text" id="name" name="name" placeholder="Name" value="{{ old('name') }}">
+                        <input type="text" id="username" name="username" placeholder="Username" value="{{ old('username') }}">
                     </div>
-                    <div class="error-message" id="nameError">Nama tidak boleh kosong</div>
+                    <div class="error-message" id="usernameError">Username tidak boleh kosong</div>
                 </div>
 
                 <div class="form-group">
@@ -340,15 +362,15 @@
 
         // Form validation
         const form = document.getElementById('registerForm');
-        const name = document.getElementById('name');
+        const username = document.getElementById('username');
         const email = document.getElementById('email');
-        const nameError = document.getElementById('nameError');
+        const usernameError = document.getElementById('usernameError');
         const emailError = document.getElementById('emailError');
         const passwordError = document.getElementById('passwordError');
         const confirmPasswordError = document.getElementById('confirmPasswordError');
 
         function validatePassword(pass) {
-            // Minimal 8 huruf, 1 angka, 1 huruf besar
+            
             const minLength = pass.length >= 8;
             const hasNumber = /\d/.test(pass);
             const hasUpperCase = /[A-Z]/.test(pass);
@@ -359,14 +381,19 @@
             let isValid = true;
 
             // Reset errors
-            [name, email, password, confirmPassword].forEach(field => field.classList.remove('error'));
-            [nameError, emailError, passwordError, confirmPasswordError].forEach(error => error.classList.remove('show'));
+            [username, email, password, confirmPassword].forEach(field => field.classList.remove('error'));
+            [usernameError, emailError, passwordError, confirmPasswordError].forEach(error => error.classList.remove('show'));
 
-            // Validate name
-            if (!name.value.trim()) {
-                name.classList.add('error');
-                nameError.textContent = 'Nama tidak boleh kosong';
-                nameError.classList.add('show');
+            // Validate username
+            if (!username.value.trim()) {
+                username.classList.add('error');
+                usernameError.textContent = 'Username tidak boleh kosong';
+                usernameError.classList.add('show');
+                isValid = false;
+            } else if (username.value.trim().length < 3) {
+                username.classList.add('error');
+                usernameError.textContent = 'Username minimal 3 karakter';
+                usernameError.classList.add('show');
                 isValid = false;
             }
 
@@ -411,8 +438,7 @@
 
             if (!isValid) {
                 e.preventDefault();
-                // Scroll to first error if there are validation errors
-                const firstError = document.querySelector('.error.show');
+                const firstError = document.querySelector('.error');
                 if (firstError) {
                     firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
@@ -420,10 +446,10 @@
         });
 
         // Real-time validation
-        name.addEventListener('input', function() {
-            if (this.value.trim()) {
+        username.addEventListener('input', function() {
+            if (this.value.trim() && this.value.trim().length >= 3) {
                 this.classList.remove('error');
-                nameError.classList.remove('show');
+                usernameError.classList.remove('show');
             }
         });
 
@@ -447,8 +473,7 @@
                 confirmPasswordError.classList.remove('show');
             }
         });
-
-        // Remove all scroll prevention code since we want to allow scrolling
+        
     </script>
 </body>
 </html>

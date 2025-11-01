@@ -4,7 +4,12 @@
         <span>Re-Glow</span>
     </div>
     <ul class="nav-menu">
-        <li><a href="#dashboard">Dashboard</a></li>
+        <li>
+            <a href="{{ url('user/dashboard') }}" 
+               class="{{ request()->is('user/dashboard') ? 'active' : '' }}">
+               Dashboard
+            </a>
+        </li>
         <li><a href="#exchange">Exchange Waste</a></li>
         <li><a href="#points">Points</a></li>
         <li><a href="#vouchers">Vouchers</a></li>

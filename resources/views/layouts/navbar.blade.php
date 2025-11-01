@@ -4,7 +4,28 @@
         <span>Re-Glow</span>
     </div>
     <ul class="nav-menu">
-        <li><a href="#dashboard">Dashboard</a></li>
+    <li>
+        @auth
+            @if(Auth::user()->role === 'admin')
+                <a href="{{ route('admin.dashboard') }}" 
+                class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    Dashboard
+                </a>
+            @elseif(Auth::user()->role === 'tim_logistik')
+                <a href="{{ route('logistik.dashboard') }}" 
+                class="{{ request()->routeIs('logistik.dashboard') ? 'active' : '' }}">
+                    Dashboard
+                </a>
+            @else
+                <a href="{{ route('user.dashboard') }}" 
+                class="{{ request()->routeIs('user.dashboard') ? 'active' : '' }}">
+                    Dashboard
+                </a>
+            @endif
+        @else
+            <a href="{{ route('welcome') }}">Dashboard</a>
+        @endauth
+    </li>
         <li><a href="#exchange">Exchange Waste</a></li>
         <li><a href="#points">Points</a></li>
         <li><a href="#vouchers">Vouchers</a></li>

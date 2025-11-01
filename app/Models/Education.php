@@ -1,49 +1,106 @@
 <?php
-// app/Models/KontenEdukasi.php
-
+// app/Models/Education.php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Education extends Model
 {
-    use HasFactory;
-    protected $table = 'kontenedukasi'; // atau 'KontenEdukasi' sesuai nama di database Anda
+    protected $table = 'kontenedukasi';
     protected $primaryKey = 'id_konten';
-    public $incrementing = true;
     public $timestamps = true;
-    
+
     protected $fillable = [
         'judul',
-        'ringkasan', 
-        'isi', 
+        'ringkasan',
+        'isi',
         'gambar_cover',
         'penulis',
         'tanggal_upload',
         'waktu_baca',
-        'jumlah_reaksi',
-        'jumlah_share',
         'status'
     ];
 
-    // ✅ Cast tipe data
     protected $casts = [
-        'tanggal_upload' => 'datetime',
-        'waktu_baca' => 'integer',
-        'jumlah_reaksi' => 'integer',
-        'jumlah_share' => 'integer',
+        'tanggal_upload' => 'date',
     ];
 
-    // Scope untuk konten published
-    public function scopePublished($query)
+    // Relasi ke statistik
+    public function statistik()
     {
-        return $query->where('status', 'published');
+        return $this->hasOne(StatistikEdukasi::class, 'id_konten', 'id_konten');
     }
-    
-    // Scope untuk konten draft
-    public function scopeDraft($query)
+
+    // Relasi ke reaksi
+    public function reaksi()
     {
-        return $query->where('status', 'draft');
+        return $this->hasMany(ReaksiKonten::class, 'id_konten', 'id_konten');
+    }
+
+    // Relasi ke media
+    public function media()
+    {
+        return $this->hasMany(MediaKonten::class, 'id_konten', 'id_konten')->orderBy('urutan');
+    }
+
+    // Check if user has reacted
+    public function hasUserReacted($userId = null, $ipAddress = null)
+    {
+        $query = $this->reaksi();
+        
+        if ($userId) {
+            $query->where('id_user', $userId);
+        } else {
+            $query->where('ip_address', $ipAddress);
+        }
+        
+        return $query->first();
+    }
+
+    // Get reaction counts
+    public function getReactionCounts()
+    {
+        if ($this->statistik) {
+            return [
+                'suka' => $this->statistik->total_suka,
+                'membantu' => $this->statistik->total_membantu,
+                'menarik' => $this->statistik->total_menarik,
+                'inspiratif' => $this->statistik->total_inspiratif,
+                'total' => $this->statistik->total_suka + 
+                          $this->statistik->total_membantu + 
+                          $this->statistik->total_menarik + 
+                          $this->statistik->total_inspiratif
+            ];
+        }
+        
+        return [
+            'suka' => 0,
+            'membantu' => 0,
+            'menarik' => 0,
+            'inspiratif' => 0,
+            'total' => 0
+        ];
+    }
+
+    // Increment view count
+    public function incrementView()
+    {
+        if ($this->statistik) {
+            // Gunakan update manual untuk menghindari updated_at
+            $this->statistik->update([
+                'total_view' => $this->statistik->total_view + 1,
+                'last_updated' => now()
+            ]);
+        } else {
+            StatistikEdukasi::create([
+                'id_konten' => $this->id_konten,
+                'total_view' => 1,
+                'total_suka' => 0,
+                'total_membantu' => 0,
+                'total_menarik' => 0,
+                'total_inspiratif' => 0,
+                'last_updated' => now()
+            ]);
+        }
     }
 }

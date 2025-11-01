@@ -1,60 +1,27 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Re-Glow - Dashboard Pengguna</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+@extends('layouts.app')
 
-        body {
-            font-family: 'DM Sans', sans-serif;
+@section('title', 'Re-Glow - Dashboard Pengguna')
+
+{{-- Bagian Styles digunakan untuk menyimpan semua CSS unik dari dashboard lama --}}
+@section('styles')
+    <style>
+        /* Container untuk mengatur background dan tata letak tengah */
+        .dashboard-container {
+            /* Mengambil background lama dari body dashboard.blade.php */
             background: linear-gradient(135deg, #fef5f8 0%, #fff 100%);
-            min-height: 100vh;
+            /* Mengatur tinggi agar mengisi sisa ruang antara navbar dan footer */
+            min-height: calc(100vh - 150px); 
             display: flex;
             flex-direction: column;
-        }
-
-        h1, h2 {
-            font-family: 'Bricolage Grotesque', sans-serif;
-        }
-
-        /* Header */
-        .header {
-            background: white;
-            padding: 20px 40px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: center;
+            padding: 40px 0;
         }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logo-img {
-            width: 50px;
-            height: 50px;
-        }
-
-        .logo-text {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #F9B6C7;
-            letter-spacing: -1px;
-        }
-
+        /* Style untuk tombol Logout, dipindahkan dari Header lama */
         .btn-logout {
             padding: 12px 30px;
-            background: #20413A;
+            background: #20413A; /* Menggunakan var(--green-dark) */
             color: white;
             border: none;
             border-radius: 50px;
@@ -63,22 +30,13 @@
             font-family: 'Bricolage Grotesque', sans-serif;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-top: 30px; /* Tambahkan margin agar tidak terlalu mepet */
         }
 
         .btn-logout:hover {
             background: #163026;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(32, 65, 58, 0.3);
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
         }
 
         .welcome-card {
@@ -134,23 +92,7 @@
             line-height: 1.6;
         }
 
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #999;
-            font-size: 0.9rem;
-        }
-
         @media (max-width: 768px) {
-            .header {
-                padding: 15px 20px;
-            }
-
-            .logo-text {
-                font-size: 1.4rem;
-            }
-
             .welcome-card {
                 padding: 40px 30px;
             }
@@ -166,22 +108,12 @@
             }
         }
     </style>
-</head>
-<body>
-    <!-- Header -->
-    <div class="header">
-        <div class="logo-container">
-            <img src="{{ asset('assets/re-glow.svg') }}" alt="Re-Glow" class="logo-img">
-            <h1 class="logo-text">Re-Glow</h1>
-        </div>
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="btn-logout">Logout</button>
-        </form>
-    </div>
+@endsection
 
-    <!-- Main Content -->
-    <div class="main-content">
+{{-- Bagian Content diisi dengan konten utama Dasbor --}}
+@section('content')
+    <div class="dashboard-container">
+        {{-- Konten Utama Dashboard --}}
         <div class="welcome-card">
             <div class="user-icon">👤</div>
             <p class="welcome-text">Halo,</p>
@@ -190,12 +122,12 @@
             <p class="description">
                 Selamat datang di Re-Glow! Mulai perjalanan Anda untuk memberikan dampak positif pada planet dengan mendaur ulang limbah kosmetik.
             </p>
+            
+            {{-- Tombol Logout dipindahkan dari Header lama ke dalam Welcome Card --}}
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-logout">Logout</button>
+            </form>
         </div>
     </div>
-
-    <!-- Footer -->
-    <div class="footer">
-        <p>&copy; 2024 Re-Glow. Give your cosmetic waste a new life. 🌸♻️</p>
-    </div>
-</body>
-</html>
+@endsection

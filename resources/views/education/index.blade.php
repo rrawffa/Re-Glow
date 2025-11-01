@@ -72,6 +72,29 @@
         font-size: 1.125rem;
     }
 
+    /* Admin Actions */
+    .admin-actions {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .btn-create {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--green-dark);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.3s;
+    }
+
+    .btn-create:hover {
+        background: #16332d;
+    }
+
     .catalog-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -142,21 +165,44 @@
         font-size: 1.125rem;
     }
 
-    .load-more {
-        display: block;
-        margin: 3rem auto 0;
-        background: var(--green-light);
+    .reaction-count {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        color: var(--text-gray);
+        font-size: 0.9rem;
+    }
+
+    /* Pagination */
+    .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 3rem;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+        list-style: none;
+        padding: 0;
+    }
+
+    .pagination li a,
+    .pagination li span {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
         color: var(--green-dark);
-        padding: 1rem 3rem;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
+        text-decoration: none;
         transition: background 0.3s;
     }
 
-    .load-more:hover {
-        background: #A8B399;
+    .pagination li.active span {
+        background: var(--green-dark);
+        color: white;
+    }
+
+    .pagination li a:hover {
+        background: var(--green-light);
     }
 
     @media (max-width: 768px) {
@@ -196,11 +242,18 @@
             <p>Expand your knowledge with our curated collection of sustainability content</p>
         </div>
 
+        @can('create', App\Models\Education::class)
+        <div class="admin-actions">
+            <a href="{{ route('education.create') }}" class="btn-create">
+                <span>+</span> Tambah Konten Baru
+            </a>
+        </div>
+        @endcan
+
         @if($konten->count() > 0)
         <div class="catalog-grid">
             @foreach($konten as $item)
             <div class="catalog-card">
-                {{-- Tampilkan gambar cover jika ada --}}
                 @if($item->gambar_cover)
                 <img src="{{ asset('storage/' . $item->gambar_cover) }}" 
                      alt="{{ $item->judul }}" 
@@ -213,25 +266,33 @@
                 <div class="card-meta">
                     <span>📅 {{ \Carbon\Carbon::parse($item->tanggal_upload)->format('F d, Y') }}</span>
                     @if($item->waktu_baca)
-                    <span>⏱️ {{ $item->waktu_baca }} min read</span>
+                    <span> • ⏱️ {{ $item->waktu_baca }} min read</span>
                     @endif
                     @if($item->penulis)
-                    <span>✍️ {{ $item->penulis }}</span>
+                    <span> • ✏️ {{ $item->penulis }}</span>
                     @endif
                 </div>
                 
                 <div class="card-footer">
-                <a href="{{ url('/education/' . $item->id_konten) }}" class="read-more">
-                    Read More →
-                </a>
+                    <a href="{{ route('education.show', $item->id_konten) }}" class="read-more">
+                        Read More →
+                    </a>
                     <div class="card-reactions">
-                        <span title="Reactions">❤️ {{ $item->jumlah_reaksi ?? 0 }}</span>
-                        <span title="Thumbs Up">👍</span>
-                        <span title="Fire">🔥</span>
+                        @php
+                            $counts = $item->getReactionCounts();
+                        @endphp
+                        <span class="reaction-count" title="Total Reactions">
+                            ❤️ {{ $counts['total'] }}
+                        </span>
                     </div>
                 </div>
             </div>
             @endforeach
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-wrapper">
+            {{ $konten->links() }}
         </div>
         @else
         <div style="text-align: center; padding: 3rem; background: var(--pink-light); border-radius: 12px;">
@@ -239,18 +300,5 @@
             <p style="color: var(--text-gray);">Educational content will be available soon.</p>
         </div>
         @endif
-
-        <button class="load-more">
-            Load More Articles
-        </button>
     </section>
-@endsection
-
-@section('scripts')
-<script>
-    // JavaScript untuk load more button (jika diperlukan)
-    document.querySelector('.load-more')?.addEventListener('click', function() {
-        alert('Load more functionality would be implemented here!');
-    });
-</script>
 @endsection

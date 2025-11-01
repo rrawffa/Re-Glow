@@ -6,18 +6,34 @@
 <style>
     /* Adapted to match visual scheme from views/education */
     .hero {
-        background: linear-gradient(135deg, var(--pink-light, #fef5f8) 0%, #FFF 100%);
+        background-image: url('{{ asset('images/dashboard-hero.jpg') }}');
+        background-size: cover;
+        background-position: center;
         padding: 4.5rem 5% 3rem;
         text-align: center;
         display: flex;
         align-items: center;
         justify-content: center;
         min-height: calc(70vh - 80px);
+        position: relative;
+    }
+    
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.6);
+        z-index: 0;
     }
 
     .hero-content {
         max-width: 800px;
         margin: 0 auto;
+        position: relative;
+        z-index: 1;
         text-align: center;
     }
 
@@ -36,7 +52,7 @@
     }
 
     .btn-start {
-        background: var(--green-dark);
+        background: var(--pink-base, #F9B6C7);
         color: white;
         padding: 1rem 2rem;
         border: none;
@@ -47,8 +63,9 @@
     }
 
     .btn-start:hover {
+        background: #F7A3B8;
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(32,65,58,0.2);
+        box-shadow: 0 8px 20px rgba(249, 182, 199, 0.3);
     }
 
     .welcome-card {
@@ -308,8 +325,8 @@
 
     /* Challenge Banner */
     .challenge-banner {
-        background: linear-gradient(135deg, var(--green-dark) 0%, #2a574d 100%);
-        color: white;
+        background: linear-gradient(135deg, #F9B6C7 0%, #ffc9d4 100%);
+        color: var(--green-dark);
         padding: 3rem 5%;
         text-align: center;
         margin: 2rem 5%;
@@ -319,29 +336,15 @@
     .challenge-banner h2 {
         font-size: 2rem;
         margin-bottom: 1rem;
+        color: var(--green-dark);
     }
 
     .challenge-banner p {
         max-width: 600px;
         margin: 0 auto 1.5rem;
         line-height: 1.6;
-        opacity: 0.9;
-    }
-
-    .btn-challenge {
-        background: white;
-        color: var(--green-dark);
-        border: none;
-        padding: 1rem 2rem;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .btn-challenge:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        opacity: 0.85;
+        color: #20413A;
     }
 
     @media (max-width: 768px) {
@@ -386,7 +389,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" style="background-image: url('immages/dashboard-hero.jpg'); background-size: cover; background-position: center;">
         <div class="hero-content">
             <h1>Welcome Back to Your<br>Sustainable Journey!</h1>
             <p>You're making a real difference in reducing cosmetic waste pollution. Every container you recycle helps create a cleaner, more sustainable future.</p>
@@ -430,7 +433,7 @@
                 <p>Learn how cosmetic packaging contributes to microplastic pollution and what we can do about it.</p>
                 <div class="meta">📅 Posted 2 days ago</div>
                 <div class="card-footer">
-                    <a href="#" class="btn-read">Read More →</a>
+                    <a href="{{ route('education.index') }}" class="btn-read">Read More →</a>
                     <div class="card-actions">
                         <span title="Love">❤️</span>
                         <span title="Hot">🔥</span>
@@ -442,7 +445,7 @@
                 <p>Discover beauty brands leading the way in sustainable packaging and eco-friendly practices.</p>
                 <div class="meta">Posted 1 week ago</div>
                 <div class="card-footer">
-                    <a href="#" class="btn-read">Read More →</a>
+                    <a href="{{ route('education.index') }}" class="btn-read">Read More →</a>
                     <div class="card-actions">
                         <span title="Love">❤️</span>
                         <span title="Hot">🔥</span>
@@ -454,7 +457,7 @@
                 <p>Creative ways to repurpose your empty cosmetic containers before recycling them.</p>
                 <div class="meta">Posted 3 days ago</div>
                 <div class="card-footer">
-                    <a href="#" class="btn-read">Read More →</a>
+                    <a href="{{ route('education.index') }}" class="btn-read">Read More →</a>
                     <div class="card-actions">
                         <span title="Love">❤️</span>
                         <span title="Hot">🔥</span>
@@ -468,7 +471,7 @@
     <section class="challenge-banner">
         <h2>Join Our Recycling Challenge!</h2>
         <p>This month, we're challenging our community to recycle 10,000 cosmetic containers. Join hundreds of eco-warriors making a difference!</p>
-        <button class="btn-challenge" onclick="showToast('Berhasil bergabung dengan challenge!')">Join Challenge</button>
+        <button class="btn-primary" onclick="showToast('Berhasil bergabung dengan challenge!')">Join Challenge</button>
     </section>
     <section class="hero" aria-labelledby="dashboard-heading">
         <div class="welcome-card" id="welcomeCard" role="region" aria-live="polite" aria-labelledby="dashboard-heading">

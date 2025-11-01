@@ -53,12 +53,10 @@ Route::fallback(function () {
     return redirect()->route('welcome');
 });
 
-<<<<<<< HEAD
 // Ke Halaman Edukasi
 Route::get('/education', 'App\Http\Controllers\EducationController@index')->name('education.index');
 Route::get('/education/{id}', 'App\Http\Controllers\EducationController@show')->name('education.show');
-=======
-///////////////////////////////////////////////////////////////////////////////////////////////////
+
 // Public Education Routes
 Route::get('/education', [EducationController::class, 'index'])->name('education.index');
 Route::get('/education/{id}', [EducationController::class, 'show'])->name('education.show');
@@ -75,7 +73,6 @@ Route::middleware(['auth.session', 'check.role:admin'])->group(function () {
     Route::put('/education/{id}', [EducationController::class, 'update'])->name('education.update');
     Route::delete('/education/{id}', [EducationController::class, 'destroy'])->name('education.destroy');
 });
->>>>>>> hal_edukasi
 
 Route::get('/test-db', function () {
     try {

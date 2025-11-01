@@ -15,7 +15,6 @@ class AuthController extends Controller
     // Tampilkan halaman login
     public function showLogin()
     {
-        // Jika sudah login, redirect ke dashboard sesuai role
         if (Session::has('user_id')) {
             return $this->redirectToDashboard(Session::get('user_role'));
         }
@@ -26,7 +25,6 @@ class AuthController extends Controller
     // Proses login
     public function processLogin(Request $request)
     {
-        // Validasi input menggunakan User model
         $request->validate([
             'email' => 'required|email|ends_with:@gmail.com',
             'password' => 'required'
@@ -37,28 +35,23 @@ class AuthController extends Controller
             'password.required' => 'Password tidak boleh kosong'
         ]);
 
-        // Cek kredensial menggunakan model User
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
             return back()->withErrors(['email' => 'Email tidak terdaftar'])->withInput();
         }
 
-        // Verifikasi password
         if (!Hash::check($request->password, $user->password)) {
             return back()->withErrors(['password' => 'Password salah'])->withInput();
         }
 
-        // Cek status akun
         if (!$user->isActive()) {
             return back()->withErrors(['email' => 'Akun Anda tidak aktif'])->withInput();
         }
 
-        // Buat session
         $sessionId = Str::random(64);
         $expireTime = now()->addHours(24);
 
-        // Simpan session ke database
         DB::table('session')->insert([
             'session_id' => $sessionId,
             'id_user' => $user->id_user,
@@ -67,34 +60,29 @@ class AuthController extends Controller
             'ip_address' => $request->ip()
         ]);
 
-        // Set session Laravel
         Session::put('user_id', $user->id_user);
         Session::put('username', $user->username);
         Session::put('email', $user->email);
         Session::put('user_role', $user->role);
         Session::put('session_id', $sessionId);
 
-        // Handle "Remember Me"
         if ($request->has('remember')) {
-            Cookie::queue('remember_email', $request->email, 43200); // 30 hari
+            Cookie::queue('remember_email', $request->email, 43200);
             Cookie::queue('remember_password', $request->password, 43200);
         } else {
             Cookie::queue(Cookie::forget('remember_email'));
             Cookie::queue(Cookie::forget('remember_password'));
         }
 
-        // Update last login
         $user->updated_at = now();
         $user->save();
 
-        // Redirect ke dashboard sesuai role
         return redirect($user->getDashboardRoute());
     }
 
     // Tampilkan halaman register
     public function showRegister()
     {
-        // Jika sudah login, redirect ke dashboard
         if (Session::has('user_id')) {
             return $this->redirectToDashboard(Session::get('user_role'));
         }
@@ -102,17 +90,35 @@ class AuthController extends Controller
         return view('register');
     }
 
-    // Proses register
+    // Proses register - DIPERBAIKI
     public function processRegister(Request $request)
     {
-        // Validasi input menggunakan User model
-        $request->validate(
-            User::validationRules(),
-            User::validationMessages()
-        );
+        // Validasi input dengan field name yang benar dari form
+        $request->validate([
+            'username' => 'required|string|min:3|max:100',
+            'email' => 'required|email|ends_with:@gmail.com',
+            'password' => [
+                'required',
+                'min:8',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+            ],
+            'password_confirmation' => 'required|same:password'
+        ], [
+            'username.required' => 'Username tidak boleh kosong',
+            'username.min' => 'Username minimal 3 karakter',
+            'email.required' => 'Email tidak boleh kosong',
+            'email.email' => 'Format email tidak valid',
+            'email.ends_with' => 'Email harus menggunakan @gmail.com',
+            'password.required' => 'Password tidak boleh kosong',
+            'password.min' => 'Password minimal 8 karakter',
+            'password.regex' => 'Password harus mengandung minimal 1 huruf besar dan 1 angka',
+            'password_confirmation.required' => 'Konfirmasi password tidak boleh kosong',
+            'password_confirmation.same' => 'Password tidak cocok'
+        ]);
 
-        // Cek apakah username atau email sudah ada
-        $existingUser = User::where('username', $request->name)
+        // Cek username dan email yang sudah ada
+        $existingUser = User::where('username', $request->username)
             ->orWhere('email', $request->email)
             ->first();
 
@@ -120,18 +126,18 @@ class AuthController extends Controller
             if ($existingUser->email === $request->email) {
                 return back()->withErrors(['email' => 'Email sudah terdaftar'])->withInput();
             }
-            if ($existingUser->username === $request->name) {
-                return back()->withErrors(['name' => 'Username sudah digunakan'])->withInput();
+            if ($existingUser->username === $request->username) {
+                return back()->withErrors(['username' => 'Username sudah digunakan'])->withInput();
             }
         }
 
         try {
-            // Create user baru menggunakan model
+            // Create user baru
             $user = new User();
-            $user->username = $request->name;
+            $user->username = $request->username;
             $user->email = $request->email;
-            $user->password = $request->password; // Auto-hashed via model boot method
-            $user->role = 'pengguna'; // Default role
+            $user->password = $request->password; // Auto-hashed via model
+            $user->role = 'pengguna';
             $user->status_akun = 'active';
             $user->save();
 
@@ -143,11 +149,11 @@ class AuthController extends Controller
                 'status' => 'unread'
             ]);
 
-            // Redirect ke login dengan pesan sukses
             return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
 
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.'])->withInput();
+            \Log::error('Registration error: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()])->withInput();
         }
     }
 
@@ -156,18 +162,16 @@ class AuthController extends Controller
     {
         $sessionId = Session::get('session_id');
 
-        // Hapus session dari database
         if ($sessionId) {
             DB::table('session')->where('session_id', $sessionId)->delete();
         }
 
-        // Clear session Laravel
         Session::flush();
 
         return redirect()->route('welcome')->with('success', 'Anda berhasil logout');
     }
 
-    // Helper function untuk redirect ke dashboard
+    // Helper function
     private function redirectToDashboard($role)
     {
         switch ($role) {
@@ -193,7 +197,6 @@ class AuthController extends Controller
             ->where('session_id', $sessionId)
             ->first();
 
-        // Cek apakah session masih valid
         if (!$dbSession || now()->greaterThan($dbSession->waktu_expire)) {
             Session::flush();
             return redirect()->route('login')->withErrors(['error' => 'Session Anda telah berakhir']);

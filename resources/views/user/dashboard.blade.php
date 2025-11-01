@@ -178,7 +178,6 @@
 
             <div class="dashboard-actions" role="group" aria-label="Tindakan dashboard">
                 <a href="{{ route('education.index') }}" class="btn-primary" id="btnEducation">Jelajahi Edukasi</a>
-                <a href="{{ route('user.profile') }}" class="btn-secondary" id="btnProfile">Lihat Profil</a>
             </div>
         </div>
     </section>

@@ -53,8 +53,8 @@ Route::fallback(function () {
 });
 
 // Ke Halaman Edukasi
-Route::get('/education', 'App\Http\Controllers\EducationController@index');
-Route::get('/education/{id}', 'App\Http\Controllers\EducationController@show');
+Route::get('/education', 'App\Http\Controllers\EducationController@index')->name('education.index');
+Route::get('/education/{id}', 'App\Http\Controllers\EducationController@show')->name('education.show');
 
 Route::get('/test-db', function () {
     try {

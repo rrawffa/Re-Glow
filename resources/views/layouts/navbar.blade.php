@@ -15,6 +15,10 @@
     <div class="nav-icons">
         <button class="icon-btn">🔔</button>
         <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="profile-pic">
+        <form action="{{ route('logout') }}" method="POST" class="logout-form">
+            @csrf
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
     </div>
 </nav>
 
@@ -86,9 +90,35 @@
         object-fit: cover;
     }
 
+    .logout-form {
+        margin: 0;
+    }
+
+    .btn-logout {
+        background: var(--green-dark);
+        color: white;
+        border: none;
+        padding: 0.5rem 1.25rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-logout:hover {
+        background: #163026;
+        transform: translateY(-2px);
+    }
+
     @media (max-width: 768px) {
         .nav-menu {
             display: none;
+        }
+
+        .btn-logout {
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
         }
     }
 </style>

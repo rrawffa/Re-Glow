@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Education;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EducationController;
+use App\Http\Controllers\WasteExchangeController;
 
 // Welcome/Landing Page
 Route::get('/', function () {
@@ -96,4 +97,21 @@ Route::get('/test-db', function () {
 
 Route::get('/env-test', function () {
     return env('DB_DATABASE');
+});
+
+// Waste Exchange Routes (require authentication)
+Route::middleware(['auth.session'])->group(function () {
+    Route::prefix('waste-exchange')->name('waste-exchange.')->group(function () {
+        Route::get('/', [WasteExchangeController::class, 'index'])->name('index');
+        Route::get('/create', [WasteExchangeController::class, 'create'])->name('create');
+        Route::post('/store', [WasteExchangeController::class, 'store'])->name('store');
+        Route::get('/history', [WasteExchangeController::class, 'history'])->name('history');
+        Route::get('/{id}', [WasteExchangeController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [WasteExchangeController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [WasteExchangeController::class, 'update'])->name('update');
+        Route::delete('/{id}', [WasteExchangeController::class, 'destroy'])->name('destroy');
+        
+        // API endpoint
+        Route::get('/api/drop-points', [WasteExchangeController::class, 'getDropPoints'])->name('api.drop-points');
+    });
 });

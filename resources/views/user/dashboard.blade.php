@@ -85,9 +85,6 @@
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(249, 182, 199, 0.3);
     }
-<<<<<<< HEAD
-=======
-
     .welcome-card {
         background: white;
         padding: 3.5rem 2.5rem;
@@ -371,7 +368,6 @@
         .welcome-card {
             padding: 2rem;
         }
->>>>>>> 3b61eda371393da1f4365e527486502abe295f5e
 
     /* Stats Section */
     .stats-container {
@@ -638,13 +634,10 @@
             font-size: 1.75rem;
         }
 
-<<<<<<< HEAD
         .hero-content p {
             font-size: 1rem;
         }
 
-=======
->>>>>>> 3b61eda371393da1f4365e527486502abe295f5e
         .stats-container {
             grid-template-columns: 1fr;
             padding: 2rem 1rem;
@@ -672,11 +665,8 @@
 
 @section('content')
     <!-- Hero Section -->
-<<<<<<< HEAD
     <section class="hero">
-=======
     <section class="hero" aria-labelledby="dashboard-heading">
->>>>>>> 3b61eda371393da1f4365e527486502abe295f5e
         <div class="hero-content">
             <h1>Welcome Back to Your<br>Sustainable Journey!</h1>
             <p>You're making a real difference in reducing cosmetic waste pollution. Every container you recycle helps create a cleaner, more sustainable future.</p>
@@ -716,7 +706,6 @@
     <section class="learning-section">
         <h2>Recommended Learning</h2>
         <div class="learning-grid">
-<<<<<<< HEAD
             @if($topArticles && $topArticles->count() > 0)
                 @foreach($topArticles as $article)
                 <div class="learning-card" onclick="window.location.href='{{ route('education.show', $article->id_konten) }}'">
@@ -766,7 +755,7 @@
                             <span title="Love">❤️</span>
                             <span title="Hot">🔥</span>
                         </div>
-=======
+
             <div class="learning-card">
                 <h3>The Impact of Microplastics</h3>
                 <p>Learn how cosmetic packaging contributes to microplastic pollution and what we can do about it.</p>
@@ -800,7 +789,6 @@
                     <div class="card-actions">
                         <span title="Love">❤</span>
                         <span title="Hot">🔥</span>
->>>>>>> 3b61eda371393da1f4365e527486502abe295f5e
                     </div>
                 </div>
                 <div class="learning-card" onclick="window.location.href='{{ route('education.index') }}'">
@@ -834,11 +822,7 @@
         <p>This month, we're challenging our community to recycle 10,000 cosmetic containers. Join hundreds of eco-warriors making a difference!</p>
         <button class="btn-primary" onclick="showToast('Berhasil bergabung dengan challenge!')">Join Challenge</button>
     </section>
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> 3b61eda371393da1f4365e527486502abe295f5e
     <!-- Toast container -->
     <div id="dashboardToast" class="toast" role="status" aria-live="polite"></div>
 @endsection
@@ -854,7 +838,6 @@ function showToast(message, ms = 3500) {
     t._hideTimer = setTimeout(() => t.classList.remove('show'), ms);
 }
 
-<<<<<<< HEAD
 document.addEventListener('DOMContentLoaded', function() {
     // Greeting
     const username = "{{ addslashes(Session::get('username') ?? 'User') }}";
@@ -862,7 +845,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showToast('Selamat datang, ' + username + '!');
     }, 500);
 });
-=======
+
         // Animate welcome card entrance
         document.addEventListener('DOMContentLoaded', function () {
             const card = $('#welcomeCard');
@@ -921,6 +904,5 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     })();
->>>>>>> 3b61eda371393da1f4365e527486502abe295f5e
 </script>
 @endsection

@@ -10,7 +10,7 @@
                Dashboard
             </a>
         </li>
-        <li><a href="#exchange">Exchange Waste</a></li>
+        <li><a href="{{ route('waste-exchange.index') }}">Exchange Waste</a></li>
         <li><a href="#points">Points</a></li>
         <li><a href="#vouchers">Vouchers</a></li>
         <li><a href="#community">Community</a></li>

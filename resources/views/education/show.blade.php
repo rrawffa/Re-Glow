@@ -11,6 +11,32 @@
         padding: 2rem 1rem;
     }
 
+    /* Back Button - Now at Top */
+    .back-nav {
+        margin-bottom: 2rem;
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--green-dark);
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.5rem 0;
+        transition: all 0.3s;
+    }
+
+    .back-btn:hover {
+        gap: 0.75rem;
+        color: var(--pink-base);
+    }
+
+    .back-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
     /* Article Header */
     .article-header {
         margin-bottom: 3rem;
@@ -49,6 +75,7 @@
         padding: 1.5rem;
         border-radius: 8px;
         border-left: 4px solid var(--pink-base);
+        margin-top: 1.5rem;
     }
 
     /* Cover Image */
@@ -64,6 +91,7 @@
     .article-content {
         line-height: 1.8;
         font-size: 1.05rem;
+        margin-bottom: 3rem;
     }
 
     .article-content h2 {
@@ -80,6 +108,12 @@
         margin: 2rem 0 1rem 0;
     }
 
+    .article-content h4 {
+        font-size: 1.125rem;
+        color: var(--green-dark);
+        margin: 1.5rem 0 0.75rem 0;
+    }
+
     .article-content p {
         margin-bottom: 1.5rem;
         color: var(--text-dark);
@@ -93,6 +127,11 @@
     .article-content li {
         margin-bottom: 0.75rem;
         color: var(--text-dark);
+    }
+
+    .article-content strong {
+        color: var(--green-dark);
+        font-weight: 600;
     }
 
     /* Reactions Section */
@@ -140,6 +179,7 @@
     .reaction-btn.active {
         border-color: var(--pink-base);
         background: #fff5f7;
+        transform: translateY(-2px);
     }
 
     .reaction-emoji {
@@ -174,6 +214,8 @@
         font-weight: 600;
         font-size: 0.9rem;
         transition: all 0.3s;
+        border: none;
+        cursor: pointer;
     }
 
     .btn-edit {
@@ -192,24 +234,6 @@
 
     .btn-delete:hover {
         background: #ffaaaa;
-    }
-
-    .back-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: var(--green-dark);
-        color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: 600;
-        transition: background 0.3s;
-        margin-top: 2rem;
-    }
-
-    .back-btn:hover {
-        background: #16332d;
     }
 
     /* Statistics Display */
@@ -264,10 +288,13 @@
         padding: 1.5rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         transition: transform 0.3s;
+        text-decoration: none;
+        display: block;
     }
 
     .related-card:hover {
         transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     }
 
     .related-card h4 {
@@ -325,11 +352,44 @@
             opacity: 1;
         }
     }
+
+    @media (max-width: 768px) {
+        .article-title {
+            font-size: 2rem;
+        }
+
+        .article-meta {
+            gap: 1rem;
+        }
+
+        .reactions-buttons {
+            gap: 0.5rem;
+        }
+
+        .reaction-btn {
+            min-width: 80px;
+            padding: 0.75rem 1rem;
+        }
+
+        .related-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 @endsection
 
 @section('content')
 <div class="article-container">
+    <!-- Back Navigation - NOW AT TOP -->
+    <div class="back-nav">
+        <a href="{{ route('education.index') }}" class="back-btn">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Kembali ke Katalog Edukasi
+        </a>
+    </div>
+
     <!-- Article Header -->
     <div class="article-header">
         <h1 class="article-title">{{ $konten->judul }}</h1>
@@ -357,34 +417,35 @@
             @endif
         </div>
 
-        @if($konten->ringkasan)
-        <div class="article-summary">
-            {{ $konten->ringkasan }}
-        </div>
-        @endif
-
         @if($konten->gambar_cover)
         <img src="{{ asset('storage/' . $konten->gambar_cover) }}" 
              alt="{{ $konten->judul }}" 
              class="article-cover">
         @endif
+
+        @if($konten->ringkasan)
+        <div class="article-summary">
+            {{ $konten->ringkasan }}
+        </div>
+        @endif
     </div>
 
     <!-- Admin Actions -->
-    @can('update', $konten)
+    @if(Session::has('user_id') && Session::get('user_role') === 'admin')
     <div class="admin-actions">
         <a href="{{ route('education.edit', $konten->id_konten) }}" class="btn-admin btn-edit">
-            Edit Konten
+            ✏️ Edit Konten
         </a>
         <form action="{{ route('education.destroy', $konten->id_konten) }}" 
               method="POST" 
+              style="display: inline;"
               onsubmit="return confirm('Yakin ingin menghapus konten ini?')">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn-admin btn-delete">Hapus Konten</button>
+            <button type="submit" class="btn-admin btn-delete">🗑️ Hapus Konten</button>
         </form>
     </div>
-    @endcan
+    @endif
 
     <!-- Main Content -->
     <div class="article-content">
@@ -406,7 +467,7 @@
 
         <div class="stats-display">
             <div class="stat-item">
-                <div class="stat-value">{{ $counts['total'] }}</div>
+                <div class="stat-value" id="totalReactions">{{ $counts['total'] }}</div>
                 <div class="stat-label">Total Reaksi</div>
             </div>
         </div>
@@ -417,7 +478,7 @@
                     data-konten="{{ $konten->id_konten }}">
                 <span class="reaction-emoji">❤️</span>
                 <span class="reaction-label">Suka</span>
-                <span class="reaction-count-display">{{ $counts['suka'] }}</span>
+                <span class="reaction-count-display" data-type="suka">{{ $counts['suka'] }}</span>
             </button>
 
             <button class="reaction-btn {{ $userReactionType === 'membantu' ? 'active' : '' }}" 
@@ -425,7 +486,7 @@
                     data-konten="{{ $konten->id_konten }}">
                 <span class="reaction-emoji">👍</span>
                 <span class="reaction-label">Membantu</span>
-                <span class="reaction-count-display">{{ $counts['membantu'] }}</span>
+                <span class="reaction-count-display" data-type="membantu">{{ $counts['membantu'] }}</span>
             </button>
 
             <button class="reaction-btn {{ $userReactionType === 'menarik' ? 'active' : '' }}" 
@@ -433,7 +494,7 @@
                     data-konten="{{ $konten->id_konten }}">
                 <span class="reaction-emoji">🔥</span>
                 <span class="reaction-label">Menarik</span>
-                <span class="reaction-count-display">{{ $counts['menarik'] }}</span>
+                <span class="reaction-count-display" data-type="menarik">{{ $counts['menarik'] }}</span>
             </button>
 
             <button class="reaction-btn {{ $userReactionType === 'inspiratif' ? 'active' : '' }}" 
@@ -441,14 +502,10 @@
                     data-konten="{{ $konten->id_konten }}">
                 <span class="reaction-emoji">✨</span>
                 <span class="reaction-label">Inspiratif</span>
-                <span class="reaction-count-display">{{ $counts['inspiratif'] }}</span>
+                <span class="reaction-count-display" data-type="inspiratif">{{ $counts['inspiratif'] }}</span>
             </button>
         </div>
     </div>
-
-    <a href="{{ route('education.index') }}" class="back-btn">
-        ← Kembali ke Katalog
-    </a>
 
     <!-- Related Articles -->
     @if($related->count() > 0)
@@ -456,11 +513,9 @@
         <h3 class="related-title">Artikel Terkait</h3>
         <div class="related-grid">
             @foreach($related as $item)
-            <a href="{{ route('education.show', $item->id_konten) }}" style="text-decoration: none;">
-                <div class="related-card">
-                    <h4>{{ $item->judul }}</h4>
-                    <p>{{ Str::limit($item->ringkasan, 100) }}</p>
-                </div>
+            <a href="{{ route('education.show', $item->id_konten) }}" class="related-card">
+                <h4>{{ $item->judul }}</h4>
+                <p>{{ Str::limit($item->ringkasan, 100) }}</p>
             </a>
             @endforeach
         </div>
@@ -473,15 +528,22 @@
     <span id="toastEmoji"></span>
     <span id="toastMessage"></span>
 </div>
+
+<!-- CSRF Token -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
 
 @section('scripts')
 <script>
+console.log('Reaction script loaded');
+
 document.addEventListener('DOMContentLoaded', function() {
     const reactionButtons = document.querySelectorAll('.reaction-btn');
     const toast = document.getElementById('notificationToast');
     const toastEmoji = document.getElementById('toastEmoji');
     const toastMessage = document.getElementById('toastMessage');
+
+    console.log('Found reaction buttons:', reactionButtons.length);
 
     // Emoji mapping
     const emojiMap = {
@@ -505,21 +567,38 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', async function() {
             const reactionType = this.dataset.reaction;
             const kontenId = this.dataset.konten;
-            const wasActive = this.classList.contains('active');
+
+            console.log('Button clicked:', {
+                reactionType,
+                kontenId
+            });
 
             try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                
+                if (!csrfToken) {
+                    console.error('CSRF token not found!');
+                    showToast('❌', 'Error: CSRF token tidak ditemukan', 'error');
+                    return;
+                }
+
+                console.log('Sending request with CSRF:', csrfToken);
+
                 const response = await fetch(`/education/${kontenId}/reaction`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
                         tipe_reaksi: reactionType
                     })
                 });
 
+                console.log('Response status:', response.status);
                 const data = await response.json();
+                console.log('Response data:', data);
 
                 if (data.success) {
                     // Update UI based on action
@@ -538,18 +617,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     // Update counts
                     if (data.counts) {
-                        reactionButtons.forEach(btn => {
-                            const type = btn.dataset.reaction;
-                            const countDisplay = btn.querySelector('.reaction-count-display');
-                            if (countDisplay) {
-                                countDisplay.textContent = data.counts[type] || 0;
+                        console.log('Updating counts:', data.counts);
+                        
+                        // Update individual counts
+                        document.querySelectorAll('.reaction-count-display').forEach(el => {
+                            const type = el.dataset.type;
+                            if (data.counts[type] !== undefined) {
+                                el.textContent = data.counts[type];
                             }
                         });
 
                         // Update total
-                        const totalDisplay = document.querySelector('.stat-value');
-                        if (totalDisplay) {
-                            totalDisplay.textContent = data.counts.total;
+                        const totalEl = document.getElementById('totalReactions');
+                        if (totalEl && data.counts.total !== undefined) {
+                            totalEl.textContent = data.counts.total;
                         }
                     }
                 } else {

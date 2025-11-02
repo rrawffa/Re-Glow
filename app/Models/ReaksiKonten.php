@@ -1,5 +1,5 @@
 <?php
-
+// app/Models/ReaksiKonten.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,29 +11,31 @@ class ReaksiKonten extends Model
 
     protected $table = 'reaksikonten';
     protected $primaryKey = 'id_reaksi';
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = [
         'id_konten',
         'id_user',
         'tipe_reaksi',
-        'ip_address'
+        'ip_address',
+        'created_at'
     ];
 
     protected $casts = [
         'created_at' => 'datetime'
     ];
 
+    // ============= RELATIONSHIPS =============
     // Relasi ke education content
     public function education()
     {
         return $this->belongsTo(Education::class, 'id_konten', 'id_konten');
     }
 
-    // Relasi ke user
+    // Relasi ke User (yang menggunakan tabel pengguna)
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user', 'id_user');
+        return $this->belongsTo(\App\Models\User::class, 'id_user', 'id_user');
     }
 
     // Scope untuk reaksi berdasarkan user

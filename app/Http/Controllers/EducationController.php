@@ -7,8 +7,9 @@ use App\Models\ReaksiKonten;
 use App\Models\StatistikEdukasi;
 use App\Models\MediaKonten;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class EducationController extends Controller
@@ -22,14 +23,13 @@ class EducationController extends Controller
             ->with(['statistik'])
             ->orderBy('tanggal_upload', 'desc');
 
-        // Pagination
         $perPage = $request->get('per_page', 9);
         $konten = $query->paginate($perPage);
 
         // Get user reactions if logged in
         $userReactions = [];
-        if (Auth::check()) {
-            $userId = Auth::id();
+        if (Session::has('user_id')) {
+            $userId = Session::get('user_id');
             $userReactions = ReaksiKonten::where('id_user', $userId)
                 ->pluck('tipe_reaksi', 'id_konten')
                 ->toArray();
@@ -53,10 +53,17 @@ class EducationController extends Controller
 
         // Get user reaction
         $userReaction = null;
-        if (Auth::check()) {
-            $userReaction = $konten->hasUserReacted(Auth::id());
+        $userId = Session::get('user_id');
+        
+        if ($userId) {
+            $userReaction = ReaksiKonten::where('id_konten', $id)
+                ->where('id_user', $userId)
+                ->first();
         } else {
-            $userReaction = $konten->hasUserReacted(null, request()->ip());
+            $userReaction = ReaksiKonten::where('id_konten', $id)
+                ->where('ip_address', request()->ip())
+                ->whereNull('id_user')
+                ->first();
         }
 
         // Get related content
@@ -75,73 +82,170 @@ class EducationController extends Controller
      */
     public function addReaction(Request $request, $id)
     {
-        $request->validate([
-            'tipe_reaksi' => 'required|in:suka,membantu,menarik,inspiratif'
+        Log::info('=== REACTION REQUEST START ===', [
+            'konten_id' => $id,
+            'request_data' => $request->all(),
+            'session' => Session::all(),
+            'ip' => $request->ip()
         ]);
 
-        $konten = Education::findOrFail($id);
-        $tipeReaksi = $request->tipe_reaksi;
-        $userId = Auth::check() ? Auth::id() : null;
-        $ipAddress = $request->ip();
+        try {
+            $request->validate([
+                'tipe_reaksi' => 'required|in:suka,membantu,menarik,inspiratif'
+            ]);
 
-        // Check if user already reacted
-        $existingReaction = $konten->hasUserReacted($userId, $ipAddress);
+            $konten = Education::findOrFail($id);
+            $tipeReaksi = $request->tipe_reaksi;
+            $userId = Session::get('user_id');
+            $ipAddress = $request->ip();
 
-        if ($existingReaction) {
-            // Update existing reaction
-            $oldTipe = $existingReaction->tipe_reaksi;
+            Log::info('Processing reaction', [
+                'userId' => $userId,
+                'ipAddress' => $ipAddress,
+                'reactionType' => $tipeReaksi
+            ]);
+
+            // Build query to check existing reaction
+            $query = ReaksiKonten::where('id_konten', $id);
             
-            if ($oldTipe === $tipeReaksi) {
-                // Same reaction - remove it
-                $existingReaction->delete();
-                
-                // Update statistics
-                $stats = $konten->statistik ?? StatistikEdukasi::create(['id_konten' => $id]);
-                $stats->updateReaction($tipeReaksi, 'remove');
-                
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Reaksi dihapus',
-                    'action' => 'removed',
-                    'counts' => $konten->fresh()->getReactionCounts()
-                ]);
+            if ($userId) {
+                // Logged in user - check by user_id
+                $existingReaction = $query->where('id_user', $userId)->first();
+                Log::info('Checking reaction for user', ['user_id' => $userId, 'found' => !is_null($existingReaction)]);
             } else {
-                // Different reaction - update
-                $existingReaction->update(['tipe_reaksi' => $tipeReaksi]);
+                // Guest - check by IP
+                $existingReaction = $query->where('ip_address', $ipAddress)
+                    ->whereNull('id_user')
+                    ->first();
+                Log::info('Checking reaction for guest', ['ip' => $ipAddress, 'found' => !is_null($existingReaction)]);
+            }
+
+            if ($existingReaction) {
+                if ($existingReaction->tipe_reaksi === $tipeReaksi) {
+                    // Same reaction - remove it
+                    Log::info('Removing existing reaction');
+                    $existingReaction->delete();
+                    
+                    $this->updateReactionStats($konten, $tipeReaksi, 'remove');
+                    
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Reaksi dihapus',
+                        'action' => 'removed',
+                        'counts' => $konten->fresh()->getReactionCounts()
+                    ]);
+                } else {
+                    // Different reaction - update
+                    Log::info('Updating reaction', ['from' => $existingReaction->tipe_reaksi, 'to' => $tipeReaksi]);
+                    $oldTipe = $existingReaction->tipe_reaksi;
+                    $existingReaction->update([
+                        'tipe_reaksi' => $tipeReaksi,
+                        'created_at' => now()
+                    ]);
+                    
+                    $this->updateReactionStats($konten, $oldTipe, 'remove');
+                    $this->updateReactionStats($konten, $tipeReaksi, 'add');
+                    
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Reaksi diperbarui',
+                        'action' => 'updated',
+                        'counts' => $konten->fresh()->getReactionCounts()
+                    ]);
+                }
+            } else {
+                // Add new reaction
+                Log::info('Creating new reaction');
                 
-                // Update statistics
-                $stats = $konten->statistik;
-                $stats->updateReaction($oldTipe, 'remove');
-                $stats->updateReaction($tipeReaksi, 'add');
+                $reactionData = [
+                    'id_konten' => $id,
+                    'tipe_reaksi' => $tipeReaksi,
+                    'created_at' => now()
+                ];
+
+                if ($userId) {
+                    $reactionData['id_user'] = $userId;
+                    $reactionData['ip_address'] = null; // Clear IP for logged in users
+                } else {
+                    $reactionData['id_user'] = null;
+                    $reactionData['ip_address'] = $ipAddress;
+                }
+
+                ReaksiKonten::create($reactionData);
+                
+                $this->updateReactionStats($konten, $tipeReaksi, 'add');
+                
+                Log::info('New reaction created successfully');
                 
                 return response()->json([
                     'success' => true,
-                    'message' => 'Reaksi diperbarui',
-                    'action' => 'updated',
-                    'tipe_reaksi' => $tipeReaksi,
+                    'message' => 'Reaksi ditambahkan',
+                    'action' => 'added',
                     'counts' => $konten->fresh()->getReactionCounts()
                 ]);
             }
-        } else {
-            // Add new reaction
-            ReaksiKonten::create([
-                'id_konten' => $id,
-                'id_user' => $userId,
-                'tipe_reaksi' => $tipeReaksi,
-                'ip_address' => $ipAddress
-            ]);
-            
-            // Update statistics
-            $stats = $konten->statistik ?? StatistikEdukasi::create(['id_konten' => $id]);
-            $stats->updateReaction($tipeReaksi, 'add');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation error: ' . json_encode($e->errors()));
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak valid: ' . implode(', ', $e->errors())
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Reaction error: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
             
             return response()->json([
-                'success' => true,
-                'message' => 'Reaksi ditambahkan',
-                'action' => 'added',
-                'tipe_reaksi' => $tipeReaksi,
-                'counts' => $konten->fresh()->getReactionCounts()
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        } finally {
+            Log::info('=== REACTION REQUEST END ===');
+        }
+    }
+
+    /**
+     * Helper method to update reaction statistics
+     */
+    private function updateReactionStats($konten, $tipeReaksi, $action)
+    {
+        try {
+            $stats = $konten->statistik;
+            
+            if (!$stats) {
+                $stats = StatistikEdukasi::create([
+                    'id_konten' => $konten->id_konten,
+                    'total_view' => 0,
+                    'total_suka' => 0,
+                    'total_membantu' => 0,
+                    'total_menarik' => 0,
+                    'total_inspiratif' => 0,
+                    'last_updated' => now()
+                ]);
+            }
+
+            $column = 'total_' . $tipeReaksi;
+            
+            if ($action === 'add') {
+                $stats->increment($column);
+            } else if ($action === 'remove') {
+                if ($stats->{$column} > 0) {
+                    $stats->decrement($column);
+                }
+            }
+            
+            $stats->last_updated = now();
+            $stats->save();
+
+            Log::info('Stats updated', [
+                'column' => $column,
+                'action' => $action,
+                'new_value' => $stats->{$column}
             ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error updating reaction stats: ' . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -150,7 +254,10 @@ class EducationController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Education::class);
+        if (!Session::has('user_id') || Session::get('user_role') !== 'admin') {
+            return redirect()->route('education.index')->with('error', 'Unauthorized access');
+        }
+        
         return view('education.create');
     }
 
@@ -159,7 +266,9 @@ class EducationController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Education::class);
+        if (!Session::has('user_id') || Session::get('user_role') !== 'admin') {
+            return redirect()->route('education.index')->with('error', 'Unauthorized access');
+        }
 
         $validated = $request->validate([
             'judul' => 'required|max:255',
@@ -171,7 +280,6 @@ class EducationController extends Controller
             'status' => 'required|in:draft,published'
         ]);
 
-        // Handle cover image
         if ($request->hasFile('gambar_cover')) {
             $file = $request->file('gambar_cover');
             $filename = time() . '_' . Str::slug($request->judul) . '.' . $file->getClientOriginalExtension();
@@ -180,12 +288,17 @@ class EducationController extends Controller
         }
 
         $validated['tanggal_upload'] = now();
+        $validated['konten'] = $validated['isi']; // Untuk backward compatibility
 
         $konten = Education::create($validated);
 
-        // Create initial statistics
         StatistikEdukasi::create([
             'id_konten' => $konten->id_konten,
+            'total_view' => 0,
+            'total_suka' => 0,
+            'total_membantu' => 0,
+            'total_menarik' => 0,
+            'total_inspiratif' => 0,
             'last_updated' => now()
         ]);
 
@@ -199,9 +312,11 @@ class EducationController extends Controller
      */
     public function edit($id)
     {
+        if (!Session::has('user_id') || Session::get('user_role') !== 'admin') {
+            return redirect()->route('education.index')->with('error', 'Unauthorized access');
+        }
+
         $konten = Education::findOrFail($id);
-        $this->authorize('update', $konten);
-        
         return view('education.edit', compact('konten'));
     }
 
@@ -210,8 +325,11 @@ class EducationController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!Session::has('user_id') || Session::get('user_role') !== 'admin') {
+            return redirect()->route('education.index')->with('error', 'Unauthorized access');
+        }
+
         $konten = Education::findOrFail($id);
-        $this->authorize('update', $konten);
 
         $validated = $request->validate([
             'judul' => 'required|max:255',
@@ -223,9 +341,7 @@ class EducationController extends Controller
             'status' => 'required|in:draft,published'
         ]);
 
-        // Handle cover image
         if ($request->hasFile('gambar_cover')) {
-            // Delete old image
             if ($konten->gambar_cover) {
                 Storage::disk('public')->delete($konten->gambar_cover);
             }
@@ -236,6 +352,7 @@ class EducationController extends Controller
             $validated['gambar_cover'] = $path;
         }
 
+        $validated['konten'] = $validated['isi']; // Untuk backward compatibility
         $konten->update($validated);
 
         return redirect()
@@ -248,10 +365,12 @@ class EducationController extends Controller
      */
     public function destroy($id)
     {
-        $konten = Education::findOrFail($id);
-        $this->authorize('delete', $konten);
+        if (!Session::has('user_id') || Session::get('user_role') !== 'admin') {
+            return redirect()->route('education.index')->with('error', 'Unauthorized access');
+        }
 
-        // Delete cover image
+        $konten = Education::findOrFail($id);
+
         if ($konten->gambar_cover) {
             Storage::disk('public')->delete($konten->gambar_cover);
         }

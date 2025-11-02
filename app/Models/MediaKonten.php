@@ -45,4 +45,9 @@ class MediaKonten extends Model
     {
         return $query->orderBy('urutan', 'asc');
     }
+    
+    public function scopeImages($query)
+    {
+        return $query->whereIn('tipe_file', ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+    }
 }

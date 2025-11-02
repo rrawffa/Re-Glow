@@ -23,38 +23,42 @@ class Education extends Model
 
     protected $casts = [
         'tanggal_upload' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
     ];
 
+    // ============= RELATIONSHIPS =============
     // Relasi ke statistik
     public function statistik()
     {
         return $this->hasOne(StatistikEdukasi::class, 'id_konten', 'id_konten');
     }
-
     // Relasi ke reaksi
     public function reaksi()
     {
         return $this->hasMany(ReaksiKonten::class, 'id_konten', 'id_konten');
     }
-
     // Relasi ke media
     public function media()
     {
         return $this->hasMany(MediaKonten::class, 'id_konten', 'id_konten')->orderBy('urutan');
     }
 
+    // ============= METHODS =============
     // Check if user has reacted
     public function hasUserReacted($userId = null, $ipAddress = null)
     {
         $query = $this->reaksi();
         
         if ($userId) {
-            $query->where('id_user', $userId);
+            return $query->where('id_user', $userId)->first();
         } else {
             $query->where('ip_address', $ipAddress);
         }
         
-        return $query->first();
+        return $query->where('ip_address', $ipAddress)
+            ->whereNull('id_user')
+            ->first();
     }
 
     // Get reaction counts
@@ -86,7 +90,6 @@ class Education extends Model
     public function incrementView()
     {
         if ($this->statistik) {
-            // Gunakan update manual untuk menghindari updated_at
             $this->statistik->update([
                 'total_view' => $this->statistik->total_view + 1,
                 'last_updated' => now()
@@ -103,4 +106,17 @@ class Education extends Model
             ]);
         }
     }
+
+    // ============= SCOPES =============
+    public function scopePublished($query)
+    {
+        return $query->where('status', 'published');
+    }
+
+    public function scopeRecent($query, $limit = 10)
+    {
+        return $query->orderBy('tanggal_upload', 'desc')->limit($limit);
+    }
 }
+
+

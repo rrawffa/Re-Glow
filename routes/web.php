@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Education;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EducationController;
 
@@ -29,7 +30,13 @@ Route::middleware(['auth.session'])->group(function () {
     // Dashboard Pengguna
     Route::prefix('user')->name('user.')->group(function () {
         Route::get('/dashboard', function () {
-            return view('user.dashboard');
+            $topArticles = Education::where('status', 'published')
+                ->with('statistik')
+                ->orderBy('tanggal_upload', 'desc')
+                ->limit(3)
+                ->get();
+
+            return view('user.dashboard', compact('topArticles'));
         })->name('dashboard');
     });
     

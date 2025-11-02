@@ -39,19 +39,19 @@ class StatistikEdukasi extends Model
     }
 
     // Method untuk update reaksi
-    public function updateReaction($tipeReaksi, $action)
+public function updateReaction($tipeReaksi, $action = 'add')
     {
         $column = 'total_' . $tipeReaksi;
         
         if ($action === 'add') {
             $this->increment($column);
-        } else if ($action === 'remove') {
+        } else if ($action === 'remove' && $this->{$column} > 0) {
             $this->decrement($column);
         }
         
-        $this->last_updated = now();
-        $this->save();
+        $this->update(['last_updated' => now()]);
     }
+
     // Override method increment untuk handle last_updated
     public function increment($column, $amount = 1, array $extra = [])
     {
@@ -64,5 +64,13 @@ class StatistikEdukasi extends Model
     {
         $extra['last_updated'] = now();
         return parent::decrement($column, $amount, $extra);
+    }
+
+    public function getTotalReactionsAttribute()
+    {
+        return $this->total_suka + 
+               $this->total_membantu + 
+               $this->total_menarik + 
+               $this->total_inspiratif;
     }
 }

@@ -389,7 +389,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <section class="hero" style="background-image: url('immages/dashboard-hero.jpg'); background-size: cover; background-position: center;">
+    <section class="hero" aria-labelledby="dashboard-heading">
         <div class="hero-content">
             <h1>Welcome Back to Your<br>Sustainable Journey!</h1>
             <p>You're making a real difference in reducing cosmetic waste pollution. Every container you recycle helps create a cleaner, more sustainable future.</p>
@@ -473,29 +473,7 @@
         <p>This month, we're challenging our community to recycle 10,000 cosmetic containers. Join hundreds of eco-warriors making a difference!</p>
         <button class="btn-primary" onclick="showToast('Berhasil bergabung dengan challenge!')">Join Challenge</button>
     </section>
-    <section class="hero" aria-labelledby="dashboard-heading">
-        <div class="welcome-card" id="welcomeCard" role="region" aria-live="polite" aria-labelledby="dashboard-heading">
-            <div class="user-icon" aria-hidden="true">👤</div>
-            <p class="welcome-text">Halo,</p>
-            <h2 id="dashboard-heading" class="username-text">{{ Session::get('username') ?? 'Pengguna' }}!</h2>
-            <div class="role-badge" aria-hidden="true">PENGGUNA</div>
-
-            <div class="meta-row" aria-hidden="false">
-                <div id="localTime" title="Waktu Lokal">⏰ --:--</div>
-                <div title="Last login">🔔 Terakhir login: {{ Session::get('last_login') ?? '—' }}</div>
-            </div>
-
-            <p class="description">
-                Selamat datang di Re-Glow! Mulai perjalanan Anda untuk memberikan dampak positif pada planet dengan mendaur ulang limbah kosmetik.
-                Jelajahi artikel edukasi, pantau aktivitas daur ulang, dan ikuti program kami untuk efek yang nyata.
-            </p>
-
-            <div class="dashboard-actions" role="group" aria-label="Tindakan dashboard">
-                <a href="{{ route('education.index') }}" class="btn-primary" id="btnEducation">Jelajahi Edukasi</a>
-            </div>
-        </div>
-    </section>
-
+    
     <!-- Toast container -->
     <div id="dashboardToast" class="toast" role="status" aria-live="polite"></div>
 @endsection

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EducationController;
 
 // Welcome/Landing Page
 Route::get('/', function () {
@@ -55,6 +56,23 @@ Route::fallback(function () {
 // Ke Halaman Edukasi
 Route::get('/education', 'App\Http\Controllers\EducationController@index')->name('education.index');
 Route::get('/education/{id}', 'App\Http\Controllers\EducationController@show')->name('education.show');
+
+// Public Education Routes
+Route::get('/education', [EducationController::class, 'index'])->name('education.index');
+Route::get('/education/{id}', [EducationController::class, 'show'])->name('education.show');
+
+// Reaction Route (requires authentication or guest with IP tracking)
+Route::post('/education/{id}/reaction', [EducationController::class, 'addReaction'])
+    ->name('education.reaction');
+
+// Admin Only Routes
+Route::middleware(['auth.session', 'check.role:admin'])->group(function () {
+    Route::get('/education/create', [EducationController::class, 'create'])->name('education.create');
+    Route::post('/education', [EducationController::class, 'store'])->name('education.store');
+    Route::get('/education/{id}/edit', [EducationController::class, 'edit'])->name('education.edit');
+    Route::put('/education/{id}', [EducationController::class, 'update'])->name('education.update');
+    Route::delete('/education/{id}', [EducationController::class, 'destroy'])->name('education.destroy');
+});
 
 Route::get('/test-db', function () {
     try {

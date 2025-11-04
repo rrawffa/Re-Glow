@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Http\Middleware\CheckSession;
+use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\RedirectIfAuthenticated;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,4 +24,5 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
+    
 }

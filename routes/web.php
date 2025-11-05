@@ -5,11 +5,14 @@ use App\Models\Education;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\WasteExchangeController;
+use App\Http\Controllers\FaqController;
 
 // Welcome/Landing Page
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
+
+
 
 // Authentication Routes
 Route::middleware(['guest'])->group(function () {
@@ -56,7 +59,7 @@ Route::middleware(['auth.session'])->group(function () {
     });
 });
 
-// Fallback Route
+//  Fallback Route 
 Route::fallback(function () {
     return redirect()->route('welcome');
 });
@@ -115,3 +118,6 @@ Route::middleware(['auth.session'])->group(function () {
         Route::get('/api/drop-points', [WasteExchangeController::class, 'getDropPoints'])->name('api.drop-points');
     });
 });
+
+// FAQ Page
+Route::get('/faq', [FaqController::class, 'index'])->name('faq.faq');

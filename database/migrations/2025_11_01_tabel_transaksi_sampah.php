@@ -11,7 +11,7 @@ return new class extends Migration
         // Transaksi Sampah Table
         Schema::create('transaksisampah', function (Blueprint $table) {
             $table->id('id_tSampah');
-            $table->integer('id_user');
+            $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_drop_point');
             $table->dateTime('tgl_tSampah');
             $table->string('foto_bukti', 255)->nullable();
@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('total_poin')->default(0);
             $table->timestamps();
 
-            $table->foreign('id_user')->references('id_user')->on('pengguna')->onDelete('cascade');
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_drop_point')->references('id_drop_point')->on('drop_point')->onDelete('cascade');
         });
 
@@ -50,13 +50,13 @@ return new class extends Migration
         // Jadwal Logistik Table
         Schema::create('jadwallogistik', function (Blueprint $table) {
             $table->id('id_jadwal');
-            $table->integer('id_user');
+            $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_drop_point');
             $table->dateTime('tanggal_jemput');
             $table->string('status_jadwal');
             $table->timestamps();
 
-            $table->foreign('id_user')->references('id_user')->on('pengguna')->onDelete('cascade');
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_drop_point')->references('id_drop_point')->on('drop_point')->onDelete('cascade');
         });
 
@@ -64,12 +64,12 @@ return new class extends Migration
         Schema::create('riwayatpengambilan', function (Blueprint $table) {
             $table->id('id_riwayat_peng');
             $table->unsignedBigInteger('id_drop_point');
-            $table->integer('id_user');
+            $table->unsignedBigInteger('id_user');
             $table->dateTime('tanggal_ambil');
             $table->timestamps();
 
             $table->foreign('id_drop_point')->references('id_drop_point')->on('drop_point')->onDelete('cascade');
-            $table->foreign('id_user')->references('id_user')->on('pengguna')->onDelete('cascade');
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
         });
 
         // Bukti Pengambilan Table
@@ -97,7 +97,7 @@ return new class extends Migration
         Schema::create('jadwal_pengambilan', function (Blueprint $table) {
             $table->id('id_jadwal_pengambilan');
             $table->unsignedBigInteger('id_transaksi')->nullable();
-            $table->integer('id_user')->nullable();
+            $table->unsignedBigInteger('id_user')->nullable();
             $table->unsignedBigInteger('id_drop_point');
             $table->string('lokasi_droppoint', 255);
             $table->string('koordinat_lokasi', 100)->nullable();
@@ -108,7 +108,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('id_transaksi')->references('id_tSampah')->on('transaksisampah')->onDelete('set null');
-            $table->foreign('id_user')->references('id_user')->on('pengguna')->onDelete('set null');
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('set null');
             $table->foreign('id_drop_point')->references('id_drop_point')->on('drop_point')->onDelete('cascade');
         });
     }

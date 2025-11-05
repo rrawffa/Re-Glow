@@ -1,0 +1,263 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, #fef5f8 0%, #fff 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1, h2 {
+            font-family: 'Bricolage Grotesque', sans-serif;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            width: 100vw;
+        }
+
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            padding: 40px;
+            min-width: 0;
+        }
+
+        .logo-img {
+            width: 300px;
+            height: 300px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 10px 30px rgba(249, 182, 199, 0.3));
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #F9B6C7;
+            letter-spacing: -2px;
+            text-shadow: 0 5px 20px rgba(249, 182, 199, 0.3);
+        }
+
+        .right-panel {
+            flex: 1;
+            background: #F9B6C7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            color: white;
+            min-width: 0;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .register-form {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            font-size: 2.3rem;
+            margin-bottom: 35px;
+            text-align: center;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 8px;
+            min-height: 70px;
+            width: 100%;
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.2rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 16px 20px 16px 55px;
+            border: 2px solid transparent;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #20413A;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        input.error {
+            border-color: #ff4444;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            margin-left: 20px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .password-requirements {
+            color: #20413A;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            margin-left: 20px;
+            font-weight: 500;
+        }
+
+        .eye-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+            font-size: 1.2rem;
+            user-select: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px 24px;
+            background: #20413A;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Bricolage Grotesque', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            margin-bottom: 12px;
+        }
+
+        .btn-submit:hover {
+            background: #163026;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(32, 65, 58, 0.3);
+        }
+
+        .login-link {
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .login-link a {
+            color: #20413A;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .container {
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
+            .left-panel {
+                min-height: 40vh;
+                padding: 40px 30px;
+                width: 100vw;
+                flex: none;
+            }
+
+            .right-panel {
+                min-height: 60vh;
+                padding: 40px 30px;
+                width: 100vw;
+                flex: none;
+                overflow-y: auto;
+                max-height: 60vh;
+            }
+
+            .logo-text {
+                font-size: 3rem;
+            }
+
+            .logo-img {
+                width: 200px;
+                height: 200px;
+            }
+
+            h2 {
+                font-size: 1.9rem;
+                margin-bottom: 25px;
+            }
+
+            .register-form {
+                max-width: 320px;
+            }
+
+            .btn-submit {
+                padding: 14px 20px;
+                font-size: 1rem;
+            }
+        }
+
+        html, body {
+            overflow-x: hidden;
+            height: auto;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }

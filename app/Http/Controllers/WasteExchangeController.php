@@ -11,6 +11,7 @@ use App\Models\DropPoint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log; 
 
 class WasteExchangeController extends Controller
 {
@@ -53,6 +54,10 @@ class WasteExchangeController extends Controller
     // Store transaction
     public function store(Request $request)
     {
+        Log::info('=== WASTE EXCHANGE STORE METHOD CALLED ===');
+        Log::info('User ID: ' . Session::get('user_id'));
+        Log::info('Request data:', $request->except(['foto_bukti'])); // Exclude file for readability
+        
         $validator = Validator::make($request->all(), [
             'id_drop_point' => 'required|exists:drop_points,id_drop_point',
             'products' => 'required|array|min:1',
@@ -72,14 +77,17 @@ class WasteExchangeController extends Controller
         ]);
 
         if ($validator->fails()) {
+            Log::error('Validation failed:', $validator->errors()->toArray());
             return back()
                 ->withErrors($validator)
                 ->withInput()
+                ->with('error', 'Terdapat kesalahan dalam pengisian form.')
                 ->with('error_fields', $validator->errors()->keys());
         }
-
+        
         try {
             DB::beginTransaction();
+            Log::info('Transaction started');
 
             // Upload foto bukti
             $fotoPath = null;
@@ -150,6 +158,7 @@ class WasteExchangeController extends Controller
             ]);
 
             DB::commit();
+            Log::info('Transaction committed successfully. Redirecting to history.');
 
             return redirect()
                 ->route('waste-exchange.history')
@@ -157,10 +166,12 @@ class WasteExchangeController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Transaction error: ' . $e->getMessage());
+            Log::error('Transaction error: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            
             return back()
                 ->withInput()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                ->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
         }
     }
 

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Edit Konten - Re-Glow')
-
+<!-- resources\admin\education\edit.blade.php -->
 @section('styles')
     @vite(['resources/css/education/credit.css'])
 @endsection
@@ -18,7 +18,7 @@
     </div>
     @endif
 
-    <form action="{{ route('education.update', $konten->id_konten) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('admin.education.update', $konten->id_konten) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 

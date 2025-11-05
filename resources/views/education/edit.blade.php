@@ -3,7 +3,7 @@
 @section('title', 'Edit Konten - Re-Glow')
 
 @section('styles')
-{{-- Same styles as create --}}
+    @vite(['resources/css/education/credit.css'])
 @endsection
 
 @section('content')

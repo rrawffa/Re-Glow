@@ -77,8 +77,7 @@ class AuthController extends Controller
         $user->updated_at = now();
         $user->save();
 
-        // return redirect($user->getDashboardRoute()); nanti ganti lagi 
-        return redirect()->route('faq.index');
+        return redirect($user->getDashboardRoute());
 
     }
 
@@ -120,7 +119,7 @@ class AuthController extends Controller
         ]);
 
         // Cek username dan email yang sudah ada
-        $existingUser = User::where('username', $request->name)
+        $existingUser = User::where('username', $request->username) // <- gunakan username
             ->orWhere('email', $request->email)
             ->first();
 

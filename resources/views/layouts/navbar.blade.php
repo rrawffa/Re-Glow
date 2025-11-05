@@ -1,3 +1,4 @@
+@vite(['resources/css/layouts/navbar.css'])
 <nav class="navbar">
     <div class="logo" style="display:flex;align-items:center;gap:8px;">
         <img src="{{ asset('assets/re-glow.svg') }}" width="40" height="40" alt="Re-Glow logo">
@@ -15,7 +16,7 @@
         <li><a href="#vouchers">Vouchers</a></li>
         <li><a href="#community">Community</a></li>
         <li><a href="{{ url('/education') }}" class="{{ request()->is('education') ? 'active' : '' }}">Education</a></li>
-        <li><a href="#faq">FAQ</a></li>
+        <li><a href="{{ url('/faq') }}" class="{{ request()->is('faq') ? 'active' : '' }}">FAQ</a></li>
     </ul>
     <div class="nav-icons">
         <button class="icon-btn">🔔</button>
@@ -26,104 +27,3 @@
         </form>
     </div>
 </nav>
-
-<style>
-    .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.5rem 5%;
-        background: white;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
-
-    .logo {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-family: 'Bricolage Grotesque', sans-serif;
-        font-weight: 700;
-        font-size: 1.25rem;
-        color: var(--green-dark);
-    }
-
-    .nav-menu {
-        display: flex;
-        gap: 2rem;
-        list-style: none;
-        align-items: center;
-    }
-
-    .nav-menu a {
-        text-decoration: none;
-        color: var(--text-gray);
-        font-weight: 500;
-        transition: color 0.3s;
-    }
-
-    .nav-menu a:hover,
-    .nav-menu a.active {
-        color: var(--green-dark);
-    }
-
-    .nav-menu a.active {
-        border-bottom: 2px solid var(--green-dark);
-        padding-bottom: 0.25rem;
-    }
-
-    .nav-icons {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-    }
-
-    .icon-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 1.25rem;
-        color: var(--text-gray);
-    }
-
-    .profile-pic {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    .logout-form {
-        margin: 0;
-    }
-
-    .btn-logout {
-        background: var(--green-dark);
-        color: white;
-        border: none;
-        padding: 0.5rem 1.25rem;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .btn-logout:hover {
-        background: #163026;
-        transform: translateY(-2px);
-    }
-
-    @media (max-width: 768px) {
-        .nav-menu {
-            display: none;
-        }
-
-        .btn-logout {
-            padding: 0.4rem 1rem;
-            font-size: 0.85rem;
-        }
-    }
-</style>

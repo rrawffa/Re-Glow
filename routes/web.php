@@ -13,7 +13,6 @@ Route::get('/', function () {
 })->name('welcome');
 
 
-
 // Authentication Routes
 Route::middleware(['guest'])->group(function () {
     // Login
@@ -50,6 +49,11 @@ Route::middleware(['auth.session'])->group(function () {
             return view('admin.dashboard');
         })->name('dashboard');
     });
+
+    Route::get('/users', function () {
+        // Sementara redirect ke dashboard dulu
+        return redirect()->route('admin.dashboard')->with('info', 'User management feature coming soon!');
+    })->name('users');
     
     // Dashboard Tim Logistik
     Route::prefix('logistik')->name('logistik.')->middleware('check.role:tim_logistik')->group(function () {

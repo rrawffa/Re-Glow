@@ -1,201 +1,594 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Re-Glow - Dashboard Tim Logistik</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+@extends('layouts.app')
+
+@section('title', 'Re-Glow - Logistics Dashboard')
+
+@section('styles')
+<style>
+    .dashboard-container {
+        background-color: #f8f9fa;
+        min-height: calc(100vh - 120px);
+        padding: 2rem;
+    }
+
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-header h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-header p {
+        color: #6c757d;
+        font-size: 0.95rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .stat-icon.pink { background-color: #ffe0e6; }
+    .stat-icon.green { background-color: #d4f4dd; }
+    .stat-icon.yellow { background-color: #fff4cc; }
+    .stat-icon.blue { background-color: #dbeafe; }
+
+    .stat-info h3 {
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-info .stat-number {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (min-width: 1024px) {
+        .content-grid {
+            grid-template-columns: 1fr 1fr;
         }
+    }
 
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: linear-gradient(135deg, #fff8e8 0%, #fff 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+    .card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
 
-        h1, h2 {
-            font-family: 'Bricolage Grotesque', sans-serif;
-        }
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
 
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #F9B6C7 0%, #ffc9d4 100%);
-            padding: 20px 40px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .card-header h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+    .btn-add {
+        background-color: #2d4a3e;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: background-color 0.2s;
+    }
 
-        .logo-img {
-            width: 50px;
-            height: 50px;
-        }
+    .btn-add:hover {
+        background-color: #234032;
+    }
 
-        .logo-text {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: white;
-            letter-spacing: -1px;
-        }
+    .pickup-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+        background-color: #fafafa;
+        transition: background-color 0.2s;
+    }
 
-        .btn-logout {
-            padding: 12px 30px;
-            background: #20413A;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            font-family: 'Bricolage Grotesque', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+    .pickup-item:hover {
+        background-color: #f5f5f5;
+    }
 
-        .btn-logout:hover {
-            background: #163026;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(32, 65, 58, 0.3);
-        }
+    .pickup-icon {
+        width: 40px;
+        height: 40px;
+        background-color: #ffe0e6;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #e91e63;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
 
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-        }
+    .pickup-details {
+        flex: 1;
+    }
 
-        .welcome-card {
-            background: white;
-            padding: 60px 80px;
-            border-radius: 30px;
-            box-shadow: 0 10px 40px rgba(249, 182, 199, 0.2);
-            text-align: center;
-            max-width: 600px;
-            width: 100%;
-        }
+    .pickup-details h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 0.25rem;
+    }
 
-        .user-icon {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, #ff9a00 0%, #ffb340 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 30px;
-            font-size: 3rem;
-        }
+    .pickup-details .address {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+    }
 
-        .welcome-text {
-            font-size: 1.5rem;
-            color: #666;
-            margin-bottom: 15px;
-        }
+    .pickup-meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 0.85rem;
+    }
 
-        .username-text {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #ff9a00;
-            margin-bottom: 20px;
-        }
+    .pickup-time {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
 
-        .role-badge {
-            display: inline-block;
-            padding: 10px 25px;
-            background: linear-gradient(135deg, #ff9a00 0%, #ffb340 100%);
-            color: white;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
+    .time-badge {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+    }
 
-        .description {
-            margin-top: 30px;
-            color: #888;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
+    .time-badge.green { background-color: #22c55e; }
+    .time-badge.yellow { background-color: #eab308; }
+    .time-badge.blue { background-color: #3b82f6; }
 
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #999;
-            font-size: 0.9rem;
-        }
+    .pickup-contact {
+        color: #6c757d;
+    }
 
-        @media (max-width: 768px) {
-            .header {
-                padding: 15px 20px;
-            }
+    .pickup-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
 
-            .logo-text {
-                font-size: 1.4rem;
-            }
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        background-color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        transition: all 0.2s;
+    }
 
-            .welcome-card {
-                padding: 40px 30px;
-            }
+    .action-btn:hover {
+        background-color: #f5f5f5;
+        color: #1a1a1a;
+    }
 
-            .username-text {
-                font-size: 2rem;
-            }
+    .action-btn.alert {
+        color: #ef4444;
+    }
 
-            .user-icon {
-                width: 80px;
-                height: 80px;
-                font-size: 2rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <div class="header">
-        <div class="logo-container">
-            <img src="{{ asset('assets/re-glow.svg') }}" alt="Re-Glow" class="logo-img">
-            <h1 class="logo-text">Re-Glow</h1>
+    .history-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .history-item:last-child {
+        border-bottom: none;
+    }
+
+    .history-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+
+    .history-icon.success {
+        background-color: #d4f4dd;
+        color: #22c55e;
+    }
+
+    .history-icon.warning {
+        background-color: #fff4cc;
+        color: #eab308;
+    }
+
+    .history-info {
+        flex: 1;
+    }
+
+    .history-info h3 {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #1a1a1a;
+        margin-bottom: 0.25rem;
+    }
+
+    .history-info .date {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    .history-status {
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+    }
+
+    .history-status.completed {
+        background-color: #d4f4dd;
+        color: #16a34a;
+    }
+
+    .history-status.issue {
+        background-color: #fff4cc;
+        color: #ca8a04;
+    }
+
+    .notification-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background-color 0.2s;
+    }
+
+    .notification-item:hover {
+        background-color: #fafafa;
+    }
+
+    .notification-item:last-child {
+        border-bottom: none;
+    }
+
+    .notification-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+
+    .notification-icon.pink {
+        background-color: #ffe0e6;
+        color: #e91e63;
+    }
+
+    .notification-icon.red {
+        background-color: #fee2e2;
+        color: #ef4444;
+    }
+
+    .notification-icon.blue {
+        background-color: #dbeafe;
+        color: #3b82f6;
+    }
+
+    .notification-icon.green {
+        background-color: #d4f4dd;
+        color: #22c55e;
+    }
+
+    .notification-content {
+        flex: 1;
+    }
+
+    .notification-content h3 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 0.25rem;
+    }
+
+    .notification-content p {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+    }
+
+    .notification-time {
+        font-size: 0.75rem;
+        color: #9ca3af;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+</style>
+@endsection
+
+@section('content')
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Logistics Dashboard</h1>
+        <p>Manage waste collection schedules and track operational performance</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon pink">📦</div>
+            <div class="stat-info">
+                <h3>Today's Pickups</h3>
+                <div class="stat-number">12</div>
+            </div>
         </div>
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="btn-logout">Logout</button>
-        </form>
-    </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="welcome-card">
-            <div class="user-icon">📦</div>
-            <p class="welcome-text">Halo,</p>
-            <h2 class="username-text">{{ Session::get('username') }}!</h2>
-            <span class="role-badge">TIM LOGISTIK</span>
-            <p class="description">
-                Selamat datang di Dashboard Tim Logistik Re-Glow. Anda bertanggung jawab untuk mengelola pengiriman, penerimaan, dan distribusi limbah kosmetik.
-            </p>
+        <div class="stat-card">
+            <div class="stat-icon green">✓</div>
+            <div class="stat-info">
+                <h3>Completed</h3>
+                <div class="stat-number">8</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon yellow">⏱</div>
+            <div class="stat-info">
+                <h3>Pending</h3>
+                <div class="stat-number">4</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon blue">🚛</div>
+            <div class="stat-info">
+                <h3>Active Vehicles</h3>
+                <div class="stat-number">6</div>
+            </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        <p>&copy; 2024 Re-Glow. Logistics Management Panel. 🌸♻️</p>
+    <!-- Content Grid -->
+    <div class="content-grid">
+        <!-- Scheduled Today -->
+        <div class="card full-width">
+            <div class="card-header">
+                <h2>Scheduled Today</h2>
+                <button class="btn-add">
+                    <span>+</span>
+                    Add Pickup
+                </button>
+            </div>
+
+            <div class="pickup-item">
+                <div class="pickup-icon">📍</div>
+                <div class="pickup-details">
+                    <h3>Posko Soekarno-Hatta</h3>
+                    <div class="address">123 Business Street, City Center</div>
+                    <div class="pickup-meta">
+                        <div class="pickup-time">
+                            <span class="time-badge green"></span>
+                            <span>09:30 AM</span>
+                        </div>
+                        <div class="pickup-contact">Contact: Sarah Johnson</div>
+                    </div>
+                </div>
+                <div class="pickup-actions">
+                    <button class="action-btn">👁</button>
+                    <button class="action-btn">✏️</button>
+                    <button class="action-btn alert">⚠️</button>
+                </div>
+            </div>
+
+            <div class="pickup-item">
+                <div class="pickup-icon">📍</div>
+                <div class="pickup-details">
+                    <h3>Posko Klojen</h3>
+                    <div class="address">456 Residential Ave, Suburb District</div>
+                    <div class="pickup-meta">
+                        <div class="pickup-time">
+                            <span class="time-badge yellow"></span>
+                            <span>11:15 AM</span>
+                        </div>
+                        <div class="pickup-contact">Contact: Mike Chen</div>
+                    </div>
+                </div>
+                <div class="pickup-actions">
+                    <button class="action-btn">👁</button>
+                    <button class="action-btn">✏️</button>
+                    <button class="action-btn alert">⚠️</button>
+                </div>
+            </div>
+
+            <div class="pickup-item">
+                <div class="pickup-icon">📍</div>
+                <div class="pickup-details">
+                    <h3>Posko Universitas Brawijaya</h3>
+                    <div class="address">789 Innovation Drive, Tech Park</div>
+                    <div class="pickup-meta">
+                        <div class="pickup-time">
+                            <span class="time-badge blue"></span>
+                            <span>02:00 PM</span>
+                        </div>
+                        <div class="pickup-contact">Contact: Emma Davis</div>
+                    </div>
+                </div>
+                <div class="pickup-actions">
+                    <button class="action-btn">👁</button>
+                    <button class="action-btn">✏️</button>
+                    <button class="action-btn alert">⚠️</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Pick-Ups -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Recent Pick-Ups</h2>
+            </div>
+
+            <div class="history-item">
+                <div class="history-icon success">✓</div>
+                <div class="history-info">
+                    <h3>Metro Shopping Center</h3>
+                    <div class="date">Oct 25, 2024 - 10:45 AM</div>
+                </div>
+                <div class="history-status completed">Completed</div>
+            </div>
+
+            <div class="history-item">
+                <div class="history-icon success">✓</div>
+                <div class="history-info">
+                    <h3>University Campus</h3>
+                    <div class="date">Oct 25, 2024 - 08:30 AM</div>
+                </div>
+                <div class="history-status completed">Completed</div>
+            </div>
+
+            <div class="history-item">
+                <div class="history-icon success">✓</div>
+                <div class="history-info">
+                    <h3>Corporate Plaza</h3>
+                    <div class="date">Oct 24, 2024 - 03:15 PM</div>
+                </div>
+                <div class="history-status completed">Completed</div>
+            </div>
+
+            <div class="history-item">
+                <div class="history-icon warning">!</div>
+                <div class="history-info">
+                    <h3>Riverside Mall</h3>
+                    <div class="date">Oct 24, 2024 - 01:20 PM</div>
+                </div>
+                <div class="history-status issue">Issue Reported</div>
+            </div>
+        </div>
+
+        <!-- System Notifications -->
+        <div class="card">
+            <div class="card-header">
+                <h2>System Notifications</h2>
+            </div>
+
+            <div class="notification-item">
+                <div class="notification-icon pink">📋</div>
+                <div class="notification-content">
+                    <h3>New Pickup Assigned</h3>
+                    <p>You have been assigned a new collection at Eastside Community Center for tomorrow at 9:00 AM.</p>
+                    <div class="notification-time">2 hours ago</div>
+                </div>
+            </div>
+
+            <div class="notification-item">
+                <div class="notification-icon red">⚠️</div>
+                <div class="notification-content">
+                    <h3>Urgent: Route Change</h3>
+                    <p>Route 5 has been modified due to road construction. Please check updated directions.</p>
+                    <div class="notification-time">4 hours ago</div>
+                </div>
+            </div>
+
+            <div class="notification-item">
+                <div class="notification-icon blue">🔔</div>
+                <div class="notification-content">
+                    <h3>Schedule Update</h3>
+                    <p>Green Valley Apartments pickup has been rescheduled from 10:30 AM to 11:15 AM.</p>
+                    <div class="notification-time">6 hours ago</div>
+                </div>
+            </div>
+
+            <div class="notification-item">
+                <div class="notification-icon green">✓</div>
+                <div class="notification-content">
+                    <h3>Vehicle Maintenance Complete</h3>
+                    <p>Truck LG-003 has completed scheduled maintenance and is ready for service.</p>
+                    <div class="notification-time">1 day ago</div>
+                </div>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+    // Add any JavaScript functionality here
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add Pickup button handler
+        const addPickupBtn = document.querySelector('.btn-add');
+        if (addPickupBtn) {
+            addPickupBtn.addEventListener('click', function() {
+                // Handle add pickup action
+                console.log('Add pickup clicked');
+            });
+        }
+
+        // Action buttons handlers
+        const actionBtns = document.querySelectorAll('.action-btn');
+        actionBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Handle action button clicks
+                console.log('Action button clicked');
+            });
+        });
+    });
+</script>
+@endsection

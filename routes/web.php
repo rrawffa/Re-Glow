@@ -8,13 +8,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\WasteExchangeController;
 use App\Http\Controllers\FaqController;
-use App\Http\Controllers\Admin\AdminEducationController;
-use App\Http\Controllers\Admin\AdminWasteExchangeController;
 
 // Welcome/Landing Page
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
+
 
 
 // Authentication Routes
@@ -138,9 +137,7 @@ Route::middleware(['auth.session','check.role:admin'])->group(function () {
 });
 
 // FAQ Page
-Route::get('/faq', [FaqController::class, 'index'])->name('faq.faq');
-
-///////// ADMIN ADMIN ADMIN ////////////////////////
+Route::get('/faq', [FaqController::class, 'index'])->name('faq.faq');//////// ADMIN ADMIN ADMIN ////////////////////////
 // Admin Education Routes
 Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // Education Management
@@ -173,3 +170,13 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
     // Logistik
     Route::get('/waste-exchange/logistik', [AdminWasteExchangeController::class, 'logistikIndex'])->name('waste.logistik.index');
 });
+
+// 🔓 Katalog Voucher — sekarang publik (tanpa login)
+Route::get('/vouchers', [VoucherController::class,'index'])->name('vouchers.index');
+Route::get('/vouchers/{voucher}', [VoucherController::class,'show'])->name('vouchers.show');
+Route::post('/vouchers/{voucher}/redeem', [VoucherController::class,'redeem'])->name('vouchers.redeem');
+Route::get('/api/vouchers', [VoucherController::class,'apiIndex'])->name('vouchers.apiIndex');
+
+// Favorite Vouchers (sementara kosong dulu)
+Route::get('/vouchers/favorites', [App\Http\Controllers\VoucherController::class, 'favorites'])
+    ->name('vouchers.favorites');

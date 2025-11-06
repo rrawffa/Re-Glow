@@ -1,0 +1,39 @@
+[33m3466081[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mhalaman-katalog-voucher[m[33m, [m[1;31morigin/halaman-katalog-voucher[m[33m, [m[1;32mmain[m[33m)[m Halaman Faq
+[33mb88e7e6[m[33m ([m[1;31morigin/halaman_FAQ[m[33m)[m Halaman Faq
+[33mfe84164[m Halaman Faq
+[33ma8bfd8a[m Merge branch 'main' of https://github.com/rrawffa/Re-Glow
+[33m688aaa5[m Add package-lock.json for dependency management
+[33m09d5db9[m Merge pull request #19 from rrawffa/login_regist
+[33m1fe6f69[m[33m ([m[1;31morigin/login_regist[m[33m)[m pemisahan css js
+[33m2c36643[m Merge pull request #18 from rrawffa/login_regist
+[33mf80364b[m bisa login admin, logistik
+[33m3202e1d[m Add admin password reset command and update dashboard UI
+[33mecfb31e[m Rename migration file for transaksi sampah table
+[33mf48437e[m Merge pull request #17 from rrawffa/tukar_sampah
+[33me608ad2[m[33m ([m[1;31morigin/tukar_sampah[m[33m)[m tukar sampah untuk user
+[33me94032e[m Resolve merge conflicts
+[33m4f7d7f7[m hal dashboard ada berubah tampilannya
+[33m3b61eda[m Update dashboard.blade.php
+[33mfaa1441[m Merge branch 'main' of https://github.com/rrawffa/Re-Glow
+[33m005391b[m Update dashboard.blade.php
+[33m3a7bf38[m Fix merge conflicts in web.php
+[33mbfa607b[m Resolve merge conflicts and complete commit
+[33ma83c94f[m Revamp admin dashboard UI and update navbar link
+[33mafe925e[m Update dashboard hero section and styles
+[33m6d4ed4f[m Update dashboard.blade.php
+[33mbe3aeaa[m Add logout button to navbar and update routes
+[33mb372d9c[m[33m ([m[1;31morigin/hal_edukasi[m[33m)[m edukasi nambah
+[33mbfbee7b[m Update dashboard.blade.php
+[33mff7c5d3[m Update dashboard.blade.php
+[33mfe4d6da[m Merge pull request #16 from rrawffa/login_regist
+[33m329493b[m revisi regis login
+[33m6153ed9[m Merge pull request #15 from rrawffa/login_regist
+[33m7550fae[m login register done
+[33m61169c8[m Merge pull request #14 from rrawffa/hal_edukasi
+[33me29e1cc[m tambah layout header, footer
+[33md798b3a[m Merge pull request #13 from rrawffa/hal_edukasi
+[33m6dd37aa[m katalog edukasi done
+[33mdc20aa0[m Merge pull request #1 from rrawffa/hal_edukasi
+[33m3df2f5f[m edukasi tapi masih belum fix
+[33mf671145[m Add full project
+[33m4c01fa7[m commit pertama

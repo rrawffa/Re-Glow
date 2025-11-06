@@ -5,6 +5,8 @@ use App\Models\Education;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\WasteExchangeController;
+use App\Http\Controllers\FaqController;
+use App\Http\Controllers\VoucherController;
 
 // Welcome/Landing Page
 Route::get('/', function () {
@@ -56,7 +58,7 @@ Route::middleware(['auth.session'])->group(function () {
     });
 });
 
-// Fallback Route
+//  Fallback Route 
 Route::fallback(function () {
     return redirect()->route('welcome');
 });
@@ -115,3 +117,16 @@ Route::middleware(['auth.session'])->group(function () {
         Route::get('/api/drop-points', [WasteExchangeController::class, 'getDropPoints'])->name('api.drop-points');
     });
 });
+
+// FAQ Page
+Route::get('/faq', [FaqController::class, 'index'])->name('faq.faq');
+
+// 🔓 Katalog Voucher — sekarang publik (tanpa login)
+Route::get('/vouchers', [VoucherController::class,'index'])->name('vouchers.index');
+Route::get('/vouchers/{voucher}', [VoucherController::class,'show'])->name('vouchers.show');
+Route::post('/vouchers/{voucher}/redeem', [VoucherController::class,'redeem'])->name('vouchers.redeem');
+Route::get('/api/vouchers', [VoucherController::class,'apiIndex'])->name('vouchers.apiIndex');
+
+// Favorite Vouchers (sementara kosong dulu)
+Route::get('/vouchers/favorites', [App\Http\Controllers\VoucherController::class, 'favorites'])
+    ->name('vouchers.favorites');

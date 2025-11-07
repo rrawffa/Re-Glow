@@ -9,6 +9,7 @@ use App\Http\Controllers\EducationController;
 use App\Http\Controllers\WasteExchangeController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\Admin\AdminEducationController;
 
 // Welcome/Landing Page
 Route::get('/', function () {

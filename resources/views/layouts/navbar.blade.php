@@ -6,12 +6,11 @@
     </div>
     <ul class="nav-menu">
         <li>
-            <a href="{{ url('user/dashboard') }}" 
-               class="{{ request()->is('user/dashboard') ? 'active' : '' }}">
+            <a href="{{ route('user.dashboard') }}" class="{{ request()->is('user/dashboard') ? 'active' : '' }}">
                Dashboard
             </a>
         </li>
-        <li><a href="{{ route('waste-exchange.index') }}">Exchange Waste</a></li>
+        <li><a href="{{ route('waste-exchange.index') }}" class="{{ request()->is('waste-exchange') ? 'active' : '' }}">Exchange Waste</a></li>
         <li><a href="#points">Points</a></li>
         <li><a href="{{ route('vouchers.index') }}" class="{{ request()->is('vouchers') ? 'active' : '' }}">Vouchers</a></li>
         <li><a href="#community">Community</a></li>

@@ -36,9 +36,7 @@
     @yield('styles')
 </head>
 <body>
-    @if (request()->is('admin/*'))
-        @include('layouts.admin-navbar')
-    @elseif (request()->is('logistik/*'))
+    @if (request()->is('logistik/*'))
         @include('layouts.logistik-navbar')
     @else
         @include('layouts.navbar')

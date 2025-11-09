@@ -37,7 +37,7 @@
 </head>
 <body>
     @if (request()->is('logistik/*'))
-        @include('layouts.logistik-navbar')
+        @include('layouts.logistik-navbar.logistik-navbar')
     @else
         @include('layouts.navbar')
     @endif

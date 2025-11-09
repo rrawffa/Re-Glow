@@ -11,6 +11,7 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\Admin\AdminEducationController;
 use App\Http\Controllers\RiwayatPoinController;
+use App\Http\Controllers\ProfileController;
 
 // Welcome/Landing Page
 Route::get('/', function () {
@@ -47,6 +48,9 @@ Route::middleware(['auth.session'])->group(function () {
 
             return view('user.dashboard', compact('topArticles'));
         })->name('dashboard');
+
+        // User Profile
+        Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     });
     
     // Dashboard Admin

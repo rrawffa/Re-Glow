@@ -58,11 +58,22 @@
         color: var(--text-gray);
     }
 
+    .nav-icons a {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+    }
+
     .profile-pic {
         width: 35px;
         height: 35px;
         border-radius: 50%;
         object-fit: cover;
+        transition: transform 0.2s ease;
+    }
+
+    .profile-pic:hover {
+        transform: scale(1.1);
     }
 
     .logout-form {

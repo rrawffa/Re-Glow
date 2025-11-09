@@ -21,7 +21,9 @@
 
     <div class="nav-icons">
         <button class="icon-btn">🔔</button>
-        <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="profile-pic" href="{{ route('user-profile.show') }}">
+        <a href="{{ route('user.profile.show') }}">
+            <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="profile-pic">
+        </a>
         <form action="{{ route('logout') }}" method="POST" class="logout-form">
             @csrf
             <button type="submit" class="btn-logout">Logout</button>

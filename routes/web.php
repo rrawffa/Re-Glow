@@ -10,6 +10,7 @@ use App\Http\Controllers\WasteExchangeController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\Admin\AdminEducationController;
+use App\Http\Controllers\RiwayatPoinController;
 
 // Welcome/Landing Page
 Route::get('/', function () {
@@ -138,8 +139,13 @@ Route::middleware(['auth.session','check.role:admin'])->group(function () {
     });
 });
 
+//Riwayat Poin
+//belum pake login 
+Route::get('/riwayat-poin', [RiwayatPoinController::class, 'index'])->name('riwayat poin.poinhistory');
+
 // FAQ Page
 Route::get('/faq', [FaqController::class, 'index'])->name('faq.faq');//////// ADMIN ADMIN ADMIN ////////////////////////
+
 // Admin Education Routes
 Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // Education Management

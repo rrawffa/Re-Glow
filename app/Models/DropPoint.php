@@ -25,7 +25,8 @@ class DropPoint extends Model
     /**
      * Relationships
      */
-    public function transactions()
+    // Tambahkan di model DropPoint
+    public function transaksi()
     {
         return $this->hasMany(TransaksiSampah::class, 'id_drop_point', 'id_drop_point');
     }

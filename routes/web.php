@@ -10,6 +10,7 @@ use App\Http\Controllers\WasteExchangeController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\Admin\AdminEducationController;
+use App\Http\Controllers\Admin\AdminWasteExchangeController;
 use App\Http\Controllers\RiwayatPoinController;
 use App\Http\Controllers\ProfileController;
 
@@ -126,8 +127,26 @@ Route::get('/env-test', function () {
     return env('DB_DATABASE');
 });
 
-// Waste Exchange Routes (require authentication)
-Route::middleware(['auth.session','check.role:admin'])->group(function () {
+
+// Waste Exchange Routes (pengguna)
+Route::middleware(['auth.session','check.role:pengguna'])->group(function () {
+    Route::prefix('waste-exchange')->name('waste-exchange.')->group(function () {
+        Route::get('/', [WasteExchangeController::class, 'index'])->name('index');
+        Route::get('/create', [WasteExchangeController::class, 'create'])->name('create');
+        Route::post('/store', [WasteExchangeController::class, 'store'])->name('store');
+        Route::get('/history', [WasteExchangeController::class, 'history'])->name('history');
+        Route::get('/{id}', [WasteExchangeController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [WasteExchangeController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [WasteExchangeController::class, 'update'])->name('update');
+        Route::delete('/{id}', [WasteExchangeController::class, 'destroy'])->name('destroy');
+        
+        // API endpoint
+        Route::get('/api/drop-points', [WasteExchangeController::class, 'getDropPoints'])->name('api.drop-points');
+    });
+});
+
+// Waste Exchange Routes (admin)
+Route::middleware(['auth.session','check.role:pengguna'])->group(function () {
     Route::prefix('waste-exchange')->name('waste-exchange.')->group(function () {
         Route::get('/', [WasteExchangeController::class, 'index'])->name('index');
         Route::get('/create', [WasteExchangeController::class, 'create'])->name('create');

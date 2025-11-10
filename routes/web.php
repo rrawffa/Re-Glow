@@ -205,6 +205,7 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
     Route::get('/waste-exchange/logistik', [AdminWasteExchangeController::class, 'logistikIndex'])->name('waste.logistik.index');
 });
 
+
 // 🔓 Community Sharing (Halaman dan Melihat Postingan)
 Route::get('/', function(){ return redirect()->route('community.index'); });
 
@@ -238,6 +239,12 @@ Route::middleware(['auth'])->group(function(){
     // Melaporkan Postingan (penting: hanya user terautentikasi yang bisa report)
     Route::post('/community/{post}/report', [CommunityController::class,'report'])->name('community.report');
 });
+
+// 🔓 Katalog Voucher — sekarang publik (tanpa login)
+Route::get('/vouchers', [VoucherController::class,'index'])->name('vouchers.index');
+Route::get('/vouchers/{voucher}', [VoucherController::class,'show'])->name('vouchers.show');
+Route::post('/vouchers/{voucher}/redeem', [VoucherController::class,'redeem'])->name('vouchers.redeem');
+Route::get('/api/vouchers', [VoucherController::class,'apiIndex'])->name('vouchers.apiIndex');
 
 // Favorite Vouchers (sementara kosong dulu)
 Route::get('/vouchers/favorites', [App\Http\Controllers\VoucherController::class, 'favorites'])

@@ -3,101 +3,74 @@
 @section('title', 'Re-Glow - User Profile')
 
 @section('styles')
+@vite(['resources/css/pages/profile.css'])
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+    <!-- Profile Header (static placeholder) -->
+    <div class="profile-header">
+        <div class="profile-info">
+            <h1>Guest User</h1>
+            <p class="profile-bio">This is a placeholder profile page. Real user data will be shown here once backend is implemented.</p>
+            <a href="#" class="edit-profile-btn">Edit Profile</a>
+        </div>
+        <img src="{{ asset('images/default-avatar.jpg') }}" alt="Guest User" class="profile-avatar">
+    </div>
 
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        background-color: #f5f5f5;
-        color: #333;
-    }
+    <!-- Stats Grid (static placeholders) -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">🌱</div>
+            <div class="stat-value">0</div>
+            <div class="stat-label">Available Points</div>
+            <div class="stat-sublabel">For free deals</div>
+        </div>
 
-    .profile-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 40px 20px;
-    }
+        <div class="stat-card">
+            <div class="stat-icon">💬</div>
+            <div class="stat-value">0</div>
+            <div class="stat-label">My Community Posts</div>
+        </div>
 
-    .profile-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 40px;
-        gap: 40px;
-    }
+        <div class="stat-card">
+            <div class="stat-icon">❤️</div>
+            <div class="stat-value">0</div>
+            <div class="stat-label">Saved Vouchers</div>
+        </div>
 
-    .profile-info {
-        flex: 1;
-    }
+        <div class="stat-card highlight">
+            <div class="stat-icon">🌍</div>
+            <div class="stat-value">0 items recycled</div>
+            <div class="stat-label">Environmental Impact</div>
+            <div class="stat-sublabel">Making every day greener</div>
+        </div>
+    </div>
 
-    .profile-info h1 {
-        font-size: 32px;
-        font-weight: 600;
-        margin-bottom: 16px;
-        color: #1a1a1a;
-    }
+    <!-- Tabs (static links) -->
+    <div class="tabs">
+        <a href="#" class="tab active">My Posts</a>
+        <a href="#" class="tab">Recycling History</a>
+        <a href="#" class="tab">Redeemed Vouchers</a>
+    </div>
 
-    .profile-bio {
-        font-size: 15px;
-        line-height: 1.6;
-        color: #666;
-        margin-bottom: 24px;
-        max-width: 600px;
-    }
+    <!-- Posts Container (static placeholders) -->
+    <div class="posts-container">
+        <div class="post-card">
+            <div class="post-header">
+                <span class="post-icon">💡</span>
+                <h3 class="post-title">Welcome to Re-Glow</h3>
+                <span class="post-time">Just now</span>
+            </div>
+            <p class="post-description">This is a static demo post on the placeholder profile page.</p>
+        </div>
 
-    .edit-profile-btn {
-        display: block;
-        width: 100%;
-        max-width: 450px;
-        padding: 14px 24px;
-        background: linear-gradient(135deg, #ffc0cb, #ffb3c1);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 15px;
-        font-weight: 500;
-        cursor: pointer;
-        text-align: center;
-        text-decoration: none;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .edit-profile-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 182, 193, 0.4);
-    }
-
-    .profile-avatar {
-        width: 140px;
-        height: 140px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 4px solid white;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 20px;
-        margin-bottom: 40px;
-    }
-
-    .stat-card {
-        background: white;
-        padding: 24px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .stat-card.highlight {
+        <div class="post-card">
+            <div class="post-header">
+                <span class="post-icon">♻️</span>
+                <h3 class="post-title">Start recycling today</h3>
+                <span class="post-time">1 day ago</span>
+            </div>
+            <p class="post-description">Share tips and tricks about reducing waste and living sustainably.</p>
+        </div>
+    </div>
         background: #f0f9f0;
     }
 
@@ -316,7 +289,7 @@
         <div class="profile-info">
             <h1>{{ $user->name ?? 'User' }}</h1>
             <p class="profile-bio">{{ $user->bio ?? 'No bio available.' }}</p>
-            <a href="{{ route('profile.edit') }}" class="edit-profile-btn">Edit Profile</a>
+            <a class="edit-profile-btn">Edit Profile</a>
         </div>
         <img src="{{ $user->avatar_url ?? asset('images/default-avatar.jpg') }}" alt="{{ $user->name ?? 'User' }}" class="profile-avatar">
     </div>
@@ -360,7 +333,7 @@
     <div class="tabs">
         <a href="{{ route('user.profile.show', ['tab' => 'posts']) }}" class="tab {{ $activeTab === 'posts' ? 'active' : '' }}">My Posts</a>
         <a href="{{ route('user.profile.show', ['tab' => 'history']) }}" class="tab {{ $activeTab === 'history' ? 'active' : '' }}">Recycling History</a>
-        <a href="{{ route('', ['tab' => 'vouchers']) }}" class="tab {{ $activeTab === 'vouchers' ? 'active' : '' }}">Redeemed Vouchers</a>
+        <a href="{{ route('vouchers.favorites', ['tab' => 'vouchers']) }}" class="tab {{ $activeTab === 'vouchers' ? 'active' : '' }}">Redeemed Vouchers</a>
     </div>
 
     <!-- Posts Container -->
@@ -405,20 +378,7 @@
         @endforelse
     </div>
 
-    <!-- Pagination -->
-    @if($posts->hasPages())
-    <div style="margin-top: 32px;">
-        {{ $posts->links() }}
-    </div>
-    @endif
 </div>
-
-<!-- Fixed Buttons -->
-<a href="{{ route('settings') }}" class="settings-btn">Settings</a>
-<a href="{{ route('logout') }}" class="logout-btn" 
-   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-    Log Out
-</a>
 
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
     @csrf

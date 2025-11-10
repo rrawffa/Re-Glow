@@ -7,9 +7,15 @@
 
     <ul class="nav-menu">
         <li>
+            @if(Session::get('user_role') === 'admin')
+                <a href="{{ route('admin.dashboard') }}" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
+                    Dashboard
+                </a>
+            @else
             <a href="{{ route('user.dashboard') }}" class="{{ request()->is('user/dashboard') ? 'active' : '' }}">
                 Dashboard
             </a>
+            @endif
         </li>
         <li><a href="{{ route('waste-exchange.index') }}">Exchange Waste</a></li>
         <li><a href="#points">Points</a></li>

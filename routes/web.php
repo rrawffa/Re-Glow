@@ -38,7 +38,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Protected Routes - Requires Authentication
 Route::middleware(['auth.session'])->group(function () {
     
-    // Dashboard Pengguna
+    // Dashboard & Profile Pengguna (DIGABUNGKAN JADI SATU GRUP)
     Route::prefix('user')->name('user.')->group(function () {
         Route::get('/dashboard', function () {
             $topArticles = Education::where('status', 'published')
@@ -50,8 +50,10 @@ Route::middleware(['auth.session'])->group(function () {
             return view('user.dashboard', compact('topArticles'));
         })->name('dashboard');
 
-        // User Profile
+        // Rute Profile yang dipanggil dari navbar
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     });
     
     // Dashboard Admin

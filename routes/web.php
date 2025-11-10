@@ -9,6 +9,7 @@ use App\Http\Controllers\EducationController;
 use App\Http\Controllers\WasteExchangeController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\Admin\AdminEducationController;
 use App\Http\Controllers\Admin\AdminWasteExchangeController;
 use App\Http\Controllers\RiwayatPoinController;
@@ -204,11 +205,39 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
     Route::get('/waste-exchange/logistik', [AdminWasteExchangeController::class, 'logistikIndex'])->name('waste.logistik.index');
 });
 
-// 🔓 Katalog Voucher — sekarang publik (tanpa login)
-Route::get('/vouchers', [VoucherController::class,'index'])->name('vouchers.index');
-Route::get('/vouchers/{voucher}', [VoucherController::class,'show'])->name('vouchers.show');
-Route::post('/vouchers/{voucher}/redeem', [VoucherController::class,'redeem'])->name('vouchers.redeem');
-Route::get('/api/vouchers', [VoucherController::class,'apiIndex'])->name('vouchers.apiIndex');
+// 🔓 Community Sharing (Halaman dan Melihat Postingan)
+Route::get('/', function(){ return redirect()->route('community.index'); });
+
+// Halaman utama Community (bisa diakses publik)
+Route::get('/community', [CommunityController::class,'index'])->name('community.index');
+
+// API endpoints (AJAX) untuk mengambil/menampilkan postingan (bisa diakses publik)
+Route::get('/community/posts', [CommunityController::class,'fetchPosts'])->name('community.posts');
+
+
+// ===========================================
+// 🔐 Protected Routes (Perlu Login/Auth)
+// ===========================================
+
+Route::middleware(['auth'])->group(function(){
+    // Voucher Redemption (hanya user yang login yang bisa redeem)
+    Route::post('/vouchers/{voucher}/redeem', [VoucherController::class,'redeem'])->name('vouchers.redeem');
+
+    // Favorite Vouchers (hanya user yang login yang punya favorit)
+    Route::get('/vouchers/favorites', [VoucherController::class, 'favorites'])->name('vouchers.favorites');
+
+    // Community Actions (Aksi Modifikasi dan Pelaporan hanya untuk user yang login)
+
+    // Membuat Postingan Baru
+    Route::post('/community', [CommunityController::class,'store'])->name('community.store');
+    
+    // Mengubah dan Menghapus Postingan
+    Route::post('/community/{post}/update', [CommunityController::class,'update'])->name('community.update');
+    Route::post('/community/{post}/delete', [CommunityController::class,'destroy'])->name('community.delete');
+    
+    // Melaporkan Postingan (penting: hanya user terautentikasi yang bisa report)
+    Route::post('/community/{post}/report', [CommunityController::class,'report'])->name('community.report');
+});
 
 // Favorite Vouchers (sementara kosong dulu)
 Route::get('/vouchers/favorites', [App\Http\Controllers\VoucherController::class, 'favorites'])

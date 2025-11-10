@@ -20,8 +20,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-
-
 // Authentication Routes
 Route::middleware(['guest'])->group(function () {
     // Login
@@ -206,14 +204,14 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
 });
 
 
-// 🔓 Community Sharing (Halaman dan Melihat Postingan)
-Route::get('/', function(){ return redirect()->route('community.index'); });
+// // 🔓 Community Sharing (Halaman dan Melihat Postingan)
+// Route::get('/', function(){ return redirect()->route('community.index'); });
 
 // Halaman utama Community (bisa diakses publik)
 Route::get('/community', [CommunityController::class,'index'])->name('community.index');
 
-// API endpoints (AJAX) untuk mengambil/menampilkan postingan (bisa diakses publik)
-Route::get('/community/posts', [CommunityController::class,'fetchPosts'])->name('community.posts');
+// // API endpoints (AJAX) untuk mengambil/menampilkan postingan (bisa diakses publik)
+// Route::get('/community/posts', [CommunityController::class,'fetchPosts'])->name('community.posts');
 
 
 // ===========================================

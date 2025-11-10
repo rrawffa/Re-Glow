@@ -77,7 +77,7 @@ class AuthController extends Controller
         $user->updated_at = now();
         $user->save();
 
-        return redirect($user->getDashboardRoute());
+        return $this->redirectToDashboard($user->role);
 
     }
 

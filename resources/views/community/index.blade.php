@@ -113,7 +113,7 @@
                 <!-- like button (material symbol) -->
                 <button class="like-btn flex items-center gap-2" aria-pressed="false">
                   <span class="material-symbols-outlined like-icon">favorite_border</span>
-                  <span class="like-count text-[13px] font-bold">128 likes</span>
+                  <span class="like-count text-[13px] font-bold">129 likes</span>
                 </button>
 
                 <!-- comments toggle -->

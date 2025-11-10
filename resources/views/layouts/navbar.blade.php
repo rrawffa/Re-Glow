@@ -17,7 +17,6 @@
             </a>
             @endif
         </li>
-        <li><a href="{{ route('community.index') }}" class="{{ request()->is('community') ? 'active' : '' }}">Community</a></li>
         <li>
             @if(Session::get('user_role') === 'admin')
                 <a href="{{ route('admin.waste.index') }}" class="{{ request()->is('admin/waste-exchange*') ? 'active' : '' }}">

@@ -15,17 +15,27 @@ class ProfileController extends Controller
 {
     public function show(Request $request)
     {
-        if (!Auth::check()) {
+        // This app uses a custom session-based auth (Session::put('user_id') in AuthController)
+        // so use the session to determine login state and load the user.
+        if (!Session::has('user_id')) {
             return redirect()->route('login');
         }
-        $user = auth()->user();
+
+        $userId = Session::get('user_id');
+        // Primary key in your users table appears to be `id_user` — load the user accordingly.
+        $user = User::where('id_user', $userId)->first();
+
+        // If user record is missing for some reason, clear session and redirect to login
+        if (!$user) {
+            Session::flush();
+            return redirect()->route('login');
+        }
+
         $activeTab = $request->query('tab', 'posts');
-        
-        // Get user's posts based on active tab
-        $posts = collect([]); // Initialize empty collection as default
-        
-        // You'll need to implement the actual post retrieval logic based on your database structure
-        
+
+        // TODO: replace with real posts retrieval when available
+        $posts = collect([]);
+
         return view('user.profile', [
             'user' => $user,
             'posts' => $posts,

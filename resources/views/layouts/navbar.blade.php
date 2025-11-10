@@ -7,9 +7,15 @@
 
     <ul class="nav-menu">
         <li>
+            @if(Session::get('user_role') === 'admin')
+                <a href="{{ route('admin.dashboard') }}" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
+                    Dashboard
+                </a>
+            @else
             <a href="{{ route('user.dashboard') }}" class="{{ request()->is('user/dashboard') ? 'active' : '' }}">
                 Dashboard
             </a>
+            @endif
         </li>
         <li>
             @if(Session::get('user_role') === 'admin')

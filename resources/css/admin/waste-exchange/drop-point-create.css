@@ -1,0 +1,132 @@
+/* resources/css/admin/waste-exchange/drop-point-create.css */
+.drop-point-create-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.drop-point-create-back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #20413A;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    transition: color 0.3s;
+}
+
+.drop-point-create-back-button:hover {
+    color: #F9B6C7;
+}
+
+.drop-point-create-page-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #20413A;
+    margin-bottom: 2rem;
+}
+
+.drop-point-create-form-container {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.drop-point-create-form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.drop-point-create-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.drop-point-create-form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.drop-point-create-form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #20413A;
+}
+
+.drop-point-create-form-input,
+.drop-point-create-form-textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.drop-point-create-form-input:focus,
+.drop-point-create-form-textarea:focus {
+    outline: none;
+    border-color: #F9B6C7;
+}
+
+.drop-point-create-form-input.error,
+.drop-point-create-form-textarea.error {
+    border-color: #dc3545;
+}
+
+.drop-point-create-form-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
+}
+
+.drop-point-create-form-error.show {
+    display: block;
+}
+
+.drop-point-create-form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.drop-point-create-btn-submit {
+    width: 100%;
+    background: #F9B6C7;
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 1rem;
+}
+
+.drop-point-create-btn-submit:hover {
+    background: #f7a0b8;
+}
+
+.drop-point-create-alert {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.drop-point-create-alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.drop-point-create-header {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}

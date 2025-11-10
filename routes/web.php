@@ -10,6 +10,10 @@ use App\Http\Controllers\WasteExchangeController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\Admin\AdminEducationController;
+use App\Http\Controllers\Admin\AdminWasteExchangeController;
+use App\Http\Controllers\RiwayatPoinController;
+use App\Http\Controllers\ProfileController;
 
 // Welcome/Landing Page
 Route::get('/', function () {
@@ -46,6 +50,9 @@ Route::middleware(['auth.session'])->group(function () {
 
             return view('user.dashboard', compact('topArticles'));
         })->name('dashboard');
+
+        // User Profile
+        Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     });
     
     // Dashboard Admin
@@ -121,8 +128,9 @@ Route::get('/env-test', function () {
     return env('DB_DATABASE');
 });
 
-// Waste Exchange Routes (require authentication)
-Route::middleware(['auth.session','check.role:admin'])->group(function () {
+
+// Waste Exchange Routes (pengguna)
+Route::middleware(['auth.session','check.role:pengguna'])->group(function () {
     Route::prefix('waste-exchange')->name('waste-exchange.')->group(function () {
         Route::get('/', [WasteExchangeController::class, 'index'])->name('index');
         Route::get('/create', [WasteExchangeController::class, 'create'])->name('create');
@@ -138,8 +146,30 @@ Route::middleware(['auth.session','check.role:admin'])->group(function () {
     });
 });
 
+// Waste Exchange Routes (admin)
+Route::middleware(['auth.session','check.role:pengguna'])->group(function () {
+    Route::prefix('waste-exchange')->name('waste-exchange.')->group(function () {
+        Route::get('/', [WasteExchangeController::class, 'index'])->name('index');
+        Route::get('/create', [WasteExchangeController::class, 'create'])->name('create');
+        Route::post('/store', [WasteExchangeController::class, 'store'])->name('store');
+        Route::get('/history', [WasteExchangeController::class, 'history'])->name('history');
+        Route::get('/{id}', [WasteExchangeController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [WasteExchangeController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [WasteExchangeController::class, 'update'])->name('update');
+        Route::delete('/{id}', [WasteExchangeController::class, 'destroy'])->name('destroy');
+        
+        // API endpoint
+        Route::get('/api/drop-points', [WasteExchangeController::class, 'getDropPoints'])->name('api.drop-points');
+    });
+});
+
+//Riwayat Poin
+//belum pake login 
+Route::get('/riwayat-poin', [RiwayatPoinController::class, 'index'])->name('riwayat poin.poinhistory');
+
 // FAQ Page
 Route::get('/faq', [FaqController::class, 'index'])->name('faq.faq');//////// ADMIN ADMIN ADMIN ////////////////////////
+
 // Admin Education Routes
 Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // Education Management
@@ -207,3 +237,6 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/community/{post}/report', [CommunityController::class,'report'])->name('community.report');
 });
 
+// Favorite Vouchers (sementara kosong dulu)
+Route::get('/vouchers/favorites', [App\Http\Controllers\VoucherController::class, 'favorites'])
+    ->name('vouchers.favorites');

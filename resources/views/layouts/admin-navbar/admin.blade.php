@@ -36,12 +36,8 @@
     @yield('styles')
 </head>
 <body>
-    @if (request()->is('logistik/*'))
-        @include('layouts.logistik-navbar.logistik-navbar')
-    @else
-        @include('layouts.navbar')
-    @endif
-
+    @include('layouts.admin-navbar')
+    
     <main>
         @yield('content')
     </main>

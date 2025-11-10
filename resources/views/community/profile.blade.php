@@ -1168,7 +1168,7 @@ document.getElementById("edit-save").onclick = ()=> {
     renderAll();
 };
 
-/* ---------- DELETE POST ---------- */
+/* ---------- DELETE POST -------- */
 let deletingPost = null;
 document.getElementById("delete-cancel").onclick = ()=> document.getElementById("delete-overlay").classList.remove("show");
 document.getElementById("delete-confirm").onclick = ()=> {

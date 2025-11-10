@@ -14,7 +14,7 @@
         <li><a href="{{ route('waste-exchange.index') }}">Exchange Waste</a></li>
         <li><a href="#points">Points</a></li>
         <li><a href="#vouchers">Vouchers</a></li>
-        <li><a href="#community">Community</a></li>
+        <li><a href="{{ route('community.index') }}" class="{{ request()->is('community') ? 'active' : '' }}">Community</a></li>
         <li><a href="{{ url('/education') }}" class="{{ request()->is('education') ? 'active' : '' }}">Education</a></li>
         <li><a href="{{ url('/faq') }}" class="{{ request()->is('faq') ? 'active' : '' }}">FAQ</a></li>
     </ul>

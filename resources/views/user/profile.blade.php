@@ -358,9 +358,9 @@
 
     <!-- Tabs -->
     <div class="tabs">
-        <a href="{{ route('profile.show', ['tab' => 'posts']) }}" class="tab {{ $activeTab === 'posts' ? 'active' : '' }}">My Posts</a>
-        <a href="{{ route('profile.show', ['tab' => 'history']) }}" class="tab {{ $activeTab === 'history' ? 'active' : '' }}">Recycling History</a>
-        <a href="{{ route('profile.show', ['tab' => 'vouchers']) }}" class="tab {{ $activeTab === 'vouchers' ? 'active' : '' }}">Redeemed Vouchers</a>
+        <a href="{{ route('user.profile.show', ['tab' => 'posts']) }}" class="tab {{ $activeTab === 'posts' ? 'active' : '' }}">My Posts</a>
+        <a href="{{ route('user.profile.show', ['tab' => 'history']) }}" class="tab {{ $activeTab === 'history' ? 'active' : '' }}">Recycling History</a>
+        <a href="{{ route('', ['tab' => 'vouchers']) }}" class="tab {{ $activeTab === 'vouchers' ? 'active' : '' }}">Redeemed Vouchers</a>
     </div>
 
     <!-- Posts Container -->

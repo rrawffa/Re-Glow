@@ -36,7 +36,7 @@
                     </div>
                 </div>
 
-                <select name="id_drop_point" class="form-control @error('id_drop_point') error @enderror" required>
+                <select name="id_drop_point" id="dropPointSelect" class="form-control @error('id_drop_point') error @enderror" required>
                     <option value="">Choose a location...</option>
                     @foreach($dropPoints as $point)
                     <option value="{{ $point->id_drop_point }}" {{ old('id_drop_point') == $point->id_drop_point ? 'selected' : '' }}>
@@ -44,8 +44,9 @@
                     </option>
                     @endforeach
                 </select>
+                <div class="error-message" id="dropPointError">Drop point harus dipilih</div>
                 @error('id_drop_point')
-                <div class="error-message">{{ $message }}</div>
+                <div class="error-message show">{{ $message }}</div>
                 @enderror
             </div>
         </div>
@@ -70,6 +71,7 @@
                                    placeholder="e.g. Lipstick Tube, Face Wash Bottle"
                                    value="{{ old('products.0.nama_produk') }}"
                                    required>
+                            <div class="error-message">Nama produk harus diisi</div>
                         </div>
 
                         <div class="form-group">
@@ -81,6 +83,7 @@
                                 <option value="Metal Tube">Metal Tube</option>
                                 <option value="Compact Case">Compact Case</option>
                             </select>
+                            <div class="error-message">Packaging category harus dipilih</div>
                         </div>
                     </div>
 
@@ -93,6 +96,7 @@
                                 <option value="Medium">"Medium" - 50-100ml/standard jar</option>
                                 <option value="Small">"Small" - <50ml/lipstick/eyeshadow single</option>
                             </select>
+                            <div class="error-message">Size category harus dipilih</div>
                         </div>
 
                         <div class="form-group">
@@ -103,6 +107,7 @@
                                    min="1" 
                                    value="1"
                                    required>
+                            <div class="error-message">Quantity harus diisi (minimal 1)</div>
                         </div>
                     </div>
                 </div>
@@ -134,16 +139,23 @@
                            accept="image/*"
                            style="display: none;"
                            required>
-                    <img id="previewImage" class="preview-image" alt="Preview">
+                    
+                    <div class="image-preview-container" id="imagePreviewContainer">
+                        <button type="button" id="removeImage" class="btn-remove-image" title="Remove photo">
+                            ✕
+                        </button>
+                        <img id="previewImage" class="preview-image" alt="Preview">
+                    </div>
                 </div>
 
-                <button type="button" id="openCamera" class="btn-add-product" style="width: 100%; justify-content: center;">
+                <div class="error-message" id="fotoError">Foto bukti harus diupload</div>
+                @error('foto_bukti')
+                <div class="error-message show">{{ $message }}</div>
+                @enderror
+
+                <button type="button" id="openCamera" class="btn-add-product" style="width: 100%; justify-content: center; margin-top: 1rem;">
                     📸 Open Camera
                 </button>
-
-                @error('foto_bukti')
-                <div class="error-message" style="display: block;">{{ $message }}</div>
-                @enderror
 
                 <div class="photo-guidelines">
                     <strong style="color: #1976d2;">📋 Photo Guidelines:</strong>
@@ -210,6 +222,7 @@ document.getElementById('addProduct').addEventListener('click', function() {
             <div class="form-group">
                 <label>Product Name/Type <span class="required">*</span></label>
                 <input type="text" name="products[${productIndex}][nama_produk]" class="form-control" placeholder="e.g. Lipstick Tube" required>
+                <div class="error-message">Nama produk harus diisi</div>
             </div>
             <div class="form-group">
                 <label>Packaging Category <span class="required">*</span></label>
@@ -220,6 +233,7 @@ document.getElementById('addProduct').addEventListener('click', function() {
                     <option value="Metal Tube">Metal Tube</option>
                     <option value="Compact Case">Compact Case</option>
                 </select>
+                <div class="error-message">Packaging category harus dipilih</div>
             </div>
         </div>
         <div class="form-row">
@@ -231,10 +245,12 @@ document.getElementById('addProduct').addEventListener('click', function() {
                     <option value="Medium">"Medium" - 50-100ml/standard jar</option>
                     <option value="Small">"Small" - <50ml/lipstick/eyeshadow single</option>
                 </select>
+                <div class="error-message">Size category harus dipilih</div>
             </div>
             <div class="form-group">
                 <label>Quantity <span class="required">*</span></label>
                 <input type="number" name="products[${productIndex}][quantity]" class="form-control" min="1" value="1" required>
+                <div class="error-message">Quantity harus diisi (minimal 1)</div>
             </div>
         </div>
     `;
@@ -247,12 +263,18 @@ function removeProduct(btn) {
     btn.closest('.product-item').remove();
 }
 
-// File Upload
+// File Upload Handler
 const uploadArea = document.getElementById('uploadArea');
 const fotoInput = document.getElementById('fotoInput');
 const previewImage = document.getElementById('previewImage');
+const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+const removeImageBtn = document.getElementById('removeImage');
 
-uploadArea.addEventListener('click', () => fotoInput.click());
+uploadArea.addEventListener('click', function(e) {
+    // Jangan trigger jika klik tombol remove
+    if (e.target.closest('#removeImage')) return;
+    fotoInput.click();
+});
 
 uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
@@ -283,9 +305,29 @@ function handleFileSelect(file) {
     reader.onload = (e) => {
         previewImage.src = e.target.result;
         previewImage.style.display = 'block';
+        imagePreviewContainer.classList.add('show');
+        uploadArea.classList.add('has-image');
+        
+        // Clear error state
+        uploadArea.classList.remove('error');
+        document.getElementById('fotoError').classList.remove('show');
     };
     reader.readAsDataURL(file);
 }
+
+// Remove Image
+removeImageBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    
+    // Clear file input
+    fotoInput.value = '';
+    
+    // Hide preview
+    previewImage.src = '';
+    previewImage.style.display = 'none';
+    imagePreviewContainer.classList.remove('show');
+    uploadArea.classList.remove('has-image');
+});
 
 // Camera Functions
 document.getElementById('openCamera').addEventListener('click', async function() {
@@ -330,41 +372,109 @@ function stopCamera() {
     document.getElementById('cameraModal').classList.remove('active');
 }
 
-// Form Validation & Submit - SOLUSI YANG BENAR
+// Enhanced Form Validation
 const form = document.getElementById('wasteForm');
 const submitBtn = document.getElementById('submitBtn');
 const confirmModal = document.getElementById('confirmModal');
 
-// Hapus event listener click yang lama
-// submitBtn.addEventListener('click', function(e) { ... }); // HAPUS BARIS INI
-
-// Gunakan submit event pada form
-form.addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevent default dulu untuk validasi
+// Validate individual field
+function validateField(field) {
+    const errorMsg = field.parentElement.querySelector('.error-message');
     
-    // Clear previous errors
-    document.querySelectorAll('.form-control').forEach(el => el.classList.remove('error'));
-    
-    // Validate form
-    let isValid = true;
-    const requiredFields = form.querySelectorAll('[required]');
-    
-    requiredFields.forEach(field => {
+    if (field.type === 'select-one') {
+        if (!field.value || field.value === '') {
+            field.classList.add('error');
+            if (errorMsg) errorMsg.classList.add('show');
+            return false;
+        }
+    } else if (field.type === 'number') {
+        if (!field.value || parseInt(field.value) < 1) {
+            field.classList.add('error');
+            if (errorMsg) errorMsg.classList.add('show');
+            return false;
+        }
+    } else {
         if (!field.value || field.value.trim() === '') {
             field.classList.add('error');
-            isValid = false;
+            if (errorMsg) errorMsg.classList.add('show');
+            return false;
+        }
+    }
+    
+    field.classList.remove('error');
+    if (errorMsg) errorMsg.classList.remove('show');
+    return true;
+}
+
+// Add real-time validation on blur
+document.addEventListener('blur', function(e) {
+    if (e.target.classList.contains('form-control')) {
+        validateField(e.target);
+    }
+}, true);
+
+// Clear error on input
+document.addEventListener('input', function(e) {
+    if (e.target.classList.contains('form-control')) {
+        e.target.classList.remove('error');
+        const errorMsg = e.target.parentElement.querySelector('.error-message');
+        if (errorMsg) errorMsg.classList.remove('show');
+    }
+}, true);
+
+// Form Submit Handler
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Clear all previous errors
+    document.querySelectorAll('.form-control').forEach(el => {
+        el.classList.remove('error');
+    });
+    document.querySelectorAll('.error-message').forEach(el => {
+        el.classList.remove('show');
+    });
+    
+    let isValid = true;
+    let firstError = null;
+    
+    // Validate Step 1: Drop Point
+    const dropPoint = document.getElementById('dropPointSelect');
+    if (!validateField(dropPoint)) {
+        isValid = false;
+        if (!firstError) firstError = dropPoint;
+        document.getElementById('dropPointError').classList.add('show');
+    }
+    
+    // Validate Step 2: All Products
+    const requiredFields = form.querySelectorAll('[required]');
+    requiredFields.forEach(field => {
+        if (field.id !== 'fotoInput') { // Skip file input here
+            if (!validateField(field)) {
+                isValid = false;
+                if (!firstError) firstError = field;
+            }
         }
     });
     
-    // Validasi file upload
+    // Validate Step 3: Photo Upload
     const fileInput = document.getElementById('fotoInput');
     if (!fileInput.files.length) {
-        document.getElementById('uploadArea').style.borderColor = '#dc3545';
+        uploadArea.classList.add('error');
+        document.getElementById('fotoError').classList.add('show');
         isValid = false;
+        if (!firstError) firstError = uploadArea;
+    } else {
+        uploadArea.classList.remove('error');
+        document.getElementById('fotoError').classList.remove('show');
     }
     
     if (!isValid) {
-        alert('Please fill in all required fields (marked with red border)');
+        // Scroll to first error
+        if (firstError) {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        alert('Mohon lengkapi semua field yang wajib diisi (ditandai dengan border merah)');
         return;
     }
     
@@ -372,29 +482,20 @@ form.addEventListener('submit', function(e) {
     confirmModal.classList.add('active');
 });
 
-// Konfirmasi submit
+// Confirm Submit
 document.getElementById('confirmSubmit').addEventListener('click', function() {
-    // Sembunyikan modal
     confirmModal.classList.remove('active');
     
-    // Tampilkan loading state
-    const originalText = submitBtn.textContent;
+    // Show loading state
     submitBtn.textContent = 'Submitting...';
     submitBtn.disabled = true;
     
-    // HAPUS event listener submit untuk mencegah loop
-    form.removeEventListener('submit', arguments.callee);
-    
-    // Submit form secara normal
+    // Submit form
     form.submit();
 });
 
 document.getElementById('cancelSubmit').addEventListener('click', function() {
     confirmModal.classList.remove('active');
-});
-
-document.getElementById('confirmSubmit').addEventListener('click', function() {
-    form.submit();
 });
 
 // Close modal on outside click

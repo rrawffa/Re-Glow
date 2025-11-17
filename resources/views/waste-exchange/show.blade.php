@@ -110,10 +110,10 @@
             @if($transaksi->status == 'Menunggu')
             <div class="action-buttons">
                 <a href="{{ route('waste-exchange.edit', $transaksi->id_tSampah) }}" class="btn-action btn-edit-transaction">
-                    Edit Transaction
+                    Edit
                 </a>
                 <button type="button" class="btn-action btn-cancel-transaction" onclick="confirmCancel()">
-                    Cancel Transaction
+                    Delete
                 </button>
             </div>
             @endif
@@ -141,13 +141,6 @@
                 <div class="summary-item">
                     <div class="summary-label">{{ $transaksi->status == 'Selesai' ? 'Points Earned' : 'Estimated Points' }}</div>
                     <div class="points-highlight">+{{ $transaksi->total_poin }} points</div>
-                </div>
-
-                <!-- Help Box -->
-                <div class="help-box">
-                    <h4>Need Help?</h4>
-                    <p>If you have questions about your transaction or need to make changes, contact our support team.</p>
-                    <button class="btn-support">Contact Support</button>
                 </div>
             </div>
         </div>

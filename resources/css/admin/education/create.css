@@ -10,27 +10,32 @@
             color: #20413A;
         }
 
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
         .container {
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 2rem;
         }
 
-        .back-link { /* Mengganti nama class dari .back-button menjadi .back-link agar lebih spesifik */
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #20413A;
-    text-decoration: none;
-    font-weight: 500;
-    margin-top: 1rem; /* Jarak dari atas container (Header) */
-    margin-bottom: 1rem; /* Jarak ke Page Title di bawahnya */
-    transition: color 0.3s;
-}
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #20413A;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            transition: color 0.3s;
+        }
 
-.back-link:hover {
-    color: #F9B6C7;
-}
+        .back-button:hover {
+            color: #F9B6C7;
+        }
 
         .page-title {
             font-family: 'Bricolage Grotesque', sans-serif;
@@ -45,6 +50,13 @@
             border-radius: 12px;
             padding: 2rem;
             box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 70% 30%;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-group {
@@ -96,30 +108,6 @@
             resize: vertical;
         }
 
-        .form-row {
-    display: flex;
-    gap: 1.5rem; /* Jarak antara kolom */
-    margin-bottom: 1.5rem;
-}
-
-/* Kolom Judul (70% lebar) */
-.form-row .col-70 {
-    flex: 7; /* Ambil 7 bagian dari 10 */
-}
-
-/* Kolom Penulis (30% lebar) */
-.form-row .col-30 {
-    flex: 3; /* Ambil 3 bagian dari 10 */
-}
-
-/* TinyMCE Editor Styling (Untuk memastikan kontainer TinyMCE mengikuti form-group) */
-.form-group #isi + .tox {
-    /* TinyMCE secara default menggunakan iframe, sehingga class-nya adalah .tox */
-    display: block;
-    width: 100% !important; 
-    max-width: none !important;
-}
-
         .file-input-wrapper {
             position: relative;
             overflow: hidden;
@@ -168,6 +156,80 @@
             border-radius: 8px;
         }
 
+        /* Custom Editor Styles */
+        .editor-wrapper {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .editor-toolbar {
+            background: #f8f9fa;
+            padding: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .editor-btn {
+            background: transparent;
+            border: none;
+            padding: 0.5rem;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.2s;
+            color: #20413A;
+        }
+
+        .editor-btn:hover {
+            background: #e9ecef;
+        }
+
+        .editor-btn.active {
+            background: #F9B6C7;
+            color: white;
+        }
+
+        .editor-separator {
+            width: 1px;
+            height: 28px;
+            background: #dee2e6;
+            margin: 0 0.5rem;
+            align-self: center;
+        }
+
+        .editor-content {
+            min-height: 400px;
+            padding: 1.5rem;
+            outline: none;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .editor-content:focus {
+            outline: 2px solid #F9B6C7;
+            outline-offset: -2px;
+        }
+
+        .editor-content:empty:before {
+            content: attr(data-placeholder);
+            color: #adb5bd;
+            pointer-events: none;
+        }
+
+        .editor-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
         .btn-submit {
             width: 100%;
             background: #F9B6C7;
@@ -186,11 +248,6 @@
             background: #f7a0b8;
         }
 
-        .btn-submit:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
         .alert {
             padding: 1rem 1.5rem;
             border-radius: 8px;
@@ -202,22 +259,3 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-
-/* Media Query untuk Mobile */
-@media (max-width: 768px) {
-    .form-row {
-        flex-direction: column; /* Ubah menjadi kolom di layar kecil */
-        gap: 0;
-    }
-    
-    .form-row .col-70,
-    .form-row .col-30 {
-        flex: none;
-        width: 100%;
-    }
-    
-    /* Atur margin-bottom untuk form-group di dalam form-row agar tetap rapi */
-    .form-row .form-group {
-        margin-bottom: 1.5rem;
-    }
-}

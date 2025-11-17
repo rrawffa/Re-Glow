@@ -88,10 +88,10 @@
                 <div class="transaction-actions">
                     @if($transaction->status == 'Menunggu')
                         <a href="{{ route('waste-exchange.edit', $transaction->id_tSampah) }}" class="btn-action btn-edit">
-                            ✏️ Edit
+                            Edit
                         </a>
                         <button type="button" class="btn-action btn-delete" onclick="confirmDelete({{ $transaction->id_tSampah }})">
-                            🗑️ Cancel
+                            Delete
                         </button>
                     @endif
 
@@ -102,7 +102,7 @@
                     @endif
 
                     <a href="{{ route('waste-exchange.show', $transaction->id_tSampah) }}" class="btn-action btn-view" style="margin-left: auto;">
-                        👁️ View Details
+                        Details
                     </a>
                 </div>
             </div>
@@ -110,9 +110,9 @@
 
             <!-- Pagination -->
             @if($transactions->hasPages())
-            <div style="display: flex; justify-content: center; margin-top: 2rem;">
-                {{ $transactions->links() }}
-            </div>
+                <div class="pagination-container">
+                {{ $transactions->links('pagination::bootstrap-4') }} 
+                </div>
             @endif
 
         @else

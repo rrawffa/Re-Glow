@@ -4,33 +4,19 @@
 
 @section('styles')
     @vite(['resources/css/admin/education/create.css'])
-    <style>
-        .tox {
-            width: 100% !important; 
-            border-radius: 8px !important;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            /* Memastikan editor terlihat seperti input form */
-            border-width: 2px !important; 
-            border-style: solid !important;
-            border-color: #e9ecef !important;
-        }
-        /* Mengganti border fokus standar TinyMCE */
-        .tox:focus-within {
-             border-color: #F9B6C7 !important; 
-        }
-        .tox .tox-toolbar-overlord {
-            border-radius: 8px 8px 0 0; /* Membuat sudut toolbar atas melengkung */
-        }
-    </style>
 @endsection
 
 @section('content')
+    <div class="header">
+        <div class="container" style="margin: 0;">
+            <a href="{{ route('admin.education.index') }}" class="back-button">
+                ← Back to Management
+            </a>
+        </div>
+    </div>
+
     <div class="container">
-        <a href="{{ route('admin.education.index') }}" class="back-link"> 
-            ← Back to Management
-        </a>
         <h1 class="page-title">Create new Content</h1>
-        
 
         @if($errors->any())
             <div class="alert alert-danger">
@@ -46,12 +32,12 @@
             @csrf
 
             <div class="form-row">
-                <div class="form-group col-70">
+                <div class="form-group">
                     <label class="form-label">Judul</label>
                     <input type="text" name="judul" class="form-input" value="{{ old('judul') }}" required>
                     <span class="form-error" id="error-judul">Judul tidak boleh kosong</span>
                 </div>
-                <div class="form-group col-30">
+                <div class="form-group">
                     <label class="form-label">Penulis</label>
                     <input type="text" name="penulis" class="form-input" value="{{ old('penulis') }}" required>
                     <span class="form-error" id="error-penulis">Nama penulis tidak boleh kosong</span>
@@ -77,12 +63,122 @@
                     <input type="file" id="gambar_cover" name="gambar_cover" class="file-input" accept="image/*" required>
                 </div>
                 <span class="form-error" id="error-gambar_cover">Foto header harus diupload</span>
-                <div class="file-preview" id="imagePreview"></div>
+                <div class="file-preview" id="imagePreview">
+                    <button type="button" class="delete-image-btn" id="deleteImageBtn" title="Batalkan unggahan">×</button>
+                </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Isi Konten</label>
-                <textarea id="isi" name="isi" required>{{ old('isi') }}</textarea> 
+                <div class="editor-wrapper">
+                    <!-- Toolbar -->
+                    <div class="editor-toolbar">
+                        <button type="button" class="editor-btn" data-command="bold" title="Bold (Ctrl+B)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+                                <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
+                            </svg>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="italic" title="Italic (Ctrl+I)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="19" y1="4" x2="10" y2="4"></line>
+                                <line x1="14" y1="20" x2="5" y2="20"></line>
+                                <line x1="15" y1="4" x2="9" y2="20"></line>
+                            </svg>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="underline" title="Underline (Ctrl+U)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"></path>
+                                <line x1="4" y1="21" x2="20" y2="21"></line>
+                            </svg>
+                        </button>
+
+                        <div class="editor-separator"></div>
+
+                        <button type="button" class="editor-btn" data-command="justifyLeft" title="Rata Kiri">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="17" y1="10" x2="3" y2="10"></line>
+                                <line x1="21" y1="6" x2="3" y2="6"></line>
+                                <line x1="21" y1="14" x2="3" y2="14"></line>
+                                <line x1="17" y1="18" x2="3" y2="18"></line>
+                            </svg>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="justifyCenter" title="Rata Tengah">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="10" x2="6" y2="10"></line>
+                                <line x1="21" y1="6" x2="3" y2="6"></line>
+                                <line x1="21" y1="14" x2="3" y2="14"></line>
+                                <line x1="18" y1="18" x2="6" y2="18"></line>
+                            </svg>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="justifyRight" title="Rata Kanan">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="21" y1="10" x2="7" y2="10"></line>
+                                <line x1="21" y1="6" x2="3" y2="6"></line>
+                                <line x1="21" y1="14" x2="3" y2="14"></line>
+                                <line x1="21" y1="18" x2="7" y2="18"></line>
+                            </svg>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="justifyFull" title="Rata Kiri-Kanan">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="21" y1="10" x2="3" y2="10"></line>
+                                <line x1="21" y1="6" x2="3" y2="6"></line>
+                                <line x1="21" y1="14" x2="3" y2="14"></line>
+                                <line x1="21" y1="18" x2="3" y2="18"></line>
+                            </svg>
+                        </button>
+
+                        <div class="editor-separator"></div>
+
+                        <button type="button" class="editor-btn" data-command="insertOrderedList" title="Daftar Bernomor">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="10" y1="6" x2="21" y2="6"></line>
+                                <line x1="10" y1="12" x2="21" y2="12"></line>
+                                <line x1="10" y1="18" x2="21" y2="18"></line>
+                                <path d="M4 6h1v4"></path>
+                                <path d="M4 10h2"></path>
+                                <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path>
+                            </svg>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Daftar Bullet">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6"></line>
+                                <line x1="8" y1="12" x2="21" y2="12"></line>
+                                <line x1="8" y1="18" x2="21" y2="18"></line>
+                                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                            </svg>
+                        </button>
+
+                        <div class="editor-separator"></div>
+
+                        <button type="button" class="editor-btn" data-command="createLink" title="Sisipkan Link">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                        </button>
+                        <button type="button" class="editor-btn" data-command="insertImage" title="Sisipkan Gambar">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Editor Content -->
+                    <div 
+                        id="editor" 
+                        class="editor-content" 
+                        contenteditable="true" 
+                        data-placeholder="Mulai menulis postingan Anda di sini..."
+                    ></div>
+
+                    <!-- Hidden input untuk menyimpan HTML content -->
+                    <input type="hidden" name="isi" id="isi" required>
+                </div>
                 <span class="form-error" id="error-isi">Isi konten tidak boleh kosong</span>
             </div>
 
@@ -98,28 +194,72 @@
 @endsection
 
 @section('scripts')
-<script src="https://cdn.tiny.mce.com/1/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
     <script>
-        // Initialize TinyMCE
-        tinymce.init({
-            selector: '#isi',
-            height: 500,
-            menubar: false, 
-            
-            // Plugins dan Toolbar lengkap (Bold, Italic, Underline, Rata Teks, Penomoran/Lists, Gambar)
-            plugins: 'lists link image code table media wordcount charmap anchor autosave', 
-            toolbar: 'undo redo | formatselect | styleselect | ' + 
-                     'bold italic underline strikethrough | forecolor backcolor | ' + 
-                     'alignleft aligncenter alignright alignjustify | ' + 
-                     'bullist numlist outdent indent | link image media table | code',
-                     
-            content_style: 'body { font-family: DM Sans, sans-serif; font-size: 16px; }',
-            font_formats: 'DM Sans=DM Sans, sans-serif; Arial=arial,helvetica,sans-serif; Tahoma=tahoma,arial,helvetica,sans-serif;',
-            
-            setup: function(editor) {
-                editor.on('change', function() {
-                    editor.save();
-                });
+        // Custom Editor Implementation
+        const editor = document.getElementById('editor');
+        const hiddenInput = document.getElementById('isi');
+        const toolbar = document.querySelector('.editor-toolbar');
+
+        // Execute formatting command
+        function executeCommand(command, value = null) {
+            document.execCommand(command, false, value);
+            editor.focus();
+            updateHiddenInput();
+        }
+
+        // Update hidden input with editor content
+        function updateHiddenInput() {
+            hiddenInput.value = editor.innerHTML;
+        }
+
+        // Toolbar button handlers
+        toolbar.addEventListener('click', (e) => {
+            const button = e.target.closest('.editor-btn');
+            if (!button) return;
+
+            e.preventDefault();
+            const command = button.dataset.command;
+
+            if (command === 'createLink') {
+                const url = prompt('Masukkan URL link:');
+                if (url) executeCommand(command, url);
+            } else if (command === 'insertImage') {
+                const url = prompt('Masukkan URL gambar:');
+                if (url) executeCommand(command, url);
+            } else {
+                executeCommand(command);
+            }
+
+            // Toggle active state for formatting buttons
+            if (['bold', 'italic', 'underline'].includes(command)) {
+                button.classList.toggle('active');
+            }
+        });
+
+        // Update hidden input on content change
+        editor.addEventListener('input', updateHiddenInput);
+        editor.addEventListener('paste', () => {
+            setTimeout(updateHiddenInput, 10);
+        });
+
+        // Keyboard shortcuts
+        editor.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key.toLowerCase()) {
+                    case 'b':
+                        e.preventDefault();
+                        executeCommand('bold');
+                        break;
+                    case 'i':
+                        e.preventDefault();
+                        executeCommand('italic');
+                        break;
+                    case 'u':
+                        e.preventDefault();
+                        executeCommand('underline');
+                        break;
+                }
             }
         });
 
@@ -128,9 +268,18 @@
             const file = e.target.files[0];
             const preview = document.getElementById('imagePreview');
             const label = document.getElementById('fileLabel');
+
+            function resetCoverImage() {
+            coverInput.value = ''; // Kosongkan input file
+            preview.innerHTML = `<button type="button" class="delete-image-btn" id="deleteImageBtn">×</button>`; // Kosongkan konten gambar
+            preview.classList.remove('show');
+            label.style.display = 'flex'; // Tampilkan kembali label upload
             
+            // Re-bind listener karena innerHTML telah diubah
+            document.getElementById('deleteImageBtn').addEventListener('click', resetCoverImage);
+        }
+        
             if (file) {
-                // Validate file size (5MB)
                 if (file.size > 5 * 1024 * 1024) {
                     alert('Ukuran file terlalu besar. Maksimal 5MB');
                     this.value = '';
@@ -180,10 +329,9 @@
                 isValid = false;
             }
 
-            // Validate isi (TinyMCE)
-            tinymce.triggerSave();
-            const isi = document.querySelector('[name="isi"]');
-            if (!isi.value.trim() || isi.value === '<p><br></p>') {
+            // Validate isi (editor content)
+            updateHiddenInput();
+            if (!hiddenInput.value.trim() || hiddenInput.value === '<br>') {
                 document.getElementById('error-isi').classList.add('show');
                 isValid = false;
             }

@@ -432,7 +432,77 @@
         gap: 0.5rem;
         margin: 2rem auto;
     }
+/* --- Pagination Styling Kustom (Targeting Bootstrap Classes) --- */
 
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* Mengatur container utama pagination Bootstrap */
+.pagination {
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    border-radius: 10px;
+    gap: 0.5rem; /* Jarak antar tombol */
+}
+
+.page-item {
+    margin: 0;
+}
+
+/* Mengatur tombol pagination (Previous, Next, angka) */
+.page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px; /* Sudut membulat */
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid var(--pink-base); /* Border Pink Base */
+    color: var(--green-dark); /* Teks Hijau Gelap */
+    background-color: var(--pink-light); /* Latar belakang Pink Muda */
+    margin: 0; /* Hapus margin default Bootstrap */
+}
+
+/* Tampilan Hover */
+.page-link:hover {
+    background-color: var(--pink-base);
+    color: white;
+    border-color: var(--pink-base);
+    z-index: 2; /* Agar tidak tertutup elemen lain */
+}
+
+/* Tampilan untuk tombol yang sedang aktif (halaman saat ini) */
+.page-item.active .page-link {
+    color: white;
+    background-color: var(--green-dark); /* Latar belakang Hijau gelap untuk aktif */
+    border-color: var(--green-dark);
+    z-index: 3;
+    cursor: default;
+}
+
+/* Tampilan untuk tombol non-aktif (saat tidak bisa Previous/Next) */
+.page-item.disabled .page-link {
+    color: var(--text-gray);
+    background-color: #f5f5f5; /* Latar belakang abu-abu muda */
+    border-color: #e0e0e0;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Opsional: Hapus border radius yang menumpuk dari Bootstrap */
+.page-item:first-child .page-link,
+.page-item:last-child .page-link {
+    border-radius: 10px;
+}
     @media (max-width: 768px) {
         .status-items {
             grid-template-columns: 1fr;

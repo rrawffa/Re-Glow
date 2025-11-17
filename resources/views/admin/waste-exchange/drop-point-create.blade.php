@@ -20,6 +20,7 @@
 
         @if($errors->any())
             <div class="drop-point-create-alert drop-point-create-alert-danger">
+                <p style="font-weight: 600; margin-bottom: 0.5rem;">🚨 Ups! Ada beberapa kesalahan validasi:</p>
                 <ul style="margin-left: 1.5rem;">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -66,46 +67,51 @@
     <script>
         document.getElementById('dropPointForm').addEventListener('submit', function(e) {
             let isValid = true;
+            const requiredFields = [
+                { name: 'nama_lokasi', message: 'Nama lokasi tidak boleh kosong' },
+                { name: 'koordinat', message: 'Koordinat tidak boleh kosong' },
+                { name: 'kapasitas_sampah', message: 'Kapasitas sampah harus diisi dan lebih dari 0' },
+                { name: 'alamat', message: 'Alamat tidak boleh kosong' }
+            ];
 
             // Clear previous errors
-            document.querySelectorAll('.drop-point-create-form-error').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('.drop-point-create-form-error').forEach(el => {
+                el.classList.remove('show');
+                // Atur ulang pesan error kustom (jika Anda ingin pesan yang berbeda untuk JS vs Backend)
+                // el.textContent = el.getAttribute('data-default-message'); 
+            });
             document.querySelectorAll('.drop-point-create-form-input, .drop-point-create-form-textarea').forEach(el => el.classList.remove('error'));
 
-            // Validate nama_lokasi
-            const namaLokasi = document.querySelector('[name="nama_lokasi"]');
-            if (!namaLokasi.value.trim()) {
-                namaLokasi.classList.add('error');
-                document.getElementById('error-nama_lokasi').classList.add('show');
-                isValid = false;
-            }
+            requiredFields.forEach(fieldInfo => {
+                const field = document.querySelector(`[name="${fieldInfo.name}"]`);
+                const errorElement = document.getElementById(`error-${fieldInfo.name}`);
+                
+                let isFieldValid = false;
 
-            // Validate koordinat
-            const koordinat = document.querySelector('[name="koordinat"]');
-            if (!koordinat.value.trim()) {
-                koordinat.classList.add('error');
-                document.getElementById('error-koordinat').classList.add('show');
-                isValid = false;
-            }
+                if (fieldInfo.name === 'kapasitas_sampah') {
+                    // Validasi khusus untuk kapasitas: harus ada nilai DAN > 0
+                    if (field.value.trim() !== '' && parseFloat(field.value) > 0) {
+                        isFieldValid = true;
+                    }
+                } else {
+                    // Validasi umum: tidak boleh kosong
+                    if (field.value.trim() !== '') {
+                        isFieldValid = true;
+                    }
+                }
 
-            // Validate kapasitas_sampah
-            const kapasitas = document.querySelector('[name="kapasitas_sampah"]');
-            if (!kapasitas.value || kapasitas.value <= 0) {
-                kapasitas.classList.add('error');
-                document.getElementById('error-kapasitas_sampah').classList.add('show');
-                isValid = false;
-            }
-
-            // Validate alamat
-            const alamat = document.querySelector('[name="alamat"]');
-            if (!alamat.value.trim()) {
-                alamat.classList.add('error');
-                document.getElementById('error-alamat').classList.add('show');
-                isValid = false;
-            }
+                if (!isFieldValid) {
+                    field.classList.add('error');
+                    errorElement.textContent = fieldInfo.message; // Tampilkan pesan error kustom
+                    errorElement.classList.add('show');
+                    isValid = false;
+                }
+            });
 
             if (!isValid) {
                 e.preventDefault();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                // Menghapus scroll ke atas agar user fokus pada field error
+                // window.scrollTo({ top: 0, behavior: 'smooth' }); 
             }
         });
     </script>

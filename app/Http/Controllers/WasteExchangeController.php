@@ -18,7 +18,8 @@ class WasteExchangeController extends Controller
     // Landing page
     public function index()
     {
-        $dropPoints = DropPoint::all();
+        $dropPointsCollection = DropPoint::all(); // Variabel Collection yang benar
+        $dropPoints = $this->processDropPoints($dropPointsCollection); // Menggunakan variabel yang benar
         
         // Statistik
         $stats = [
@@ -30,10 +31,35 @@ class WasteExchangeController extends Controller
         return view('waste-exchange.index', compact('dropPoints', 'stats'));
     }
 
+    private function processDropPoints($dropPoints)
+    {
+        return $dropPoints->map(function ($point) {
+            // Memastikan kolom koordinat ada dan berupa string
+            if (!empty($point->koordinat) && is_string($point->koordinat)) {
+                // Memecah koordinat string (misal: '-7.2632,112.7381')
+                $coords = explode(',', $point->koordinat);
+                if (count($coords) === 2) {
+                    // Menambahkan property latitude dan longitude sebagai float
+                    $point->latitude = (float) trim($coords[0]);
+                    $point->longitude = (float) trim($coords[1]);
+                } else {
+                    // Default jika format koordinat salah
+                    $point->latitude = 0.0;
+                    $point->longitude = 0.0;
+                }
+            } else {
+                $point->latitude = 0.0;
+                $point->longitude = 0.0;
+            }
+            return $point;
+        });
+    }
+
     // Form create
     public function create()
     {
-        $dropPoints = DropPoint::all();
+        $dropPointsCollection = DropPoint::all(); // Variabel Collection yang benar
+        $dropPoints = $this->processDropPoints($dropPointsCollection); // Menggunakan variabel yang benar
         
         $packagingCategories = [
             'Plastic Bottle' => 'Plastic Bottle',

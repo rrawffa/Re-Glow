@@ -4,6 +4,79 @@
 
 @section('styles')
     @vite(['resources/css/waste-exchange/create.css'])
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    
+    <style>
+        #map {
+            width: 100%;
+            height: 300px;
+            border-radius: 15px;
+            z-index: 1;
+        }
+        
+        .leaflet-popup-content-wrapper {
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+        }
+        
+        .leaflet-popup-content {
+            margin: 15px;
+        }
+        
+        .map-popup h4 {
+            margin: 0 0 8px 0;
+            color: var(--green-dark);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .map-popup p {
+            margin: 0 0 5px 0;
+            font-size: 0.875rem;
+            color: var(--text-gray);
+            line-height: 1.4;
+        }
+        
+        .map-popup .badge {
+            display: inline-block;
+            background: var(--pink-base);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        
+        .selected-marker {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--green-dark);
+            border: 4px solid var(--pink-base);
+            border-radius: 50%;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(249, 182, 199, 0.6);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(249, 182, 199, 0.6);
+            }
+            50% { 
+                transform: scale(1.1);
+                box-shadow: 0 6px 20px rgba(249, 182, 199, 0.8);
+            }
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -29,17 +102,18 @@
                 <label>Select Your Drop Point Location <span class="required">*</span></label>
                 
                 <div class="map-placeholder">
-                    <div class="map-placeholder-content">
-                        <span>📍</span>
-                        <strong>Interactive Map</strong>
-                        <p>Drop points marked with pins</p>
-                    </div>
+                    <div id="map"></div>
                 </div>
 
                 <select name="id_drop_point" id="dropPointSelect" class="form-control @error('id_drop_point') error @enderror" required>
                     <option value="">Choose a location...</option>
                     @foreach($dropPoints as $point)
-                    <option value="{{ $point->id_drop_point }}" {{ old('id_drop_point') == $point->id_drop_point ? 'selected' : '' }}>
+                    <option value="{{ $point->id_drop_point }}" 
+                            data-lat="{{ $point->latitude }}" 
+                            data-lng="{{ $point->longitude }}"
+                            data-nama="{{ $point->nama_lokasi }}"
+                            data-alamat="{{ $point->alamat }}"
+                            {{ old('id_drop_point') == $point->id_drop_point ? 'selected' : '' }}>
                         {{ $point->nama_lokasi }} - {{ $point->alamat }}
                     </option>
                     @endforeach
@@ -202,9 +276,130 @@
 @endsection
 
 @section('scripts')
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
 <script>
 let productIndex = 1;
 let cameraStream = null;
+let map;
+let marker = null;
+let selectedMarkerId = null; // ID dari drop point yang sedang dipilih
+let allMarkers = [];
+
+// Initialize Map
+function initMap() {
+    // Center di Jawa Timur (Surabaya)
+    const centerJawaTimur = [-7.2575, 112.7521];
+
+    // Icon Kustom untuk marker default dan terpilih
+    const defaultIcon = L.divIcon({
+        className: 'custom-marker', // Sesuaikan dengan style .custom-marker Anda
+        html: '📍', 
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -40]
+    });
+
+    // Fungsi Helper: Tambah Marker
+    function addMarker(lat, lng, nama, alamat, id_drop_point) {
+        const popupContent = `
+            <div class="map-popup">
+                <h4>${nama}</h4>
+                <p>${alamat}</p>
+                <span class="badge">📍 Klik untuk memilih lokasi ini</span>
+            </div>
+        `;
+        
+        const marker = L.marker([lat, lng], {
+            icon: defaultIcon, // Default icon
+            id_drop_point: id_drop_point // Simpan ID Drop Point
+        }).addTo(map);
+
+        marker.bindPopup(popupContent, { maxWidth: 250 });
+        
+        // Event klik pada marker
+        marker.on('click', function() {
+            // Set nilai dropdown dan trigger event 'change'
+            document.getElementById('dropPointSelect').value = id_drop_point;
+            document.getElementById('dropPointSelect').dispatchEvent(new Event('change'));
+        });
+        
+        allMarkers.push(marker); // Simpan marker ke array
+    }
+    
+    const selectedIcon = L.divIcon({
+        className: 'selected-marker', // Sesuaikan dengan style .selected-marker Anda
+        html: '⭐', // Ganti icon terpilih jika perlu
+        iconSize: [45, 45],
+        iconAnchor: [22, 45],
+        popupAnchor: [0, -45]
+    });
+    
+    map = L.map('map', {
+        center: centerJawaTimur,
+        zoom: 11,
+        scrollWheelZoom: true,
+        zoomControl: true
+    });
+
+    // Tambahkan OpenStreetMap tile layer - GRATIS, TANPA API KEY!
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+    }).addTo(map);
+    
+    // Check if ada selected drop point dari old input
+    const oldValue = "{{ old('id_drop_point') }}";
+    if (oldValue) {
+        const selectedOption = document.querySelector(`#dropPointSelect option[value="${oldValue}"]`);
+        if (selectedOption) {
+            updateMapMarker(selectedOption);
+        }
+    }
+}
+
+// Update marker ketika dropdown berubah
+document.getElementById('dropPointSelect').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    
+    if (selectedOption.value) {
+        updateMapMarker(selectedOption);
+    } else {
+        // Reset map jika tidak ada yang dipilih
+        if (marker) {
+            map.removeLayer(marker);
+            marker = null;
+        }
+        map.setView([-7.2575, 112.7521], 11);
+    }
+});
+
+function updateMapMarker(selectedOption) {
+        const lat = parseFloat(selectedOption.dataset.lat);
+        const lng = parseFloat(selectedOption.dataset.lng);
+        const id = selectedOption.value;
+
+        // Reset semua marker ke icon default
+        allMarkers.forEach(marker => {
+            if (marker.options.id_drop_point == id) {
+                marker.setIcon(selectedIcon); // Set icon terpilih
+                selectedMarkerId = id; // Simpan ID terpilih
+                marker.openPopup();
+                map.setView(marker.getLatLng(), 15, { // Zoom ke marker terpilih
+                    animate: true,
+                    duration: 0.5
+                });
+            } else {
+                marker.setIcon(defaultIcon); // Reset ke icon default
+            }
+        });
+    }
+
+// Initialize map setelah DOM ready
+document.addEventListener('DOMContentLoaded', initMap);
 
 // Add Product
 document.getElementById('addProduct').addEventListener('click', function() {
@@ -271,7 +466,6 @@ const imagePreviewContainer = document.getElementById('imagePreviewContainer');
 const removeImageBtn = document.getElementById('removeImage');
 
 uploadArea.addEventListener('click', function(e) {
-    // Jangan trigger jika klik tombol remove
     if (e.target.closest('#removeImage')) return;
     fotoInput.click();
 });
@@ -308,21 +502,17 @@ function handleFileSelect(file) {
         imagePreviewContainer.classList.add('show');
         uploadArea.classList.add('has-image');
         
-        // Clear error state
         uploadArea.classList.remove('error');
         document.getElementById('fotoError').classList.remove('show');
     };
     reader.readAsDataURL(file);
 }
 
-// Remove Image
 removeImageBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     
-    // Clear file input
     fotoInput.value = '';
     
-    // Hide preview
     previewImage.src = '';
     previewImage.style.display = 'none';
     imagePreviewContainer.classList.remove('show');
@@ -372,12 +562,11 @@ function stopCamera() {
     document.getElementById('cameraModal').classList.remove('active');
 }
 
-// Enhanced Form Validation
+// Form Validation
 const form = document.getElementById('wasteForm');
 const submitBtn = document.getElementById('submitBtn');
 const confirmModal = document.getElementById('confirmModal');
 
-// Validate individual field
 function validateField(field) {
     const errorMsg = field.parentElement.querySelector('.error-message');
     
@@ -406,14 +595,12 @@ function validateField(field) {
     return true;
 }
 
-// Add real-time validation on blur
 document.addEventListener('blur', function(e) {
     if (e.target.classList.contains('form-control')) {
         validateField(e.target);
     }
 }, true);
 
-// Clear error on input
 document.addEventListener('input', function(e) {
     if (e.target.classList.contains('form-control')) {
         e.target.classList.remove('error');
@@ -422,11 +609,9 @@ document.addEventListener('input', function(e) {
     }
 }, true);
 
-// Form Submit Handler
 form.addEventListener('submit', function(e) {
     e.preventDefault();
     
-    // Clear all previous errors
     document.querySelectorAll('.form-control').forEach(el => {
         el.classList.remove('error');
     });
@@ -437,7 +622,6 @@ form.addEventListener('submit', function(e) {
     let isValid = true;
     let firstError = null;
     
-    // Validate Step 1: Drop Point
     const dropPoint = document.getElementById('dropPointSelect');
     if (!validateField(dropPoint)) {
         isValid = false;
@@ -445,10 +629,9 @@ form.addEventListener('submit', function(e) {
         document.getElementById('dropPointError').classList.add('show');
     }
     
-    // Validate Step 2: All Products
     const requiredFields = form.querySelectorAll('[required]');
     requiredFields.forEach(field => {
-        if (field.id !== 'fotoInput') { // Skip file input here
+        if (field.id !== 'fotoInput') {
             if (!validateField(field)) {
                 isValid = false;
                 if (!firstError) firstError = field;
@@ -456,7 +639,6 @@ form.addEventListener('submit', function(e) {
         }
     });
     
-    // Validate Step 3: Photo Upload
     const fileInput = document.getElementById('fotoInput');
     if (!fileInput.files.length) {
         uploadArea.classList.add('error');
@@ -469,7 +651,6 @@ form.addEventListener('submit', function(e) {
     }
     
     if (!isValid) {
-        // Scroll to first error
         if (firstError) {
             firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
@@ -478,19 +659,15 @@ form.addEventListener('submit', function(e) {
         return;
     }
     
-    // Show confirmation modal
     confirmModal.classList.add('active');
 });
 
-// Confirm Submit
 document.getElementById('confirmSubmit').addEventListener('click', function() {
     confirmModal.classList.remove('active');
     
-    // Show loading state
     submitBtn.textContent = 'Submitting...';
     submitBtn.disabled = true;
     
-    // Submit form
     form.submit();
 });
 
@@ -498,7 +675,6 @@ document.getElementById('cancelSubmit').addEventListener('click', function() {
     confirmModal.classList.remove('active');
 });
 
-// Close modal on outside click
 confirmModal.addEventListener('click', function(e) {
     if (e.target === confirmModal) {
         confirmModal.classList.remove('active');

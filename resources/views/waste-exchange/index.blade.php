@@ -212,21 +212,24 @@ const dropPoints = @json($dropPoints);
 
 // Inisialisasi peta
 function initMap() {
-        // ... (kode inisialisasi map Anda) ...
-        const centerJawaTimur = [-7.2575, 112.7521];
-        map = L.map('map', { 
-            center: centerJawaTimur, 
-            zoom: 11, 
-            scrollWheelZoom: true, 
-            zoomControl: true 
-        });
+    // Center map di Jawa Timur (Surabaya)
+    const centerJawaTimur = [-7.2575, 112.7521];
+    
+    // Buat map dengan Leaflet
+    map = L.map('map', {
+        center: centerJawaTimur,
+        zoom: 10,
+        scrollWheelZoom: true,
+        zoomControl: true
+    });
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', 
-            maxZoom: 19,
-        }).addTo(map);
+    // Tambahkan OpenStreetMap tile layer - GRATIS!
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+    }).addTo(map);
 
-        // 2. LOOP DATA DAN TAMBAH MARKER UNTUK SEMUA TITIK
+    // 2. LOOP DATA DAN TAMBAH MARKER UNTUK SEMUA TITIK
         if (dropPointsData.length > 0) {
             dropPointsData.forEach((point, index) => {
                 addMarker(point.latitude, point.longitude, point.nama_lokasi, point.alamat, index);
@@ -237,8 +240,24 @@ function initMap() {
             // Jika tidak ada data, tetap di Jawa Timur
             map.setView(centerJawaTimur, 11);
         }
+
+    // Tambahkan semua markers
+    dropPoints.forEach((point, index) => {
+        addMarker(point, index);
+    });
+
+    // Fit bounds untuk menampilkan semua markers
+    if (markers.length > 0) {
+        const group = L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.1));
+        
+        // Prevent zoom terlalu dekat jika hanya 1 marker
+        if (markers.length === 1) {
+            map.setZoom(14);
+        }
     }
-    
+}
+
 function addMarker(point, index) {
     const lat = parseFloat(point.latitude);
     const lng = parseFloat(point.longitude);
@@ -271,11 +290,6 @@ function addMarker(point, index) {
             <span class="badge">📍 Drop Point Available</span>
         </div>
     `;
-
-    const marker = L.marker([lat, lng], {
-            icon: customIcon,
-            index: index 
-        }).addTo(map);
 
     marker.bindPopup(popupContent, {
         maxWidth: 250,

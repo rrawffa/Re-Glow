@@ -176,7 +176,7 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
     Route::get('/education', [AdminEducationController::class, 'index'])->name('education.index');
     Route::get('/education/create', [AdminEducationController::class, 'create'])->name('education.create');
     Route::post('/education', [AdminEducationController::class, 'store'])->name('education.store');
-    Route::get('/education/{id}', [AdminEducationController::class, 'show'])->name('education.show'); // Tambahkan show
+    Route::get('/education/{id}', [AdminEducationController::class, 'show'])->name('education.show');
     Route::get('/education/{id}/edit', [AdminEducationController::class, 'edit'])->name('education.edit');
     Route::put('/education/{id}', [AdminEducationController::class, 'update'])->name('education.update');
     Route::delete('/education/{id}', [AdminEducationController::class, 'destroy'])->name('education.destroy');

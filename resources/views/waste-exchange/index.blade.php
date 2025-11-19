@@ -10,68 +10,8 @@
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin=""/>
     
-    <style>
-        #map {
-            width: 100%;
-            height: 400px;
-            border-radius: 20px;
-            z-index: 1;
-        }
-        
-        .leaflet-popup-content-wrapper {
-            border-radius: 12px;
-            font-family: 'DM Sans', sans-serif;
-        }
-        
-        .leaflet-popup-content {
-            margin: 15px;
-        }
-        
-        .map-popup h4 {
-            margin: 0 0 8px 0;
-            color: var(--green-dark);
-            font-size: 1rem;
-            font-weight: 600;
-        }
-        
-        .map-popup p {
-            margin: 0 0 5px 0;
-            font-size: 0.875rem;
-            color: var(--text-gray);
-            line-height: 1.4;
-        }
-        
-        .map-popup .badge {
-            display: inline-block;
-            background: var(--pink-base);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-top: 5px;
-        }
-        
-        /* Custom marker styles */
-        .custom-marker {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--green-dark);
-            border: 4px solid var(--pink-base);
-            border-radius: 50%;
-            font-size: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        
-        .custom-marker:hover {
-            transform: scale(1.15);
-        }
-    </style>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 @endsection
 
 @section('content')
@@ -79,23 +19,29 @@
     <h1>Close the Loop: <span class="highlight">Track Your Cosmetic Waste Journey!</span></h1>
     <p>Transform your empty cosmetic containers into something beautiful. Join our transparent recycling process and watch your waste become part of the circular economy.</p>
     <a href="{{ route('waste-exchange.create') }}" class="btn-primary">
-        Explore the Process →
+        <i class="bi bi-arrow-right-circle me-2"></i>Explore the Process
     </a>
 </div>
 
 <div class="process-cards">
     <div class="process-card">
-        <div class="process-icon">📦</div>
+        <div class="process-icon">
+            <i class="bi bi-box-seam"></i>
+        </div>
         <h3>Drop Off</h3>
         <p>Bring your empty cosmetics to any Re-Glow point and earn reward points for each item.</p>
     </div>
     <div class="process-card">
-        <div class="process-icon">♻️</div>
+        <div class="process-icon">
+            <i class="bi bi-recycle"></i>
+        </div>
         <h3>Transform</h3>
         <p>We process and recycle into new materials with our verified recycling partners.</p>
     </div>
     <div class="process-card">
-        <div class="process-icon">🌱</div>
+        <div class="process-icon">
+            <i class="bi bi-tree"></i>
+        </div>
         <h3>Rebirth</h3>
         <p>New sustainable products are created, completing the circular journey.</p>
     </div>
@@ -109,7 +55,9 @@
     
     <div class="journey-timeline">
         <div class="timeline-item">
-            <div class="timeline-icon">💄</div>
+            <div class="timeline-icon">
+                <i class="bi bi-droplet"></i>
+            </div>
             <div class="timeline-content">
                 <h4>User Drop-off</h4>
                 <p>You bring your empty cosmetic containers to our designated drop points and earn reward points for each item.</p>
@@ -117,7 +65,9 @@
         </div>
 
         <div class="timeline-item">
-            <div class="timeline-icon">🚚</div>
+            <div class="timeline-icon">
+                <i class="bi bi-truck"></i>
+            </div>
             <div class="timeline-content">
                 <h4>Logistics Pick-up</h4>
                 <p>Our logistics team collects all waste from drop points using eco-friendly vehicles on scheduled routes.</p>
@@ -125,7 +75,9 @@
         </div>
 
         <div class="timeline-item">
-            <div class="timeline-icon">🏭</div>
+            <div class="timeline-icon">
+                <i class="bi bi-building-gear"></i>
+            </div>
             <div class="timeline-content">
                 <h4>Partner Processing</h4>
                 <p>Waste is sent to our verified recycling partners where it's carefully sorted, cleaned, and processed.</p>
@@ -133,7 +85,9 @@
         </div>
 
         <div class="timeline-item">
-            <div class="timeline-icon">🌿</div>
+            <div class="timeline-icon">
+                <i class="bi bi-flower1"></i>
+            </div>
             <div class="timeline-content">
                 <h4>New Sustainable Product</h4>
                 <p>The recycled materials are transformed into new eco-friendly cosmetic products, completing the circular journey.</p>
@@ -154,11 +108,13 @@
         </div>
 
         <div class="nearby-locations">
-            <h3>Nearby Locations</h3>
+            <h3>All Drop Point Locations</h3>
             
-            @forelse($dropPoints->take(3) as $point)
+            @forelse($dropPoints as $point)
             <div class="location-card" data-lat="{{ $point->latitude }}" data-lng="{{ $point->longitude }}" data-index="{{ $loop->index }}">
-                <div class="location-icon">📍</div>
+                <div class="location-icon">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
                 <div class="location-info">
                     <h4>{{ $point->nama_lokasi }}</h4>
                     <p>{{ $point->alamat }}</p>
@@ -166,10 +122,23 @@
                 </div>
             </div>
             @empty
-            <p>Belum ada drop point tersedia.</p>
+            <div class="location-card">
+                <div class="location-icon">
+                    <i class="bi bi-info-circle"></i>
+                </div>
+                <div class="location-info">
+                    <h4>No Drop Points Available</h4>
+                    <p>Please check back later for new locations.</p>
+                </div>
+            </div>
             @endforelse
 
-            <a href="{{ route('waste-exchange.create') }}" class="btn-view-all">View All Locations</a>
+            @if($dropPoints->count() > 3)
+            <div class="scroll-indicator">
+                <i class="bi bi-chevron-double-down"></i>
+                <span>Scroll to see more locations</span>
+            </div>
+            @endif
         </div>
     </div>
 </div>
@@ -178,7 +147,9 @@
     <h2>Ready to Make an Impact?</h2>
     <p>Join thousands of eco-conscious individuals who are transforming waste into wonder. Start your exchange journey today.</p>
     
-    <a href="{{ route('waste-exchange.create') }}" class="btn-cta">🔄 Start My Exchange Now!</a>
+    <a href="{{ route('waste-exchange.create') }}" class="btn-cta">
+        <i class="bi bi-arrow-repeat me-2"></i>Start My Exchange Now!
+    </a>
 
     <div class="cta-stats">
         <div class="stat-item">
@@ -229,18 +200,6 @@ function initMap() {
         maxZoom: 19,
     }).addTo(map);
 
-    // 2. LOOP DATA DAN TAMBAH MARKER UNTUK SEMUA TITIK
-        if (dropPointsData.length > 0) {
-            dropPointsData.forEach((point, index) => {
-                addMarker(point.latitude, point.longitude, point.nama_lokasi, point.alamat, index);
-            });
-            // Center map ke drop point pertama atau titik tengah semua marker
-            map.setView([dropPointsData[0].latitude, dropPointsData[0].longitude], 12);
-        } else {
-            // Jika tidak ada data, tetap di Jawa Timur
-            map.setView(centerJawaTimur, 11);
-        }
-
     // Tambahkan semua markers
     dropPoints.forEach((point, index) => {
         addMarker(point, index);
@@ -267,10 +226,10 @@ function addMarker(point, index) {
         return;
     }
 
-    // Custom icon dengan DivIcon
+    // Custom icon dengan DivIcon menggunakan Bootstrap icon
     const customIcon = L.divIcon({
         className: 'custom-div-icon',
-        html: '<div class="custom-marker">📍</div>',
+        html: '<div class="custom-marker"><i class="bi bi-geo-alt-fill"></i></div>',
         iconSize: [40, 40],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40]
@@ -287,7 +246,7 @@ function addMarker(point, index) {
         <div class="map-popup">
             <h4>${point.nama_lokasi}</h4>
             <p>${point.alamat}</p>
-            <span class="badge">📍 Drop Point Available</span>
+            <span class="badge"><i class="bi bi-geo-alt-fill me-1"></i> Drop Point Available</span>
         </div>
     `;
 
@@ -314,6 +273,14 @@ document.querySelectorAll('.location-card').forEach((card) => {
         if (markers[index]) {
             const marker = markers[index];
             
+            // Remove active class from all cards
+            document.querySelectorAll('.location-card').forEach(c => {
+                c.classList.remove('active');
+            });
+            
+            // Add active class to clicked card
+            this.classList.add('active');
+            
             // Buka popup dan zoom ke marker
             marker.openPopup();
             map.setView(marker.getLatLng(), 15, {
@@ -331,9 +298,6 @@ document.querySelectorAll('.location-card').forEach((card) => {
             }
         }
     });
-    
-    // Tambah cursor pointer
-    card.style.cursor = 'pointer';
 });
 
 // Bounce animation

@@ -4,6 +4,8 @@
 
 @section('styles')
     @vite(['resources/css/waste-exchange/history.css'])
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 @endsection
 
 @section('content')
@@ -33,19 +35,25 @@
 
         <div class="status-items">
             <div class="status-item">
-                <div class="status-icon submitted">📦</div>
+                <div class="status-icon submitted">
+                    <i class="bi bi-box"></i>
+                </div>
                 <span class="status-number">{{ $statusCounts['menunggu'] }}</span>
                 <span class="status-label">Submitted</span>
                 <span class="status-desc">Items registered</span>
             </div>
             <div class="status-item">
-                <div class="status-icon transit">🚚</div>
+                <div class="status-icon transit">
+                    <i class="bi bi-truck"></i>
+                </div>
                 <span class="status-number">{{ $statusCounts['diproses'] }}</span>
                 <span class="status-label">In Transit</span>
                 <span class="status-desc">Being processed</span>
             </div>
             <div class="status-item">
-                <div class="status-icon completed">✅</div>
+                <div class="status-icon completed">
+                    <i class="bi bi-check-circle"></i>
+                </div>
                 <span class="status-number">{{ $statusCounts['selesai'] }}</span>
                 <span class="status-label">Completed</span>
                 <span class="status-desc">Successfully recycled</span>
@@ -88,21 +96,21 @@
                 <div class="transaction-actions">
                     @if($transaction->status == 'Menunggu')
                         <a href="{{ route('waste-exchange.edit', $transaction->id_tSampah) }}" class="btn-action btn-edit">
-                            Edit
+                            <i class="bi bi-pencil"></i> Edit
                         </a>
                         <button type="button" class="btn-action btn-delete" onclick="confirmDelete({{ $transaction->id_tSampah }})">
-                            Delete
+                            <i class="bi bi-trash"></i> Delete
                         </button>
                     @endif
 
                     @if($transaction->status == 'Selesai')
                         <div class="transaction-success">
-                            ✅ Transaction completed successfully
+                            <i class="bi bi-check-circle"></i> Transaction completed successfully
                         </div>
                     @endif
 
                     <a href="{{ route('waste-exchange.show', $transaction->id_tSampah) }}" class="btn-action btn-view" style="margin-left: auto;">
-                        Details
+                        <i class="bi bi-eye"></i> Details
                     </a>
                 </div>
             </div>
@@ -139,7 +147,7 @@
                 <h3>You don't have any transactions yet. Make your first exchange and see the positive impact you can make!</h3>
                 <p>Transform your empty cosmetic containers into something beautiful. Join our transparent recycling process and watch your waste become part of the circular economy.</p>
                 <a href="{{ route('waste-exchange.create') }}" class="btn-start-exchange">
-                    🔄 Start My Exchange Now!
+                    <i class="bi bi-arrow-repeat"></i> Start My Exchange Now!
                 </a>
             </div>
         @endif
@@ -149,13 +157,19 @@
 <!-- Delete Confirmation Modal -->
 <div class="modal-overlay" id="deleteModal">
     <div class="modal-content">
-        <div class="modal-icon">🗑️</div>
+        <div class="modal-icon">
+            <i class="bi bi-trash"></i>
+        </div>
         <h3>Delete Transaction</h3>
         <p>Are you sure you want to delete this transaction? This action cannot be undone.</p>
         
         <div class="modal-buttons">
-            <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-            <button type="button" class="btn-confirm-delete" id="confirmDeleteBtn">Delete</button>
+            <button type="button" class="btn-cancel" onclick="closeDeleteModal()">
+                <i class="bi bi-x"></i> Cancel
+            </button>
+            <button type="button" class="btn-confirm-delete" id="confirmDeleteBtn">
+                <i class="bi bi-trash"></i> Delete
+            </button>
         </div>
     </div>
 </div>

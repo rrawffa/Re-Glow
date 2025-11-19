@@ -21,24 +21,27 @@
 
                 <div class="form-group">
                     <div class="input-wrapper">
-                        <span class="input-icon">✉</span>
+                        <span class="input-icon">
+            <img src="{{ asset('assets/email-icon.svg') }}" alt="Email Icon">
+        </span>
                         <input type="email" 
                                id="email" 
                                name="email" 
                                placeholder="Email" 
-                               value="{{ old('email', isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'] : '') }}">
+                               value="{{ old('email', Cookie::get('remember_email') ? Cookie::get('remember_email') : '') }}">
                     </div>
                     <div class="error-message" id="emailError">Email harus menggunakan @gmail.com</div>
                 </div>
 
                 <div class="form-group">
                     <div class="input-wrapper">
-                        <span class="input-icon">🔒</span>
+                        <span class="input-icon">
+            <img src="{{ asset('assets/lock-icon.svg') }}" alt="Password Icon">
+        </span>
                         <input type="password" 
                                id="password" 
                                name="password" 
-                               placeholder="Password"
-                               value="{{ old('password', isset($_COOKIE['remember_password']) ? $_COOKIE['remember_password'] : '') }}">
+                               placeholder="Password">
                         <span class="eye-icon" id="togglePassword">👁</span>
                     </div>
                     <div class="error-message" id="passwordError">Password tidak boleh kosong</div>

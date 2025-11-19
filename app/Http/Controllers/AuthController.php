@@ -68,7 +68,7 @@ class AuthController extends Controller
 
         if ($request->has('remember')) {
             Cookie::queue('remember_email', $request->email, 43200);
-            Cookie::queue('remember_password', $request->password, 43200);
+            Cookie::queue(Cookie::forget('remember_password'));
         } else {
             Cookie::queue(Cookie::forget('remember_email'));
             Cookie::queue(Cookie::forget('remember_password'));

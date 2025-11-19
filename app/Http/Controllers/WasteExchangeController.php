@@ -269,88 +269,150 @@ class WasteExchangeController extends Controller
     }
 
     // Update
-    public function update(Request $request, $id)
-    {
-        $transaksi = TransaksiSampah::where('id_tSampah', $id)
-            ->where('id_user', Session::get('user_id'))
-            ->firstOrFail();
+// Update
+public function update(Request $request, $id)
+{
+    Log::info('=== WASTE EXCHANGE UPDATE METHOD CALLED ===');
+    Log::info('Transaction ID: ' . $id);
+    Log::info('User ID: ' . Session::get('user_id'));
+    Log::info('Request data:', $request->except(['foto_bukti']));
 
-        if ($transaksi->status !== 'Menunggu') {
-            return redirect()
-                ->route('waste-exchange.history')
-                ->with('error', 'Transaksi tidak dapat diedit');
-        }
+    $transaksi = TransaksiSampah::where('id_tSampah', $id)
+        ->where('id_user', Session::get('user_id'))
+        ->firstOrFail();
 
-        $validator = Validator::make($request->all(), [
-            'id_drop_point' => 'required|exists:drop_points,id_drop_point',
-            'products' => 'required|array|min:1',
-            'products.*.jenis_sampah' => 'required|string|max:100',
-            'products.*.packaging_category' => 'required',
-            'products.*.ukuran_sampah' => 'required|in:Large,Medium,Small',
-            'products.*.quantity' => 'required|integer|min:1',
-            'foto_bukti' => 'nullable|image|mimes:jpeg,png,jpg|max:10240'
-        ]);
-
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
-
-        try {
-            DB::beginTransaction();
-
-            // Upload foto baru jika ada
-            if ($request->hasFile('foto_bukti')) {
-                if ($transaksi->foto_bukti && file_exists(public_path($transaksi->foto_bukti))) {
-                    unlink(public_path($transaksi->foto_bukti));
-                }
-
-                $file = $request->file('foto_bukti');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('uploads/waste_proof'), $filename);
-                $transaksi->foto_bukti = 'uploads/waste_proof/' . $filename;
-            }
-
-            $transaksi->id_drop_point = $request->id_drop_point;
-            $transaksi->save();
-
-            // Delete old details
-            DetailSampah::where('id_tSampah', $id)->delete();
-
-            // Create new details
-            $totalPoin = 0;
-            foreach ($request->products as $product) {
-                $poinMap = [
-                    'Large' => 50,
-                    'Medium' => 30,
-                    'Small' => 15
-                ];
-                
-                $poin = $poinMap[$product['ukuran_sampah']] * $product['quantity'];
-                
-                DetailSampah::create([
-                    'id_tSampah' => $transaksi->id_tSampah,
-                    'jenis_sampah' => $product['jenis_sampah'],
-                    'ukuran_sampah' => $product['ukuran_sampah'],
-                    'quantity' => $product['quantity'],
-                    'poin_per_sampah' => $poin
-                ]);
-                
-                $totalPoin += $poin;
-            }
-
-            $transaksi->update(['total_poin' => $totalPoin]);
-
-            DB::commit();
-
-            return redirect()
-                ->route('waste-exchange.history')
-                ->with('success', 'Transaksi berhasil diupdate!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
+    if ($transaksi->status !== 'Menunggu') {
+        return redirect()
+            ->route('waste-exchange.history')
+            ->with('error', 'Transaksi tidak dapat diedit');
     }
+
+    $validator = Validator::make($request->all(), [
+        'id_drop_point' => 'required|exists:drop_points,id_drop_point',
+        'products' => 'required|array|min:1',
+        'products.*.nama_produk' => 'required|string|max:100', // PERUBAHAN: dari jenis_sampah ke nama_produk
+        'products.*.packaging_category' => 'required|in:Plastic Bottle,Glass Jar,Metal Tube,Compact Case', // PERUBAHAN: tambah validasi in
+        'products.*.size_category' => 'required|in:Large,Medium,Small', // PERUBAHAN: dari ukuran_sampah ke size_category
+        'products.*.quantity' => 'required|integer|min:1',
+        'foto_bukti' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
+        'remove_current_photo' => 'sometimes|boolean' // PERUBAHAN: tambah validasi untuk remove_current_photo
+    ], [
+        'id_drop_point.required' => 'Drop point harus dipilih',
+        'products.required' => 'Minimal harus ada 1 produk',
+        'products.*.nama_produk.required' => 'Nama produk harus diisi',
+        'products.*.packaging_category.required' => 'Kategori packaging harus dipilih',
+        'products.*.size_category.required' => 'Ukuran harus dipilih',
+        'products.*.quantity.required' => 'Jumlah harus diisi'
+    ]);
+
+    if ($validator->fails()) {
+        Log::error('Validation failed:', $validator->errors()->toArray());
+        return back()
+            ->withErrors($validator)
+            ->withInput()
+            ->with('error', 'Terdapat kesalahan dalam pengisian form.');
+    }
+
+    try {
+        DB::beginTransaction();
+        Log::info('Update transaction started');
+
+        // Handle photo - PERBAIKAN: handle remove_current_photo
+        if ($request->has('remove_current_photo') && $request->remove_current_photo == '1') {
+            Log::info('Removing current photo');
+            // Remove current photo
+            if ($transaksi->foto_bukti && file_exists(public_path($transaksi->foto_bukti))) {
+                unlink(public_path($transaksi->foto_bukti));
+            }
+            $transaksi->foto_bukti = null;
+        } elseif ($request->hasFile('foto_bukti')) {
+            Log::info('Uploading new photo');
+            // Upload new photo
+            if ($transaksi->foto_bukti && file_exists(public_path($transaksi->foto_bukti))) {
+                unlink(public_path($transaksi->foto_bukti));
+            }
+
+            $file = $request->file('foto_bukti');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/waste_proof'), $filename);
+            $transaksi->foto_bukti = 'uploads/waste_proof/' . $filename;
+        }
+
+        // Update drop point
+        $transaksi->id_drop_point = $request->id_drop_point;
+        $transaksi->save();
+        Log::info('Transaction base updated');
+
+        // Delete old details
+        DetailSampah::where('id_tSampah', $id)->delete();
+        Log::info('Old details deleted');
+
+        // Create new details - PERBAIKAN: sesuaikan field names
+        $totalPoin = 0;
+        $jenisArray = [];
+        
+        foreach ($request->products as $product) {
+            $poinMap = [
+                'Large' => 50,
+                'Medium' => 30, 
+                'Small' => 15
+            ];
+            
+            $poin = $poinMap[$product['size_category']] * $product['quantity'];
+            
+            DetailSampah::create([
+                'id_tSampah' => $transaksi->id_tSampah,
+                'jenis_sampah' => $product['nama_produk'], // PERUBAHAN: dari jenis_sampah ke nama_produk
+                'ukuran_sampah' => $product['size_category'], // PERUBAHAN: dari ukuran_sampah ke size_category
+                'quantity' => $product['quantity'],
+                'poin_per_sampah' => $poin
+            ]);
+            
+            $totalPoin += $poin;
+            $jenisArray[] = $product['nama_produk'];
+            
+            Log::info('Product added:', [
+                'nama_produk' => $product['nama_produk'],
+                'size_category' => $product['size_category'],
+                'quantity' => $product['quantity'],
+                'poin' => $poin
+            ]);
+        }
+
+        // Update total poin
+        $transaksi->update(['total_poin' => $totalPoin]);
+        Log::info('Total points updated: ' . $totalPoin);
+
+        // Update jadwal pengambilan jika ada perubahan drop point
+        $jadwal = JadwalPengambilan::where('id_transaksi', $transaksi->id_tSampah)->first();
+        if ($jadwal) {
+            $dropPoint = DropPoint::find($request->id_drop_point);
+            $jadwal->update([
+                'id_drop_point' => $request->id_drop_point,
+                'lokasi_droppoint' => $dropPoint->nama_lokasi,
+                'koordinat_lokasi' => $dropPoint->koordinat,
+                'jenis_sampah' => implode(', ', array_unique($jenisArray))
+            ]);
+            Log::info('Jadwal pengambilan updated');
+        }
+
+        DB::commit();
+        Log::info('Update transaction committed successfully');
+
+        return redirect()
+            ->route('waste-exchange.history')
+            ->with('success', 'Transaksi berhasil diupdate! Estimasi poin: +' . $totalPoin . ' points');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Update transaction error: ' . $e->getMessage());
+        Log::error('Stack trace: ' . $e->getTraceAsString());
+        
+        return back()
+            ->withInput()
+            ->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
+    }
+}
 
     // Delete
     public function destroy($id)

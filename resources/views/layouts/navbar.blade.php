@@ -36,7 +36,6 @@
     </ul>
 
     <div class="nav-icons">
-        <button class="icon-btn">🔔</button>
         <a href="{{ route('user.profile.show') }}">
             <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="profile-pic">
         </a>

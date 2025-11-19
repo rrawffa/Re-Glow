@@ -42,32 +42,37 @@
                 </div>
 
                 <div class="form-group">
-                    <div class="input-wrapper">
-                        <span class="input-icon">✉</span>
-                        <input type="email" id="email" name="email" placeholder="Email" value="{{ old('email') }}">
-                    </div>
-                    <div class="error-message" id="emailError">Email harus menggunakan @gmail.com</div>
-                </div>
+    <div class="input-wrapper">
+        <span class="input-icon">
+            <img src="{{ asset('assets/email-icon.svg') }}" alt="Email Icon">
+        </span>
+        <input type="email" id="email" name="email" placeholder="Email" value="{{ old('email') }}">
+    </div>
+    <div class="error-message" id="emailError">Email harus menggunakan @gmail.com</div>
+</div>
 
                 <div class="form-group">
-                    <div class="input-wrapper">
-                        <span class="input-icon">🔒</span>
-                        <input type="password" id="password" name="password" placeholder="Password">
-                        <span class="eye-icon" id="togglePassword">👁</span>
-                    </div>
-                    <div class="password-requirements">Minimal 8 huruf, 1 angka, 1 huruf besar.</div>
-                    <div class="error-message" id="passwordError">Password tidak memenuhi persyaratan</div>
-                </div>
+    <div class="input-wrapper">
+        <span class="input-icon">
+            <img src="{{ asset('assets/lock-icon.svg') }}" alt="Password Icon">
+        </span>
+        <input type="password" id="password" name="password" placeholder="Password">
+        <span class="eye-icon" id="togglePassword">👁</span>
+    </div>
+    <div class="password-requirements">Minimal 8 huruf, 1 angka, 1 huruf besar.</div>
+    <div class="error-message" id="passwordError">Password tidak memenuhi persyaratan</div>
+</div>
 
                 <div class="form-group">
-                    <div class="input-wrapper">
-                        <span class="input-icon">🔒</span>
-                        <input type="password" id="confirmPassword" name="password_confirmation" placeholder="Confirm your password">
-                        <span class="eye-icon" id="toggleConfirmPassword">👁</span>
-                    </div>
-                    <div class="error-message" id="confirmPasswordError">Password tidak cocok</div>
-                </div>
-
+    <div class="input-wrapper">
+        <span class="input-icon">
+            <img src="{{ asset('assets/lock-icon.svg') }}" alt="Confirm Password Icon">
+        </span>
+        <input type="password" id="confirmPassword" name="password_confirmation" placeholder="Confirm your password">
+        <span class="eye-icon" id="toggleConfirmPassword">👁</span>
+    </div>
+    <div class="error-message" id="confirmPasswordError">Password tidak cocok</div>
+</div>
                 <button type="submit" class="btn-submit">Start my journey</button>
 
                 <div class="login-link">

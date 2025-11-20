@@ -14,6 +14,7 @@
     font-weight: 500;
     margin-bottom: 1.5rem;
     transition: color 0.3s;
+    font-family: 'DM Sans', sans-serif;
 }
 
 .drop-point-edit-back-button:hover {
@@ -26,6 +27,9 @@
     font-weight: 700;
     color: #20413A;
     margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .drop-point-edit-form-container {
@@ -33,6 +37,7 @@
     border-radius: 12px;
     padding: 2rem;
     box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid #e9ecef;
 }
 
 .drop-point-edit-form-row {
@@ -51,6 +56,10 @@
     margin-bottom: 0.5rem;
     font-weight: 600;
     color: #20413A;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .drop-point-edit-form-input,
@@ -61,18 +70,20 @@
     border-radius: 8px;
     font-family: 'DM Sans', sans-serif;
     font-size: 1rem;
-    transition: border-color 0.3s;
+    transition: all 0.3s;
 }
 
 .drop-point-edit-form-input:focus,
 .drop-point-edit-form-textarea:focus {
     outline: none;
     border-color: #F9B6C7;
+    box-shadow: 0 0 0 3px rgba(249, 182, 199, 0.1);
 }
 
 .drop-point-edit-form-input.error,
 .drop-point-edit-form-textarea.error {
     border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
 }
 
 .drop-point-edit-form-error {
@@ -80,6 +91,7 @@
     font-size: 0.875rem;
     margin-top: 0.25rem;
     display: none;
+    font-family: 'DM Sans', sans-serif;
 }
 
 .drop-point-edit-form-error.show {
@@ -101,18 +113,27 @@
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s;
     margin-top: 1rem;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 .drop-point-edit-btn-submit:hover {
     background: #f7a0b8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(249, 182, 199, 0.4);
 }
 
 .drop-point-edit-alert {
     padding: 1rem 1.5rem;
     border-radius: 8px;
     margin-bottom: 1.5rem;
+    border: 1px solid;
+    font-family: 'DM Sans', sans-serif;
 }
 
 .drop-point-edit-alert-danger {
@@ -125,4 +146,20 @@
     background: white;
     padding: 1rem 2rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .drop-point-edit-container {
+        padding: 0 1rem;
+        margin: 1rem auto;
+    }
+    
+    .drop-point-edit-form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .drop-point-edit-page-title {
+        font-size: 1.75rem;
+    }
 }

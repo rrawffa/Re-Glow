@@ -4,77 +4,113 @@
 
 @section('styles')
     @vite(['resources/css/admin/education/index.css'])
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 @endsection
 
 @section('content')
     <!-- Main Content -->
     <div class="container">
         @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="alert alert-success">
+                <i class="bi bi-check-circle"></i> {{ session('success') }}
+            </div>
         @endif
 
         @if(session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle"></i> {{ session('error') }}
+            </div>
         @endif
 
         <div class="page-header">
-            <h1 class="page-title">Education Content Management</h1>
+            <h1 class="page-title">
+                <i class="bi bi-book"></i> Education Content Management
+            </h1>
             <div class="header-actions">
                 <a href="{{ route('admin.education.create') }}" class="btn-create">
-                    + Create New Content
+                    <i class="bi bi-plus-lg"></i> Create New Content
                 </a>
             </div>
         </div>
 
         <div class="table-container">
-            <table id="educationTable">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th class="uplod">Upload Date</th>
-                        <th>Reactions</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($konten as $item)
-                    <tr data-id="{{ $item->id_konten }}">
-                        <td>{{ Str::limit($item->judul, 50) }}</td>
-                        <td>{{ $item->penulis }}</td>
-                        <td>{{ $item->tanggal_upload->format('Y-m-d') }}</td>
-                        <td>
-                            <div class="reactions">
-                                <span class="reaction-item">❤️ {{ $item->statistik->total_suka ?? 0 }}</span>
-                                <span class="reaction-item">👍 {{ $item->statistik->total_membantu ?? 0 }}</span>
-                                <span class="reaction-item">🔥 {{ $item->statistik->total_menarik ?? 0 }}</span>
-                                <span class="reaction-item">✨ {{ $item->statistik->total_inspiratif ?? 0 }}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="actions">
-                                <button class="btn-action btn-detail" onclick="showDetail({{ $item->id_konten }})">Detail</button>
-                                <a href="{{ route('admin.education.edit', $item->id_konten) }}" class="btn-action btn-edit">Edit</a>
-                                <button class="btn-action btn-delete" onclick="confirmDelete({{ $item->id_konten }})">Delete</button>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" style="text-align: center; padding: 2rem;">Belum ada konten edukasi</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table id="educationTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                <i class="bi bi-type"></i> Title
+                            </th>
+                            <th>
+                                <i class="bi bi-person"></i> Author
+                            </th>
+                            <th class="uplod">
+                                <i class="bi bi-calendar"></i> Upload Date
+                            </th>
+                            <th>
+                                <i class="bi bi-heart"></i> Reactions
+                            </th>
+                            <th>
+                                <i class="bi bi-activity"></i> Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($konten as $item)
+                        <tr data-id="{{ $item->id_konten }}">
+                            <td>
+                                <strong>{{ Str::limit($item->judul, 50) }}</strong>
+                            </td>
+                            <td>{{ $item->penulis }}</td>
+                            <td>{{ $item->tanggal_upload->format('Y-m-d') }}</td>
+                            <td>
+                                <div class="reactions">
+                                    <span class="reaction-item">❤️ {{ $item->statistik->total_suka ?? 0 }}</span>
+                                    <span class="reaction-item">👍 {{ $item->statistik->total_membantu ?? 0 }}</span>
+                                    <span class="reaction-item">🔥 {{ $item->statistik->total_menarik ?? 0 }}</span>
+                                    <span class="reaction-item">✨ {{ $item->statistik->total_inspiratif ?? 0 }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <button class="btn-action btn-detail" onclick="showDetail({{ $item->id_konten }})" title="Detail">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <a href="{{ route('admin.education.edit', $item->id_konten) }}" class="btn-action btn-edit" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button class="btn-action btn-delete" onclick="confirmDelete({{ $item->id_konten }})" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <i class="bi bi-inbox"></i>
+                                    <p>Belum ada konten edukasi</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <!-- Detail Modal -->
     <div id="detailModal" class="modal">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('detailModal')">&times;</button>
+            <button class="modal-close" onclick="closeModal('detailModal')">
+                <i class="bi bi-x-lg"></i>
+            </button>
             <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle"></h2>
+                <h2 class="modal-title" id="modalTitle">
+                    <i class="bi bi-info-circle"></i> Detail Konten
+                </h2>
             </div>
             <div class="modal-body" id="modalBody"></div>
         </div>
@@ -83,15 +119,23 @@
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="modal confirm-modal">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+            <button class="modal-close" onclick="closeModal('deleteModal')">
+                <i class="bi bi-x-lg"></i>
+            </button>
             <div class="modal-header">
-                <h2 class="modal-title">Konfirmasi Penghapusan</h2>
+                <h2 class="modal-title">
+                    <i class="bi bi-exclamation-triangle"></i> Konfirmasi Penghapusan
+                </h2>
             </div>
             <div class="modal-body">
                 <p id="deleteMessage">Apakah kamu yakin menghapus konten ini?</p>
                 <div class="confirm-buttons">
-                    <button class="btn-confirm btn-yes" id="confirmDeleteBtn">Iya</button>
-                    <button class="btn-confirm btn-no" onclick="closeModal('deleteModal')">Tidak</button>
+                    <button class="btn-confirm btn-yes" id="confirmDeleteBtn">
+                        <i class="bi bi-check-lg"></i> Iya
+                    </button>
+                    <button class="btn-confirm btn-no" onclick="closeModal('deleteModal')">
+                        <i class="bi bi-x-lg"></i> Tidak
+                    </button>
                 </div>
             </div>
         </div>
@@ -122,7 +166,6 @@
     }
 
     function showDetail(id) {
-        showLoading();
         fetch(`/admin/education/${id}`)
             .then(response => {
                 if (!response.ok) {
@@ -136,8 +179,57 @@
                     const modalTitle = document.getElementById('modalTitle');
                     const modalBody = document.getElementById('modalBody');
                     if (modalTitle && modalBody) {
-                        modalTitle.textContent = data.data.judul;
-                        modalBody.innerHTML = data.data.isi;
+                        modalTitle.innerHTML = `<i class="bi bi-info-circle"></i> ${data.data.judul}`;
+                        
+                        let htmlContent = `
+                            <div class="detail-header" style="margin-bottom: 2rem;">
+                                <div class="detail-meta" style="display: flex; gap: 2rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="bi bi-person" style="color: #6c757d;"></i>
+                                        <span style="color: #20413A; font-weight: 500;">${data.data.penulis}</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="bi bi-calendar" style="color: #6c757d;"></i>
+                                        <span style="color: #20413A; font-weight: 500;">${new Date(data.data.tanggal_upload).toLocaleDateString('id-ID', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        })}</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="bi bi-clock" style="color: #6c757d;"></i>
+                                        <span style="color: #20413A; font-weight: 500;">${data.data.waktu_baca} menit</span>
+                                    </div>
+                                </div>
+                        `;
+
+                        // Tampilkan ringkasan
+                        if (data.data.ringkasan) {
+                            htmlContent += `
+                                <div class="ringkasan-section" style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 0.5 rem; border-left: 4px solid #F9B6C7;">
+                                    <h3 style="font-family: 'Bricolage Grotesque', sans-serif; color: #20413A; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                                        Ringkasan
+                                    </h3>
+                                    <p style="color: #495057; line-height: 1.6; margin: 0;">${data.data.ringkasan}</p>
+                                </div>
+                            `;
+                        }
+
+                        htmlContent += `</div>`; // Tutup detail-header
+
+                        // Tampilkan isi konten
+                        htmlContent += `
+                            <div class="content-section">
+                                <h3 style="font-family: 'Bricolage Grotesque', sans-serif; color: #20413A; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="bi bi-file-text"></i> Isi Konten
+                                </h3>
+                                <div class="content-body" style="line-height: 1.8; color: #495057;">
+                                    ${data.data.isi}
+                                </div>
+                            </div>
+                        `;
+
+                        modalBody.innerHTML = htmlContent;
                         showModal('detailModal');
                     }
                 } else {
@@ -297,21 +389,12 @@
         existingNotifications.forEach(notification => notification.remove());
 
         const notification = document.createElement('div');
-        notification.className = `custom-notification alert-${type}`;
-        notification.textContent = message;
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            z-index: 10000;
-            max-width: 300px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        notification.className = `custom-notification`;
+        notification.innerHTML = `
+            <i class="bi ${type === 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle'}"></i>
+            ${message}
         `;
-
+        
         if (type === 'success') {
             notification.style.background = '#28a745';
         } else {

@@ -4,6 +4,7 @@
 
 @section('styles')
     @vite(['resources/css/education/show.css'])
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -11,9 +12,7 @@
     <!-- Back Navigation - NOW AT TOP -->
     <div class="back-nav">
         <a href="{{ route('education.index') }}" class="back-btn">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-            </svg>
+            <i class="bi bi-arrow-left"></i>
             Kembali ke Katalog Edukasi
         </a>
     </div>
@@ -24,22 +23,22 @@
         
         <div class="article-meta">
             <div class="meta-item">
-                <span>📅</span>
+                <i class="bi bi-calendar3"></i>
                 <span>{{ \Carbon\Carbon::parse($konten->tanggal_upload)->format('F d, Y') }}</span>
             </div>
             <div class="meta-item">
-                <span>✏️</span>
+                <i class="bi bi-pencil"></i>
                 <span>{{ $konten->penulis ?? 'Re-Glow Team' }}</span>
             </div>
             @if($konten->waktu_baca)
             <div class="meta-item">
-                <span>⏱️</span>
+                <i class="bi bi-clock"></i>
                 <span>{{ $konten->waktu_baca }} min read</span>
             </div>
             @endif
             @if($konten->statistik)
             <div class="meta-item">
-                <span>👁️</span>
+                <i class="bi bi-eye"></i>
                 <span>{{ number_format($konten->statistik->total_view) }} views</span>
             </div>
             @endif
@@ -62,7 +61,7 @@
     @if(Session::has('user_id') && Session::get('user_role') === 'admin')
     <div class="admin-actions">
         <a href="{{ route('education.edit', $konten->id_konten) }}" class="btn-admin btn-edit">
-            ✏️ Edit Konten
+            <i class="bi bi-pencil-square"></i> Edit Konten
         </a>
         <form action="{{ route('education.destroy', $konten->id_konten) }}" 
               method="POST" 
@@ -70,7 +69,9 @@
               onsubmit="return confirm('Yakin ingin menghapus konten ini?')">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn-admin btn-delete">🗑️ Hapus Konten</button>
+            <button type="submit" class="btn-admin btn-delete">
+                <i class="bi bi-trash"></i> Hapus Konten
+            </button>
         </form>
     </div>
     @endif
@@ -138,12 +139,17 @@
     <!-- Related Articles -->
     @if($related->count() > 0)
     <div class="related-section">
-        <h3 class="related-title">Artikel Terkait</h3>
+        <h3 class="related-title">
+            <i class="bi bi-link-45deg"></i> Artikel Terkait
+        </h3>
         <div class="related-grid">
             @foreach($related as $item)
             <a href="{{ route('education.show', $item->id_konten) }}" class="related-card">
                 <h4>{{ $item->judul }}</h4>
                 <p>{{ Str::limit($item->ringkasan, 100) }}</p>
+                <div class="related-meta">
+                    <i class="bi bi-clock"></i> {{ $item->waktu_baca }} min read
+                </div>
             </a>
             @endforeach
         </div>

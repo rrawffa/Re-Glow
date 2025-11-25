@@ -393,7 +393,7 @@
         <div class="hero-content">
             <h1>Welcome Back to Your<br>Sustainable Journey!</h1>
             <p>You're making a real difference in reducing cosmetic waste pollution. Every container you recycle helps create a cleaner, more sustainable future.</p>
-            <button class="btn-start" onclick="showToast('Fitur sedang dalam pengembangan!')">Start Recycling</button>
+            <a href="{{ route('waste-exchange.index') }}" class="btn-start" id="btnExchange" role="button" aria-label="Start Recycling - Exchange Waste">Start Recycling</a>
         </div>
     </section>
 
@@ -471,7 +471,7 @@
     <section class="challenge-banner">
         <h2>Join Our Recycling Challenge!</h2>
         <p>This month, we're challenging our community to recycle 10,000 cosmetic containers. Join hundreds of eco-warriors making a difference!</p>
-        <button class="btn-primary" onclick="showToast('Berhasil bergabung dengan challenge!')">Join Challenge</button>
+        <a href="{{ route('waste-exchange.index') }}" class="btn-primary" role="button" aria-label="Join Recycling Challenge">Join Challenge</a>
     </section>
     
     <!-- Toast container -->

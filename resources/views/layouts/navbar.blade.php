@@ -11,6 +11,10 @@
                 <a href="{{ route('admin.dashboard') }}" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
                     Dashboard
                 </a>
+            @elseif(Session::get('user_role') === 'logistik')
+                <a href="{{ route('logistik.dashboard') }}" class="{{ request()->is('logistik/dashboard') ? 'active' : '' }}">
+                    Dashboard
+                </a>
             @else
             <a href="{{ route('user.dashboard') }}" class="{{ request()->is('user/dashboard') ? 'active' : '' }}">
                 Dashboard

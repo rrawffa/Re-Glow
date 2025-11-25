@@ -49,10 +49,12 @@ Route::middleware(['auth.session'])->group(function () {
             return view('user.dashboard', compact('topArticles'));
         })->name('dashboard');
 
-        // Rute Profile yang dipanggil dari navbar
+        // Rute Profile yang dipanggil dari navbar — TANPA {id} parameter
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+        // Edit / Update profile — dengan optional id
+        Route::get('/profile/{id?}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile/{id?}', [ProfileController::class, 'update'])->name('profile.update');
     });
     
     // Dashboard Admin
@@ -201,6 +203,17 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
 
     // Logistik
     Route::get('/waste-exchange/logistik', [AdminWasteExchangeController::class, 'logistikIndex'])->name('waste.logistik.index');
+    // Admin Voucher Management
+    Route::get('/vouchers', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'index'])->name('vouchers.index');
+    Route::get('/vouchers/create', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'create'])->name('vouchers.create');
+    Route::post('/vouchers', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'store'])->name('vouchers.store');
+    Route::get('/vouchers/{id}', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'show'])->name('vouchers.show');
+    Route::get('/vouchers/{id}/edit', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'edit'])->name('vouchers.edit');
+    Route::put('/vouchers/{id}', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'update'])->name('vouchers.update');
+    Route::delete('/vouchers/{id}', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'destroy'])->name('vouchers.destroy');
+
+    // Optional: view voucher redemptions
+    Route::get('/vouchers/{id}/redemptions', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'redemptions'])->name('vouchers.redemptions');
 });
 
 

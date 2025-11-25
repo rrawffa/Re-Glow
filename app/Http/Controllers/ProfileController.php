@@ -3,43 +3,91 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
+    // Show profile
     public function show(Request $request)
     {
-        // This app uses a custom session-based auth (Session::put('user_id') in AuthController)
-        // so use the session to determine login state and load the user.
         if (!Session::has('user_id')) {
-            return redirect()->route('login');
+            return redirect()->route('login')->with('error', 'Please login first');
         }
 
-        $userId = Session::get('user_id');
-        // Primary key in your users table appears to be `id_user` — load the user accordingly.
-        $user = User::where('id_user', $userId)->first();
-
-        // If user record is missing for some reason, clear session and redirect to login
+        $user = User::where('id_user', Session::get('user_id'))->first();
         if (!$user) {
             Session::flush();
-            return redirect()->route('login');
+            return redirect()->route('login')->with('error', 'User not found');
         }
 
-        $activeTab = $request->query('tab', 'posts');
+        return view('user.profile', ['user' => $user]);
+    }
 
-        // TODO: replace with real posts retrieval when available
-        $posts = collect([]);
+    // Edit profile form
+    public function edit(Request $request, $id = null)
+    {
+        if (!Session::has('user_id')) {
+            return redirect()->route('login')->with('error', 'Please login first');
+        }
 
-        return view('user.profile', [
-            'user' => $user,
-            'posts' => $posts,
-            'activeTab' => $activeTab
+        $user = User::where('id_user', Session::get('user_id'))->first();
+        if (!$user) {
+            Session::flush();
+            return redirect()->route('login')->with('error', 'User not found');
+        }
+
+        return view('profile.edit', ['user' => $user]);
+    }
+
+    // Update profile
+    public function update(Request $request, $id = null)
+    {
+        if (!Session::has('user_id')) {
+            return redirect()->route('login')->with('error', 'Please login first');
+        }
+
+        $user = User::where('id_user', Session::get('user_id'))->first();
+        if (!$user) {
+            Session::flush();
+            return redirect()->route('login')->with('error', 'User not found');
+        }
+
+        $data = $request->validate([
+            'username' => 'nullable|string|max:120',
+            'bio' => 'nullable|string|max:1000',
+            'avatar' => 'nullable|image|max:2048',
         ]);
+
+        // Update username
+        if (isset($data['username']) && !empty($data['username'])) {
+            $user->username = $data['username'];
+        }
+
+        // Update bio if column exists
+        if (isset($data['bio']) && !empty($data['bio']) && $user->hasColumn('bio')) {
+            $user->bio = $data['bio'];
+        }
+
+        // Handle avatar upload
+        if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+            if ($file->isValid()) {
+                $path = $file->store('avatars', 'public');
+                if ($path && $user->hasColumn('foto_profil')) {
+                    // Delete old avatar if exists
+                    if ($user->foto_profil && Storage::disk('public')->exists($user->foto_profil)) {
+                        Storage::disk('public')->delete($user->foto_profil);
+                    }
+                    $user->foto_profil = $path;
+                }
+            }
+        }
+
+        $user->save();
+
+        return redirect()->route('user.profile.show')
+            ->with('success', 'Profile updated successfully.');
     }
 }

@@ -79,6 +79,11 @@ class User extends Authenticatable
         return $this->status_akun === 'active';
     }
 
+    public function hasColumn($column)
+    {
+        return in_array($column, $this->getConnection()->getSchemaBuilder()->getColumnListing($this->table));
+    }
+
     public function getDashboardRoute()
     {
         switch ($this->role) {

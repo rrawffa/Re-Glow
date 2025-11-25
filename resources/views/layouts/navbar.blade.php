@@ -52,8 +52,10 @@
     </ul>
 
     <div class="nav-icons">
-        <a href="{{ route('user.profile.show') }}">
-            <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="profile-pic">
+        <a href="{{ route('user.profile.show') }}" class="profile-icon">
+            <div class="nav-avatar-container">
+                <i class="bi bi-person-fill"></i>
+            </div>
         </a>
         <form action="{{ route('logout') }}" method="POST" class="logout-form">
             @csrf

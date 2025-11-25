@@ -4,6 +4,7 @@
 
 @section('styles')
 @vite(['resources/css/pages/profile.css'])
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <style>
     .profile-container { padding: 20px; max-width: 1200px; margin: 0 auto; }
     .profile-header { display: flex; gap: 30px; align-items: center; margin-bottom: 40px; }
@@ -12,11 +13,24 @@
     .profile-bio { color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
     .btn-edit-profile { display: inline-block; padding: 8px 16px; background: #2c5f4f; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; }
     .btn-edit-profile:hover { background: #1f4438; }
-    .avatar-img { width: 120px; height: 120px; border-radius: 12px; object-fit: cover; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+    .avatar-container { 
+        width: 120px; 
+        height: 120px; 
+        border-radius: 12px; 
+        background: linear-gradient(135deg, #2c5f4f 0%, #1f4438 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+    .avatar-icon {
+        font-size: 48px;
+        color: white;
+    }
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; margin-bottom: 32px; }
     .stat-card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.04); display: flex; gap: 16px; align-items: center; }
     .stat-card-highlight { background: #f7fff8; }
-    .stat-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 8px; flex-shrink: 0; font-size: 24px; }
+    .stat-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 8px; flex-shrink: 0; font-size: 24px; color: #2c5f4f; }
     .stat-content { flex: 1; }
     .stat-value { font-size: 24px; font-weight: 700; color: #1a1a1a; }
     .stat-label { font-size: 13px; color: #666; margin-top: 4px; }
@@ -28,7 +42,7 @@
     .tab-content.active { display: block; }
     .post-card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.04); margin-bottom: 20px; }
     .post-header { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
-    .post-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 6px; font-size: 18px; }
+    .post-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 6px; font-size: 18px; color: #2c5f4f; }
     .post-title { flex: 1; font-size: 16px; font-weight: 700; color: #1a1a1a; margin: 0; }
     .post-time { font-size: 13px; color: #999; }
     .post-description { font-size: 14px; line-height: 1.6; color: #666; margin-bottom: 12px; }
@@ -43,6 +57,8 @@
     .profile-actions { display: flex; gap: 12px; margin-top: 40px; justify-content: center; padding-top: 20px; border-top: 1px solid #eee; }
     .btn-logout { padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; background: #fff4f4; color: #d33; }
     .btn-logout:hover { background: #ffe6e6; }
+    .btn-transaction-history { padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; background: #e8f4ff; color: #2c5f4f; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-transaction-history:hover { background: #d9ecff; }
 </style>
 @endsection
 
@@ -53,21 +69,24 @@
         <div class="profile-info">
             <h1 class="profile-name">{{ $user->username ?? 'User' }}</h1>
             <p class="profile-bio">{{ $user->bio ?? 'Welcome to Re-Glow community!' }}</p>
-            <a href="{{ route('user.profile.edit') }}" class="btn-edit-profile">Edit Profile</a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('user.profile.edit') }}" class="btn-edit-profile">Edit Profile</a>
+                <a href="{{ route('waste-exchange.history') }}" class="btn-transaction-history">
+                    <i class="bi bi-clock-history"></i> Riwayat Transaksi
+                </a>
+            </div>
         </div>
-        <div class="profile-avatar">
-            @if($user->foto_profil)
-                <img src="{{ asset('storage/' . $user->foto_profil) }}" alt="{{ $user->username }}" class="avatar-img">
-            @else
-                <img src="https://i.pravatar.cc/150?img=47" alt="{{ $user->username }}" class="avatar-img">
-            @endif
+        <div class="avatar-container">
+            <i class="bi bi-person-fill avatar-icon"></i>
         </div>
     </div>
 
     <!-- Statistics Cards -->
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-icon">🌱</div>
+            <div class="stat-icon">
+                <i class="bi bi-tree-fill"></i>
+            </div>
             <div class="stat-content">
                 <div class="stat-value">{{ $user->poin ?? 0 }}</div>
                 <div class="stat-label">Available Points</div>
@@ -75,7 +94,9 @@
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">📧</div>
+            <div class="stat-icon">
+                <i class="bi bi-envelope-fill"></i>
+            </div>
             <div class="stat-content">
                 <div class="stat-value">{{ $user->email }}</div>
                 <div class="stat-label">Email</div>
@@ -83,7 +104,9 @@
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">📱</div>
+            <div class="stat-icon">
+                <i class="bi bi-phone-fill"></i>
+            </div>
             <div class="stat-content">
                 <div class="stat-value">{{ $user->no_hp ?? 'Not set' }}</div>
                 <div class="stat-label">Phone Number</div>
@@ -91,7 +114,9 @@
         </div>
 
         <div class="stat-card stat-card-highlight">
-            <div class="stat-icon">🎯</div>
+            <div class="stat-icon">
+                <i class="bi bi-award-fill"></i>
+            </div>
             <div class="stat-content">
                 <div class="stat-value">{{ $user->role }}</div>
                 <div class="stat-label">Role</div>
@@ -99,11 +124,13 @@
         </div>
     </div>
 
-    <!-- Logout -->
+    <!-- Profile Actions -->
     <div class="profile-actions">
         <form action="{{ route('logout') }}" method="POST" style="display: inline;">
             @csrf
-            <button type="submit" class="btn-logout">Log Out</button>
+            <button type="submit" class="btn-logout">
+                <i class="bi bi-box-arrow-right"></i> Log Out
+            </button>
         </form>
     </div>
 </div>

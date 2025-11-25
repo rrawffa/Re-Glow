@@ -3,6 +3,7 @@
 @section('title', 'Edit Profile')
 
 @section('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <style>
     * { box-sizing: border-box; }
     
@@ -169,7 +170,8 @@
         border-radius: 8px;
         padding: 16px;
         margin-bottom: 24px;
-        color: #3c3;
+        color: #2d8659;
+        font-weight: 500;
     }
     
     /* Form Actions */
@@ -217,7 +219,40 @@
         background: #e8e8e8;
         transform: translateY(-2px);
     }
-    
+
+    /* Section Headers */
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f0f0f0;
+        color: #2c5f4f;
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .section-header i {
+        font-size: 18px;
+    }
+
+    /* Password Toggle */
+    .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+    }
+
+    .input-group {
+        position: relative;
+    }
+
     /* Responsive */
     @media (max-width: 600px) {
         .edit-profile-body {
@@ -244,14 +279,22 @@
     <div class="edit-profile-container">
         <div class="edit-profile-card">
             <div class="edit-profile-header">
-                <h2>✏️ Edit Profile</h2>
+                <h2><i class="bi bi-pencil-square"></i> Edit Profile</h2>
                 <p>Update your profile information</p>
             </div>
             
             <div class="edit-profile-body">
+                {{-- Success Message --}}
+                @if (session('success'))
+                    <div class="success-alert">
+                        <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
+                    </div>
+                @endif
+
+                {{-- Error Messages --}}
                 @if ($errors->any())
                     <div class="error-alert">
-                        <strong>Terjadi kesalahan:</strong>
+                        <strong><i class="bi bi-exclamation-triangle-fill"></i> Terjadi kesalahan:</strong>
                         <ul>
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -259,27 +302,21 @@
                         </ul>
                     </div>
                 @endif
+
+                @if (session('error'))
+                    <div class="error-alert">
+                        <strong><i class="bi bi-exclamation-triangle-fill"></i> {{ session('error') }}</strong>
+                    </div>
+                @endif
                 
-                <form method="POST" action="{{ route('user.profile.update') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('user.profile.update') }}" enctype="multipart/form-data" id="profileForm">
                     @csrf
                     @method('PUT')
                     
-                    <!-- Avatar Section -->
-                    <div class="avatar-section">
-                        <div class="avatar-preview-wrapper">
-                            @if($user->foto_profil)
-                                <img id="avatar-preview" src="{{ asset('storage/' . $user->foto_profil) }}" alt="avatar" class="avatar-preview">
-                            @else
-                                <img id="avatar-preview" src="https://i.pravatar.cc/150?img=47" alt="avatar" class="avatar-preview">
-                            @endif
-                        </div>
-                        <div>
-                            <label for="avatar" class="avatar-upload-label">
-                                📷 Change Avatar
-                            </label>
-                            <input id="avatar" name="avatar" type="file" accept="image/*">
-                            <div class="avatar-help-text">JPG, PNG, max 2MB</div>
-                        </div>
+                    <!-- Basic Information Section -->
+                    <div class="section-header">
+                        <i class="bi bi-person"></i>
+                        <span>Basic Information</span>
                     </div>
                     
                     <!-- Username -->
@@ -293,26 +330,83 @@
                             value="{{ old('username', $user->username) }}"
                             placeholder="Enter your username"
                         >
+                        @error('username')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                     
-                    <!-- Bio -->
+                    <!-- Contact Information Section -->
+                    <div class="section-header">
+                        <i class="bi bi-telephone"></i>
+                        <span>Contact Information</span>
+                    </div>
+
+                    <!-- Email -->
                     <div class="form-group">
-                        <label for="bio" class="form-label">Bio</label>
-                        <textarea 
-                            id="bio"
-                            name="bio" 
-                            class="form-textarea"
-                            placeholder="Tell us about yourself..."
-                        >{{ old('bio', $user->bio ?? '') }}</textarea>
+                        <label for="email" class="form-label">Email Address</label>
+                        <input 
+                            type="email"
+                            id="email"
+                            name="email" 
+                            class="form-input"
+                            value="{{ old('email', $user->email) }}"
+                            placeholder="Enter your email address"
+                        >
+                        @error('email')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="form-group">
+                        <label for="no_hp" class="form-label">Phone Number</label>
+                        <input 
+                            type="tel"
+                            id="no_hp"
+                            name="no_hp" 
+                            class="form-input"
+                            value="{{ old('no_hp', $user->no_hp ?? '') }}"
+                            placeholder="Enter your phone number"
+                        >
+                        @error('no_hp')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    <!-- Security Section -->
+                    <div class="section-header">
+                        <i class="bi bi-shield-lock"></i>
+                        <span>Security</span>
+                    </div>
+
+                    <!-- Current Password -->
+                    <div class="form-group">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <div class="input-group">
+                            <input 
+                                type="password"
+                                id="current_password"
+                                name="current_password" 
+                                class="form-input"
+                                placeholder="Enter current password to confirm changes"
+                            >
+                            <button type="button" class="password-toggle" onclick="togglePassword('current_password')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <small class="text-muted">Required to save changes to email or phone number</small>
+                        @error('current_password')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                     
                     <!-- Form Actions -->
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
-                            💾 Save Changes
+                            <i class="bi bi-check-lg"></i> Save Changes
                         </button>
                         <a href="{{ route('user.profile.show') }}" class="btn btn-secondary">
-                            ✕ Cancel
+                            <i class="bi bi-x-lg"></i> Cancel
                         </a>
                     </div>
                 </form>
@@ -328,20 +422,27 @@
         const uploadLabel = document.querySelector('.avatar-upload-label');
 
         if(uploadLabel && fileInput && preview){
-            uploadLabel.addEventListener('click', ()=> fileInput.click());
+            uploadLabel.addEventListener('click', function(e) {
+                e.preventDefault();
+                fileInput.click();
+            });
+
             fileInput.addEventListener('change', function(){
                 const f = this.files && this.files[0];
                 if(!f) return;
-                if(!f.type || !f.type.startsWith('image/')) {
+
+                if(!f.type || !f.type.match('image/(jpeg|jpg|png)')) {
                     alert('Silakan pilih file gambar (JPG, PNG)');
                     this.value = '';
                     return;
                 }
+
                 if(f.size > 2 * 1024 * 1024) {
                     alert('Ukuran file terlalu besar. Maksimal 2MB.');
                     this.value = '';
                     return;
                 }
+
                 const reader = new FileReader();
                 reader.onload = function(e){
                     preview.src = e.target.result;
@@ -349,6 +450,42 @@
                 reader.readAsDataURL(f);
             });
         }
+
+        // PERBAIKAN: Form validation yang lebih sederhana
+        const form = document.getElementById('profileForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const email = document.getElementById('email').value.trim();
+                const currentPassword = document.getElementById('current_password').value.trim();
+                
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (email && !emailRegex.test(email)) {
+                    e.preventDefault();
+                    alert('Format email tidak valid');
+                    return false;
+                }
+
+                // Biarkan server-side validation menangani sisanya
+            });
+        }
     });
+
+    // Password toggle function
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const toggle = input.nextElementSibling;
+        const icon = toggle.querySelector('i');
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    }
 </script>
 @endsection

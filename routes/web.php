@@ -49,12 +49,10 @@ Route::middleware(['auth.session'])->group(function () {
             return view('user.dashboard', compact('topArticles'));
         })->name('dashboard');
 
-        // Rute Profile yang dipanggil dari navbar — TANPA {id} parameter
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-
-        // Edit / Update profile — dengan optional id
-        Route::get('/profile/{id?}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::put('/profile/{id?}', [ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update.post');
     });
     
     // Dashboard Admin

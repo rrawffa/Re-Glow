@@ -10,6 +10,7 @@ use App\Http\Controllers\WasteExchangeController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\Admin\AdminEducationController;
+use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\RiwayatPoinController;
 
 // Welcome/Landing Page
@@ -141,27 +142,21 @@ Route::middleware(['auth.session','check.role:admin'])->group(function () {
 //belum pake login 
 Route::get('/riwayat-poin', [RiwayatPoinController::class, 'index'])->name('riwayat poin.poinhistory');
 
-// FAQ Page
-// Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');
-// FAQ untuk User
+// User FAQ
 Route::get('/faq', [FaqController::class, 'userIndex'])->name('faq.user');
 
-// FAQ untuk Admin - CRUD
+// Admin FAQ CRUD
 Route::middleware(['auth.session', 'check.role:admin'])
     ->prefix('admin/faq')
     ->name('admin.faq.')
     ->group(function () {
-
-        Route::get('/', [FaqController::class, 'index'])->name('index'); // list FAQ
-        Route::get('/create', [FaqController::class, 'create'])->name('create');
-        Route::post('/', [FaqController::class, 'store'])->name('store');
-
-        Route::get('/{id}/edit', [FaqController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [FaqController::class, 'update'])->name('update');
-
-        Route::delete('/{id}', [FaqController::class, 'destroy'])->name('destroy');
+        Route::get('/', [AdminFaqController::class, 'index'])->name('index');
+        Route::get('/create', [AdminFaqController::class, 'create'])->name('create');
+        Route::post('/', [AdminFaqController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [AdminFaqController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AdminFaqController::class, 'update'])->name('update');
+        Route::delete('/{id}', [AdminFaqController::class, 'destroy'])->name('destroy');
     });
-
 
 
 

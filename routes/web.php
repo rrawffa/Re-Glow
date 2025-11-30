@@ -162,9 +162,23 @@ Route::middleware(['auth.session','check.role:pengguna'])->group(function () {
     });
 });
 
-//Riwayat Poin
-//belum pake login 
-Route::get('/riwayat-poin', [RiwayatPoinController::class, 'index'])->name('riwayat poin.poinhistory');
+
+
+
+
+// User
+Route::middleware(['auth','role:pengguna'])->group(function(){
+    Route::get('/riwayat-poin', [RiwayatPoinController::class,'index'])
+         ->name('user.points.index');
+});
+
+// Admin
+Route::middleware(['auth','role:admin'])->group(function(){
+    Route::post('/riwayat-poin', [RiwayatPoinController::class,'store']);
+    Route::put('/riwayat-poin/{id}', [RiwayatPoinController::class,'update']);
+    Route::delete('/riwayat-poin/{id}', [RiwayatPoinController::class,'destroy']);
+});
+
 
 // FAQ Page
 Route::get('/faq', [FaqController::class, 'index'])->name('faq.faq');//////// ADMIN ADMIN ADMIN ////////////////////////

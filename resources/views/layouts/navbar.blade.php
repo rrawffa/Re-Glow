@@ -22,7 +22,8 @@
                 </a>
             @endif
         </li>
-        <li><a href="{{ url('/riwayat-poin') }}" class="{{ request()->is('riwayat-poin') ? 'active' : '' }}">Points</a></li>
+       <li>
+    <a href="{{ route('user.points.index') }}" class="{{ request()->routeIs('user.points.index') ? 'active' : '' }}"> Points</a></li>
         <li><a href="{{ route('vouchers.index') }}" class="{{ request()->is('vouchers') ? 'active' : '' }}">Vouchers</a></li>
         <li><a href="#community">Community</a></li>
         <li><a href="{{ url('/education') }}" class="{{ request()->is('education') ? 'active' : '' }}">Education</a></li>

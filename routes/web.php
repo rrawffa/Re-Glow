@@ -207,6 +207,7 @@ Route::middleware(['auth.session', 'check.role:admin'])
 // =========================
 //  VOUCHER PUBLIC ROUTES
 // =========================
+
 Route::get('/vouchers', [VoucherController::class,'index'])->name('vouchers.index');
 Route::get('/vouchers/{voucher}', [VoucherController::class,'show'])->name('vouchers.show');
 Route::post('/vouchers/{voucher}/redeem', [VoucherController::class,'redeem'])->name('vouchers.redeem');
@@ -214,4 +215,7 @@ Route::get('/api/vouchers', [VoucherController::class,'apiIndex'])->name('vouche
 
 // Favorite Vouchers (sementara)
 Route::get('/vouchers/favorites', [VoucherController::class, 'favorites'])->name('vouchers.favorites');
+
+// community sharing 
+Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
 

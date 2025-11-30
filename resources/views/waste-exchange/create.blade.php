@@ -4,18 +4,12 @@
 
 @section('styles')
     @vite(['resources/css/waste-exchange/create.css'])
-    
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin=""/>
-
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
-    
     <style>
-        /* CSS styles untuk halaman create */
         .create-container {
             max-width: 800px;
             margin: 0 auto;
@@ -32,8 +26,6 @@
         .required {
             color: #d32f2f;
         }
-        
-        /* Tambahkan styles lainnya di sini */
     </style>
 @endsection
 
@@ -261,7 +253,6 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>
-
 <script>
 let productIndex = 1;
 let cameraStream = null;

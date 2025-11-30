@@ -3,18 +3,13 @@
 @section('title', 'Edit Your Transaction - Re-Glow')
 
 @section('styles')
-    @vite(['resources/css/waste-exchange/create.css'])
-    
-    <!-- Leaflet CSS -->
+    @vite(['resources/css/waste-exchange/create.css'])]
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin=""/>
-
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
     <style>
-        /* Additional styles for edit page */
+        /* Additional styles */
         .current-photo-container {
             margin-bottom: 1.5rem;
             padding: 1rem;

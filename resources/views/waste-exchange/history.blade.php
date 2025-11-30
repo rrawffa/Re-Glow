@@ -4,7 +4,6 @@
 
 @section('styles')
     @vite(['resources/css/waste-exchange/history.css'])
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 @endsection
 
@@ -127,22 +126,7 @@
             <!-- Empty State -->
             <div class="empty-state">
                 <div class="empty-icon">
-                    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Lotus Flower with Recycle Symbol -->
-                        <circle cx="100" cy="100" r="80" fill="#FFF5F7"/>
-                        <!-- Lotus petals -->
-                        <path d="M100 50 C85 50, 75 60, 75 75 L75 100 L100 100 Z" fill="#F9B6C7" opacity="0.6"/>
-                        <path d="M100 50 C115 50, 125 60, 125 75 L125 100 L100 100 Z" fill="#F9B6C7" opacity="0.7"/>
-                        <path d="M50 100 C50 85, 60 75, 75 75 L100 75 L100 100 Z" fill="#F9B6C7" opacity="0.8"/>
-                        <path d="M150 100 C150 85, 140 75, 125 75 L100 75 L100 100 Z" fill="#F9B6C7" opacity="0.5"/>
-                        <path d="M100 150 C85 150, 75 140, 75 125 L75 100 L100 100 Z" fill="#F9B6C7" opacity="0.9"/>
-                        <path d="M100 150 C115 150, 125 140, 125 125 L125 100 L100 100 Z" fill="#F9B6C7" opacity="0.6"/>
-                        <!-- Recycle symbol in center -->
-                        <circle cx="100" cy="100" r="25" fill="#20413A"/>
-                        <path d="M100 85 L90 100 L95 100 L95 110 L105 110 L105 100 L110 100 Z" fill="white"/>
-                        <path d="M85 105 L95 105 L90 115 L85 105 Z" fill="white"/>
-                        <path d="M115 105 L105 105 L110 115 L115 105 Z" fill="white"/>
-                    </svg>
+                    <img src="/assets/re-glow.svg" alt="Recycle Icon">
                 </div>
                 <h3>You don't have any transactions yet. Make your first exchange and see the positive impact you can make!</h3>
                 <p>Transform your empty cosmetic containers into something beautiful. Join our transparent recycling process and watch your waste become part of the circular economy.</p>

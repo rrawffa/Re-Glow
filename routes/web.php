@@ -11,10 +11,13 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\LogistikController;
+use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\Admin\AdminEducationController;
 use App\Http\Controllers\Admin\AdminWasteExchangeController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\RiwayatPoinController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\AdminPointController;
 
 // Welcome/Landing Page
 Route::get('/', function () {
@@ -40,15 +43,8 @@ Route::middleware(['auth.session'])->group(function () {
     
     // Dashboard & Profile Pengguna (DIGABUNGKAN JADI SATU GRUP)
     Route::prefix('user')->name('user.')->group(function () {
-        Route::get('/dashboard', function () {
-            $topArticles = Education::where('status', 'published')
-                ->with('statistik')
-                ->orderBy('tanggal_upload', 'desc')
-                ->limit(3)
-                ->get();
-
-            return view('user.dashboard', compact('topArticles'));
-        })->name('dashboard');
+        Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/api/stats', [UserDashboardController::class, 'getStats'])->name('api.stats');
 
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -58,9 +54,7 @@ Route::middleware(['auth.session'])->group(function () {
     
     // Dashboard Admin
     Route::prefix('admin')->name('admin.')->middleware('check.role:admin')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     });
 
     Route::get('/users', function () {
@@ -70,15 +64,16 @@ Route::middleware(['auth.session'])->group(function () {
     
     // Dashboard Tim Logistik
     Route::prefix('logistik')->name('logistik.')->middleware('check.role:tim_logistik')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('logistik.dashboard');
-        })->name('dashboard');
         Route::get('/dashboard', [LogistikController::class, 'dashboard'])->name('dashboard');
         Route::get('/schedule', [LogistikController::class, 'schedule'])->name('schedule');
+        Route::get('/history', [LogistikController::class, 'history'])->name('history');
         Route::get('/api/stats', [LogistikController::class, 'getStats'])->name('api.stats');
         Route::get('/pickup/{id}', [LogistikController::class, 'getPickupDetails'])->name('pickup.details');
         Route::put('/pickup/{id}/status', [LogistikController::class, 'updatePickupStatus'])->name('pickup.update-status');
     });
+
+// API routes (accessible to all)
+Route::get('/api/droppoint/{id}', [\App\Http\Controllers\Admin\AdminWasteExchangeController::class, 'dropPointShow']);
 });
 
 //  Fallback Route 
@@ -172,9 +167,23 @@ Route::middleware(['auth.session','check.role:pengguna'])->group(function () {
 //Riwayat Poin
 //belum pake login 
 Route::get('/riwayat-poin', [RiwayatPoinController::class, 'index'])->name('riwayat poin.poinhistory');
+// Admin (CRUD)
+Route::middleware(['auth.session', 'check.role:admin'])
+    ->prefix('admin/riwayat_poin')
+    ->name('admin.riwayat_poin.')
+    ->group(function () {
+        Route::get('/', [AdminPointController::class, 'index'])->name('index');
+        Route::get('/create', [AdminPointController::class, 'create'])->name('create');
+        Route::post('/', [AdminPointController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [AdminPointController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [AdminPointController::class, 'update'])->name('update');
+        Route::delete('/{id}', [AdminPointController::class, 'destroy'])->name('destroy');
+    });
 
 // FAQ Page
-Route::get('/faq', [FaqController::class, 'index'])->name('faq.faq');//////// ADMIN ADMIN ADMIN ////////////////////////
+Route::get('/faq', [FaqController::class, 'index'])->name('faq.faq');
+
+//////// ADMIN ADMIN ADMIN ////////////////////////
 
 // Admin Education Routes
 Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('admin.')->group(function () {

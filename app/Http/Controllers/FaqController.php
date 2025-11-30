@@ -12,6 +12,11 @@ class FaqController extends Controller
         $faqs = Faq::orderBy('id', 'DESC')->get();
         return view('faq.index', compact('faqs'));
     }
+    public function userIndex()
+    {
+    $faqs = Faq::orderBy('id', 'DESC')->get();
+    return view('faq.user', compact('faqs')); // blade khusus user
+    }
 
     public function create()
     {

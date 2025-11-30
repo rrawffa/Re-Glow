@@ -145,13 +145,7 @@
                     <div class="accordion-body">
                         <?= nl2br(htmlspecialchars($faq['answer'])) ?>
 
-                        <div class="mt-3">
-                            <a href="/faq/edit/<?= $faq['id'] ?>" class="btn btn-sm btn-primary">Edit</a>
-                            <a href="/faq/delete/<?= $faq['id'] ?>" class="btn btn-sm btn-danger"
-                                onclick="return confirm('Hapus FAQ ini?')">
-                                Delete
-                            </a>
-                        </div>
+                      
                     </div>
                 </div>
             </div>

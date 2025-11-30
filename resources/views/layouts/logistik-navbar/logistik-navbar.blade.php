@@ -11,8 +11,12 @@
                Dashboard
             </a>
         </li>
-        <li>Schedule</li>
-        <li>Routes</li>
+        <li>
+            <a href="{{ url('logistik/schedule') }}" 
+               class="{{ request()->is('logistik/schedule') ? 'active' : '' }}">
+               Schedule
+            </a>
+        </li>
         <li>History</li>
     </ul>
     <div class="nav-icons">

@@ -128,43 +128,6 @@
         margin-bottom: 1.5rem;
     }
 
-    /* Bar Chart */
-    .bar-chart {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        height: 200px;
-        gap: 1rem;
-        padding: 0 0.5rem;
-    }
-
-    .bar-group {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .bar {
-        width: 100%;
-        background: var(--pink-base);
-        border-radius: 6px 6px 0 0;
-        transition: all 0.3s;
-        position: relative;
-    }
-
-    .bar:hover {
-        opacity: 0.8;
-        transform: translateY(-2px);
-    }
-
-    .bar-label {
-        font-size: 0.75rem;
-        color: var(--text-light);
-        font-weight: 500;
-    }
-
     /* Donut Chart */
     .donut-chart-container {
         display: flex;
@@ -219,23 +182,6 @@
     }
 
     /* Quick Actions */
-    .quick-actions {
-        margin-bottom: 2rem;
-    }
-
-    .quick-actions h3 {
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: #1f2937;
-        margin-bottom: 1rem;
-    }
-
-    .actions-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-    }
-
     .action-card {
         background: white;
         padding: 1.25rem;
@@ -278,6 +224,10 @@
     }
 
     /* Recent Activities */
+    .recent-activities {
+        margin-top: 2rem;
+    }
+
     .recent-activities h3 {
         font-size: 1.125rem;
         font-weight: 600;
@@ -349,6 +299,19 @@
         white-space: nowrap;
     }
 
+    .quick-actions-section {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .quick-actions-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+    }
+
     @media (max-width: 1024px) {
         .charts-grid {
             grid-template-columns: 1fr;
@@ -376,11 +339,6 @@
         .donut-chart-container {
             flex-direction: column;
         }
-
-        .bar-chart {
-            gap: 0.5rem;
-            height: 180px;
-        }
     }
 </style>
 @endsection
@@ -405,18 +363,18 @@
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" style="cursor: pointer;" onclick="window.location.href='{{ route('admin.waste.index') }}'">
             <div class="stat-card-header">
-                <span class="stat-label">Total Transactions</span>
-                <div class="stat-icon gray">⇄</div>
+            <span class="stat-label">Total Transactions</span>
+            <div class="stat-icon gray">⇄</div>
             </div>
             <div class="stat-value">{{ number_format($totalTransactions) }}</div>
             <div class="stat-change positive">
-                ↑ Waste exchanges completed
+            ↑ Waste exchanges completed
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" style="cursor: pointer;" onclick="window.location.href='{{ route('admin.vouchers.index') }}'">
             <div class="stat-card-header">
                 <span class="stat-label">Active Vouchers</span>
                 <div class="stat-icon yellow">🎫</div>
@@ -427,7 +385,7 @@
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" style="cursor: pointer;" onclick="window.location.href='{{ route('admin.education.index') }}'">
             <div class="stat-card-header">
                 <span class="stat-label">Educational Posts</span>
                 <div class="stat-icon pink">📚</div>
@@ -442,23 +400,6 @@
     <!-- Charts Section -->
     <section class="charts-container">
         <div class="charts-grid">
-            <!-- User Growth Chart -->
-            <div class="chart-card">
-                <h3>User Growth (Last 8 Months)</h3>
-                <div class="bar-chart">
-                    @php
-                        $maxValue = max($userGrowth) > 0 ? max($userGrowth) : 1;
-                        $monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
-                    @endphp
-                    @foreach($userGrowth as $index => $value)
-                    <div class="bar-group">
-                        <div class="bar" style="height: {{ ($value / $maxValue) * 100 }}%;"></div>
-                        <span class="bar-label">{{ $monthNames[$index] }}</span>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-
             <!-- Transaction Types Chart -->
             <div class="chart-card">
                 <h3>Transaction Distribution</h3>
@@ -467,11 +408,8 @@
                         @php
                             $wasteRecycling = $transactionTypes['wasteRecycling'];
                             $voucherRedemption = $transactionTypes['voucherRedemption'];
-                            $educationalRewards = $transactionTypes['educationalRewards'];
                             $circumference = 502; // 2 * π * 80
-                            $wasteOffset = 0;
                             $voucherOffset = ($wasteRecycling / 100) * $circumference;
-                            $educationalOffset = $voucherOffset + (($voucherRedemption / 100) * $circumference);
                         @endphp
                         <svg width="200" height="200" viewBox="0 0 200 200">
                             <!-- Background circle -->
@@ -490,13 +428,6 @@
                                     stroke-dasharray="{{ ($voucherRedemption / 100) * $circumference }} {{ $circumference }}"
                                     stroke-dashoffset="-{{ $voucherOffset }}"
                                     transform="rotate(-90 100 100)"/>
-                            
-                            <!-- Educational Rewards -->
-                            <circle cx="100" cy="100" r="80" fill="none" 
-                                    stroke="#d1c4b0" stroke-width="30"
-                                    stroke-dasharray="{{ ($educationalRewards / 100) * $circumference }} {{ $circumference }}"
-                                    stroke-dashoffset="-{{ $educationalOffset }}"
-                                    transform="rotate(-90 100 100)"/>
                         </svg>
                     </div>
                     <div class="donut-legend">
@@ -514,34 +445,27 @@
                             </div>
                             <span class="legend-value">{{ $voucherRedemption }}%</span>
                         </div>
-                        <div class="legend-item">
-                            <div class="legend-label">
-                                <span class="legend-dot beige"></span>
-                                Educational Rewards
-                            </div>
-                            <span class="legend-value">{{ $educationalRewards }}%</span>
-                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-            <h3>Quick Actions</h3>
-            <div class="actions-grid">
-                <a href="{{ route('admin.vouchers.index') }}" class="action-card">
-                    <div class="action-icon gray">🎫</div>
-                    <span class="action-label">Voucher Management</span>
-                </a>
-                <a href="{{ route('admin.education.index') }}" class="action-card">
-                    <div class="action-icon yellow">📚</div>
-                    <span class="action-label">Education Content</span>
-                </a>
-                <a href="#" class="action-card">
-                    <div class="action-icon pink">❓</div>
-                    <span class="action-label">FAQ Management</span>
-                </a>
+            <!-- Quick Actions -->
+            <div>
+                <h3 class="quick-actions-title">Quick Actions</h3>
+                <div class="quick-actions-section">
+                    <a href="{{ route('admin.vouchers.index') }}" class="action-card">
+                        <div class="action-icon gray">🎫</div>
+                        <span class="action-label">Voucher Management</span>
+                    </a>
+                    <a href="{{ route('admin.education.index') }}" class="action-card">
+                        <div class="action-icon yellow">📚</div>
+                        <span class="action-label">Education Content</span>
+                    </a>
+                    <a href="#" class="action-card">
+                        <div class="action-icon pink">❓</div>
+                        <span class="action-label">FAQ Management</span>
+                    </a>
+                </div>
             </div>
         </div>
 

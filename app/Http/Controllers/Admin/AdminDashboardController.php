@@ -34,7 +34,6 @@ class AdminDashboardController extends Controller
         $educationalPosts = Education::where('status', 'published')->count();
 
         // Additional stats for charts
-        $userGrowth = $this->getUserGrowthData();
         $transactionTypes = $this->getTransactionTypesData();
         $recentActivities = $this->getRecentActivities();
 
@@ -43,49 +42,39 @@ class AdminDashboardController extends Controller
             'totalTransactions',
             'activeVouchers',
             'educationalPosts',
-            'userGrowth',
             'transactionTypes',
             'recentActivities'
         ));
     }
 
     /**
-     * Get user growth data (last 8 months)
-     */
-    private function getUserGrowthData()
-    {
-        $data = [];
-        for ($i = 7; $i >= 0; $i--) {
-            $month = now()->subMonths($i);
-            $count = User::where('role', 'pengguna')
-                ->whereMonth('created_at', $month->month)
-                ->whereYear('created_at', $month->year)
-                ->count();
-            $data[] = $count;
-        }
-        return $data;
-    }
-
-    /**
-     * Get transaction types distribution
+     * Get transaction types distribution (Waste Recycling vs Voucher Redemption only)
+     * Total dari kedua kategori = 100%
      */
     private function getTransactionTypesData()
     {
         $total = TransaksiSampah::count();
 
+        if ($total == 0) {
+            return [
+                'wasteRecycling' => 0,
+                'voucherRedemption' => 0,
+            ];
+        }
+
         // Waste Recycling - all transactions with waste items
         $wasteRecycling = TransaksiSampah::whereHas('details')->count();
 
-        // Completed transactions
-        $completed = TransaksiSampah::where('status', 'Selesai')->count();
+        // Voucher Redemption - remaining transactions (total - waste recycling)
+        $voucherRedemption = $total - $wasteRecycling;
 
-        // Pending/Processing
-        $pending = $total - $completed;
+        // Calculate percentages where total = 100%
+        $wastePercent = round(($wasteRecycling / $total) * 100);
+        $voucherPercent = 100 - $wastePercent; // Ensure total is exactly 100%
 
         return [
-            'wasteRecycling' => $total > 0 ? round(($wasteRecycling / $total) * 100) : 0,
-            'voucherRedemption' => $total > 0 ? round(($completed / $total) * 25) : 0,
-            'educationalRewards' => $total > 0 ? round(($pending / $total) * 10) : 0,
+            'wasteRecycling' => $wastePercent,
+            'voucherRedemption' => $voucherPercent,
         ];
     }
 

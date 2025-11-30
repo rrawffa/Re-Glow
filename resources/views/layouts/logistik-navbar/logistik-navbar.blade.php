@@ -17,7 +17,12 @@
                Schedule
             </a>
         </li>
-        <li>History</li>
+        <li>
+            <a href="{{ url('logistik/history') }}" 
+               class="{{ request()->is('logistik/history') ? 'active' : '' }}">
+               History
+            </a>
+        </li>
     </ul>
     <div class="nav-icons">
         <button class="icon-btn">🔔</button>

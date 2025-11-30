@@ -323,6 +323,9 @@
     .activity-icon.pink { background: #fef5f8; color: var(--pink-base); }
     .activity-icon.green { background: #e8f5f0; color: var(--green-dark); }
     .activity-icon.yellow { background: #fef9e6; color: #d4a843; }
+    .activity-icon.waste { background: #e8f5f0; color: var(--green-dark); }
+    .activity-icon.user { background: #fef5f8; color: var(--pink-base); }
+    .activity-icon.voucher { background: #fef9e6; color: #d4a843; }
 
     .activity-content {
         flex: 1;
@@ -396,9 +399,9 @@
                 <span class="stat-label">Total Users</span>
                 <div class="stat-icon pink">👥</div>
             </div>
-            <div class="stat-value">12,847</div>
+            <div class="stat-value">{{ number_format($totalUsers) }}</div>
             <div class="stat-change positive">
-                ↑ 8.2% from last month
+                ↑ Active users on platform
             </div>
         </div>
 
@@ -407,9 +410,9 @@
                 <span class="stat-label">Total Transactions</span>
                 <div class="stat-icon gray">⇄</div>
             </div>
-            <div class="stat-value">3,294</div>
+            <div class="stat-value">{{ number_format($totalTransactions) }}</div>
             <div class="stat-change positive">
-                ↑ 12.5% from last month
+                ↑ Waste exchanges completed
             </div>
         </div>
 
@@ -418,9 +421,9 @@
                 <span class="stat-label">Active Vouchers</span>
                 <div class="stat-icon yellow">🎫</div>
             </div>
-            <div class="stat-value">1,856</div>
-            <div class="stat-change negative">
-                ↓ 2.1% from last month
+            <div class="stat-value">{{ number_format($activeVouchers) }}</div>
+            <div class="stat-change positive">
+                Total stock available
             </div>
         </div>
 
@@ -429,9 +432,9 @@
                 <span class="stat-label">Educational Posts</span>
                 <div class="stat-icon pink">📚</div>
             </div>
-            <div class="stat-value">247</div>
+            <div class="stat-value">{{ number_format($educationalPosts) }}</div>
             <div class="stat-change positive">
-                ↑ 15.3% engagement
+                ↑ Published content
             </div>
         </div>
     </section>
@@ -441,71 +444,58 @@
         <div class="charts-grid">
             <!-- User Growth Chart -->
             <div class="chart-card">
-                <h3>User Growth</h3>
+                <h3>User Growth (Last 8 Months)</h3>
                 <div class="bar-chart">
+                    @php
+                        $maxValue = max($userGrowth) > 0 ? max($userGrowth) : 1;
+                        $monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
+                    @endphp
+                    @foreach($userGrowth as $index => $value)
                     <div class="bar-group">
-                        <div class="bar" style="height: 35%;"></div>
-                        <span class="bar-label">Jan</span>
+                        <div class="bar" style="height: {{ ($value / $maxValue) * 100 }}%;"></div>
+                        <span class="bar-label">{{ $monthNames[$index] }}</span>
                     </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 55%;"></div>
-                        <span class="bar-label">Feb</span>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 72%;"></div>
-                        <span class="bar-label">Mar</span>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 48%;"></div>
-                        <span class="bar-label">Apr</span>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 78%;"></div>
-                        <span class="bar-label">May</span>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 62%;"></div>
-                        <span class="bar-label">Jun</span>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 88%;"></div>
-                        <span class="bar-label">Jul</span>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 95%;"></div>
-                        <span class="bar-label">Aug</span>
-                    </div>
+                    @endforeach
                 </div>
             </div>
 
             <!-- Transaction Types Chart -->
             <div class="chart-card">
-                <h3>Transaction Types</h3>
+                <h3>Transaction Distribution</h3>
                 <div class="donut-chart-container">
                     <div class="donut-chart">
+                        @php
+                            $wasteRecycling = $transactionTypes['wasteRecycling'];
+                            $voucherRedemption = $transactionTypes['voucherRedemption'];
+                            $educationalRewards = $transactionTypes['educationalRewards'];
+                            $circumference = 502; // 2 * π * 80
+                            $wasteOffset = 0;
+                            $voucherOffset = ($wasteRecycling / 100) * $circumference;
+                            $educationalOffset = $voucherOffset + (($voucherRedemption / 100) * $circumference);
+                        @endphp
                         <svg width="200" height="200" viewBox="0 0 200 200">
                             <!-- Background circle -->
                             <circle cx="100" cy="100" r="80" fill="none" stroke="#f3f4f6" stroke-width="30"/>
                             
-                            <!-- Waste Recycling - 65% -->
+                            <!-- Waste Recycling -->
                             <circle cx="100" cy="100" r="80" fill="none" 
                                     stroke="#F9B6C7" stroke-width="30"
-                                    stroke-dasharray="326 502"
+                                    stroke-dasharray="{{ ($wasteRecycling / 100) * $circumference }} {{ $circumference }}"
                                     stroke-dashoffset="0"
                                     transform="rotate(-90 100 100)"/>
                             
-                            <!-- Voucher Redemption - 25% -->
+                            <!-- Voucher Redemption -->
                             <circle cx="100" cy="100" r="80" fill="none" 
                                     stroke="#1f2937" stroke-width="30"
-                                    stroke-dasharray="126 502"
-                                    stroke-dashoffset="-326"
+                                    stroke-dasharray="{{ ($voucherRedemption / 100) * $circumference }} {{ $circumference }}"
+                                    stroke-dashoffset="-{{ $voucherOffset }}"
                                     transform="rotate(-90 100 100)"/>
                             
-                            <!-- Educational Rewards - 10% -->
+                            <!-- Educational Rewards -->
                             <circle cx="100" cy="100" r="80" fill="none" 
                                     stroke="#d1c4b0" stroke-width="30"
-                                    stroke-dasharray="50 502"
-                                    stroke-dashoffset="-452"
+                                    stroke-dasharray="{{ ($educationalRewards / 100) * $circumference }} {{ $circumference }}"
+                                    stroke-dashoffset="-{{ $educationalOffset }}"
                                     transform="rotate(-90 100 100)"/>
                         </svg>
                     </div>
@@ -515,21 +505,21 @@
                                 <span class="legend-dot pink"></span>
                                 Waste Recycling
                             </div>
-                            <span class="legend-value">65%</span>
+                            <span class="legend-value">{{ $wasteRecycling }}%</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-label">
                                 <span class="legend-dot dark"></span>
                                 Voucher Redemption
                             </div>
-                            <span class="legend-value">25%</span>
+                            <span class="legend-value">{{ $voucherRedemption }}%</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-label">
                                 <span class="legend-dot beige"></span>
                                 Educational Rewards
                             </div>
-                            <span class="legend-value">10%</span>
+                            <span class="legend-value">{{ $educationalRewards }}%</span>
                         </div>
                     </div>
                 </div>
@@ -559,30 +549,23 @@
         <div class="recent-activities">
             <h3>Recent Activities</h3>
             <div class="activity-card">
+                @forelse($recentActivities as $activity)
                 <div class="activity-item">
-                    <div class="activity-icon pink">👤</div>
+                    <div class="activity-icon {{ $activity['type'] }}">{{ $activity['icon'] }}</div>
                     <div class="activity-content">
-                        <div class="activity-title">New user registration</div>
-                        <div class="activity-description">Sarah Johnson joined the platform</div>
+                        <div class="activity-title">{{ $activity['title'] }}</div>
+                        <div class="activity-description">{{ $activity['description'] }}</div>
                     </div>
-                    <div class="activity-time">2 min ago</div>
+                    <div class="activity-time">{{ $activity['time'] }}</div>
                 </div>
+                @empty
                 <div class="activity-item">
-                    <div class="activity-icon green">♻️</div>
                     <div class="activity-content">
-                        <div class="activity-title">Waste transaction completed</div>
-                        <div class="activity-description">15kg plastic bottles recycled</div>
+                        <div class="activity-title">No recent activities</div>
+                        <div class="activity-description">Check back soon for updates</div>
                     </div>
-                    <div class="activity-time">5 min ago</div>
                 </div>
-                <div class="activity-item">
-                    <div class="activity-icon yellow">🎫</div>
-                    <div class="activity-content">
-                        <div class="activity-title">Voucher redeemed</div>
-                        <div class="activity-description">$10 eco-friendly store voucher</div>
-                    </div>
-                    <div class="activity-time">12 min ago</div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>

@@ -11,6 +11,9 @@
     font-weight: 700;
     color: #20413A;
     margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .drop-point-tabs {
@@ -30,6 +33,10 @@
     cursor: pointer;
     transition: all 0.3s;
     color: #20413A;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'DM Sans', sans-serif;
 }
 
 .drop-point-tab:hover {
@@ -57,27 +64,30 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f8f9fa;
+    background: linear-gradient(135deg, #20413A 0%, #2a554d 100%);
 }
 
 .drop-point-table-title {
     font-family: 'Bricolage Grotesque', sans-serif;
     font-size: 1.25rem;
     font-weight: 600;
-    color: #20413A;
+    color: white;
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .drop-point-btn-add {
     background: #F9B6C7;
     color: white;
     border: none;
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -88,13 +98,14 @@
 .drop-point-btn-add:hover {
     background: #f7a0b8;
     transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(249, 182, 199, 0.4);
 }
 
 /* Table Styles */
 .drop-point-table-container table {
     width: 100%;
     border-collapse: collapse;
-    font-family: 'Inter', sans-serif;
+    font-family: 'DM Sans', sans-serif;
 }
 
 .drop-point-table-container thead {
@@ -109,6 +120,9 @@
     color: #20413A;
     border-bottom: 2px solid #e9ecef;
     font-family: 'Bricolage Grotesque', sans-serif;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
 }
 
 .drop-point-table-container td {
@@ -144,7 +158,10 @@
     cursor: pointer;
     border: 1px solid;
     transition: all 0.3s;
-    font-family: 'Inter', sans-serif;
+    font-family: 'DM Sans', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .drop-point-btn-edit {
@@ -189,9 +206,10 @@
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.5);
-    z-index: 1000;
+    z-index: 1050;
     align-items: center;
     justify-content: center;
+    padding: 1rem;
 }
 
 .modal.active {
@@ -201,7 +219,7 @@
 .modal-content {
     background: white;
     border-radius: 12px;
-    width: 90%;
+    width: 100%;
     max-width: 600px;
     max-height: 80vh;
     overflow-y: auto;
@@ -219,16 +237,24 @@
     cursor: pointer;
     color: #6c757d;
     z-index: 10;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
 }
 
 .modal-close:hover {
+    background: rgba(0,0,0,0.1);
     color: #dc3545;
 }
 
 .modal-header {
     padding: 1.5rem;
     border-bottom: 2px solid #e9ecef;
-    background: #f8f9fa;
+    background: linear-gradient(135deg, #20413A 0%, #2a554d 100%);
     border-radius: 12px 12px 0 0;
 }
 
@@ -236,8 +262,11 @@
     font-family: 'Bricolage Grotesque', sans-serif;
     font-size: 1.25rem;
     font-weight: 600;
-    color: #20413A;
+    color: white;
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .modal-body {
@@ -264,8 +293,12 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
-    font-family: 'Inter', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     min-width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 .drop-point-btn-yes {
@@ -292,7 +325,10 @@
     border-radius: 8px;
     margin-bottom: 1.5rem;
     border: 1px solid;
-    font-family: 'Inter', sans-serif;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .drop-point-alert-success {
@@ -310,16 +346,17 @@
 /* Detail Styles */
 .drop-point-detail-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
 }
 
 .drop-point-detail-item {
-    padding: 1rem;
+    padding: 1.25rem;
     background: #f8f9fa;
     border-radius: 8px;
     border: 1px solid #e9ecef;
+    border-left: 4px solid #F9B6C7;
 }
 
 .drop-point-detail-label {
@@ -327,13 +364,16 @@
     color: #6c757d;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    font-family: 'Inter', sans-serif;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .drop-point-detail-value {
     font-weight: 600;
     color: #20413A;
-    font-family: 'Inter', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-size: 1rem;
 }
 
@@ -342,7 +382,7 @@
 }
 
 .drop-point-transaction-item {
-    padding: 1rem;
+    padding: 1.25rem;
     background: #f8f9fa;
     border-radius: 8px;
     margin-bottom: 1rem;
@@ -350,11 +390,26 @@
     justify-content: space-between;
     align-items: center;
     border: 1px solid #e9ecef;
-    transition: background 0.3s;
+    border-left: 4px solid #28a745;
+    transition: all 0.3s;
 }
 
 .drop-point-transaction-item:hover {
     background: #e9ecef;
+    transform: translateX(5px);
+}
+
+/* Empty State */
+.drop-point-empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #6c757d;
+}
+
+.drop-point-empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #BAC2AB;
 }
 
 /* Responsive Design */
@@ -366,6 +421,12 @@
     
     .drop-point-tabs {
         flex-wrap: wrap;
+    }
+    
+    .drop-point-tab {
+        flex: 1;
+        min-width: 140px;
+        justify-content: center;
     }
     
     .drop-point-table-header {
@@ -381,6 +442,7 @@
     
     .drop-point-btn-action {
         text-align: center;
+        justify-content: center;
     }
     
     .drop-point-detail-grid {
@@ -389,5 +451,21 @@
     
     .drop-point-confirm-buttons {
         flex-direction: column;
+    }
+    
+    .drop-point-transaction-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .drop-point-page-title {
+        font-size: 1.75rem;
+    }
+    
+    .drop-point-form-row {
+        grid-template-columns: 1fr;
     }
 }

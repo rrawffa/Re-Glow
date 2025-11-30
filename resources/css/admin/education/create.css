@@ -1,223 +1,434 @@
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: #f5f5f5;
-            color: #20413A;
-        }
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f5f5f5;
+    color: #20413A;
+}
 
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
+.header {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
 
-        .back-link { /* Mengganti nama class dari .back-button menjadi .back-link agar lebih spesifik */
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.back-button {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     color: #20413A;
     text-decoration: none;
     font-weight: 500;
-    margin-top: 1rem; /* Jarak dari atas container (Header) */
-    margin-bottom: 1rem; /* Jarak ke Page Title di bawahnya */
+    margin-bottom: 1.5rem;
     transition: color 0.3s;
+    font-family: 'DM Sans', sans-serif;
 }
 
-.back-link:hover {
+.back-button:hover {
     color: #F9B6C7;
 }
 
-        .page-title {
-            font-family: 'Bricolage Grotesque', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #20413A;
-            margin-bottom: 2rem;
-        }
-
-        .form-container {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #20413A;
-        }
-
-        .form-input,
-        .form-textarea {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .form-input:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: #F9B6C7;
-        }
-
-        .form-input.error,
-        .form-textarea.error {
-            border-color: #dc3545;
-        }
-
-        .form-error {
-            color: #dc3545;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-            display: none;
-        }
-
-        .form-error.show {
-            display: block;
-        }
-
-        .form-textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .form-row {
+.page-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #20413A;
+    margin-bottom: 2rem;
     display: flex;
-    gap: 1.5rem; /* Jarak antara kolom */
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.form-container {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid #e9ecef;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
     margin-bottom: 1.5rem;
 }
 
-/* Kolom Judul (70% lebar) */
-.form-row .col-70 {
-    flex: 7; /* Ambil 7 bagian dari 10 */
+.form-group {
+    margin-bottom: 1.5rem;
 }
 
-/* Kolom Penulis (30% lebar) */
-.form-row .col-30 {
-    flex: 3; /* Ambil 3 bagian dari 10 */
+.form-group.full-width {
+    grid-column: 1 / -1;
 }
 
-/* TinyMCE Editor Styling (Untuk memastikan kontainer TinyMCE mengikuti form-group) */
-.form-group #isi + .tox {
-    /* TinyMCE secara default menggunakan iframe, sehingga class-nya adalah .tox */
+.form-label {
     display: block;
-    width: 100% !important; 
-    max-width: none !important;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #20413A;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            width: 100%;
-        }
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
 
-        .file-input-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem;
-            border: 2px dashed #e9ecef;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: #f8f9fa;
-        }
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #F9B6C7;
+    box-shadow: 0 0 0 3px rgba(249, 182, 199, 0.1);
+}
 
-        .file-input-label:hover {
-            border-color: #F9B6C7;
-            background: #fff5f8;
-        }
+.form-input.error,
+.form-textarea.error {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
 
-        .file-input-label.error {
-            border-color: #dc3545;
-        }
+.form-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+}
 
-        .file-input {
-            position: absolute;
-            left: -9999px;
-        }
+.form-error.show {
+    display: block;
+}
 
-        .file-preview {
-            margin-top: 1rem;
-            display: none;
-        }
+.form-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
 
-        .file-preview.show {
-            display: block;
-        }
+/* File Upload Styles */
+.file-input-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100%;
+}
 
-        .file-preview img {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 8px;
-        }
+.file-input-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    border: 2px dashed #e9ecef;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #f8f9fa;
+    text-align: center;
+    flex-direction: column;
+    gap: 0.5rem;
+}
 
-        .btn-submit {
-            width: 100%;
-            background: #F9B6C7;
-            color: white;
-            border: none;
-            padding: 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 1rem;
-        }
+.file-input-label:hover {
+    border-color: #F9B6C7;
+    background: #fff5f8;
+}
 
-        .btn-submit:hover {
-            background: #f7a0b8;
-        }
+.file-input-label.error {
+    border-color: #dc3545;
+    background: #f8d7da;
+}
 
-        .btn-submit:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
+.file-input {
+    position: absolute;
+    left: -9999px;
+}
 
-        .alert {
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-        }
+.file-preview {
+    margin-top: 1rem;
+    display: none;
+    position: relative;
+    max-width: 100%;
+}
 
-        .alert-danger {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+.file-preview.show {
+    display: block;
+}
 
-/* Media Query untuk Mobile */
+.file-preview img {
+    display: block;
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.delete-image-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: #dc3545;
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.delete-image-btn:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+
+/* Custom Editor Styles */
+.editor-wrapper {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+    transition: border-color 0.3s;
+}
+
+.editor-wrapper:focus-within {
+    border-color: #F9B6C7;
+    box-shadow: 0 0 0 3px rgba(249, 182, 199, 0.1);
+}
+
+.editor-toolbar {
+    background: #f8f9fa;
+    padding: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    border-bottom: 1px solid #e9ecef;
+    align-items: center;
+}
+
+.editor-btn {
+    background: transparent;
+    border: none;
+    padding: 0.5rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    color: #20413A;
+}
+
+.editor-btn:hover {
+    background: #e9ecef;
+}
+
+.editor-btn.active {
+    background: #F9B6C7;
+    color: white;
+}
+
+.editor-separator {
+    width: 1px;
+    height: 28px;
+    background: #dee2e6;
+    margin: 0 0.25rem;
+    align-self: center;
+}
+
+.editor-content {
+    min-height: 400px;
+    padding: 1.5rem;
+    outline: none;
+    line-height: 1.6;
+    font-size: 16px;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.editor-content:empty:before {
+    content: attr(data-placeholder);
+    color: #adb5bd;
+    pointer-events: none;
+}
+
+.editor-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 0.5rem 0;
+}
+
+/* Waktu Baca Section */
+.waktu-baca-section {
+    max-width: 300px; 
+    margin-left: auto;
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    margin-top: 2rem;
+}
+
+.waktu-baca-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 300px;
+    margin-left: auto;
+}
+
+.waktu-baca-input {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.waktu-baca-input .form-input {
+    text-align: center;
+    padding: 0.75rem 1rem;
+}
+
+.btn-submit {
+    width: 100%;
+    background: #F9B6C7;
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 2rem;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-submit:hover {
+    background: #f7a0b8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(249, 182, 199, 0.4);
+}
+
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+        margin: 1rem auto;
+    }
+    
     .form-row {
-        flex-direction: column; /* Ubah menjadi kolom di layar kecil */
-        gap: 0;
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
     
-    .form-row .col-70,
-    .form-row .col-30 {
+    .page-title {
+        font-size: 1.75rem;
+    }
+    
+    .form-container {
+        padding: 1.5rem;
+    }
+    
+    .waktu-baca-content {
+        margin-left: 0;
+        max-width: none;
+        justify-content: space-between;
+    }
+    
+    .waktu-baca-input {
         flex: none;
-        width: 100%;
+        min-width: 120px;
     }
     
-    /* Atur margin-bottom untuk form-group di dalam form-row agar tetap rapi */
-    .form-row .form-group {
-        margin-bottom: 1.5rem;
+    .editor-toolbar {
+        padding: 0.5rem;
+        gap: 0.125rem;
+    }
+    
+    .editor-btn {
+        width: 32px;
+        height: 32px;
+        padding: 0.375rem;
+    }
+    
+    .editor-content {
+        min-height: 300px;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 1rem;
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+    }
+    
+    .waktu-baca-section {
+        padding: 1rem;
+    }
+    
+    .waktu-baca-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .waktu-baca-input {
+        justify-content: center;
+    }
+    
+    .file-input-label {
+        padding: 2rem;
     }
 }

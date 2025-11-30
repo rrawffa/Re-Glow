@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Education extends Model
 {
+    use HasFactory;
+
     protected $table = 'kontenedukasi';
     protected $primaryKey = 'id_konten';
     public $timestamps = true;
@@ -26,6 +29,36 @@ class Education extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
+
+    // ============= BOOT METHOD =============
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Event ketika model dihapus
+        static::deleting(function ($education) {
+            // Hapus statistik terkait
+            if ($education->statistik) {
+                $education->statistik->delete();
+            }
+
+            // Hapus reaksi terkait
+            if ($education->reaksi) {
+                $education->reaksi()->delete();
+            }
+
+            // Hapus media terkait
+            if ($education->media) {
+                foreach ($education->media as $media) {
+                    if ($media->path_file) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($media->path_file);
+                    }
+                    $media->delete();
+                }
+            }
+        });
+    }
+
 
     // ============= RELATIONSHIPS =============
     // Relasi ke statistik
@@ -118,5 +151,3 @@ class Education extends Model
         return $query->orderBy('tanggal_upload', 'desc')->limit($limit);
     }
 }
-
-

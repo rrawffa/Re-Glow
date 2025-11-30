@@ -377,7 +377,7 @@
             <div class="stat-icon pink">📦</div>
             <div class="stat-info">
                 <h3>Today's Pickups</h3>
-                <div class="stat-number">12</div>
+                <div class="stat-number">{{ $todayPickups->count() }}</div>
             </div>
         </div>
 
@@ -385,7 +385,7 @@
             <div class="stat-icon green">✓</div>
             <div class="stat-info">
                 <h3>Completed</h3>
-                <div class="stat-number">8</div>
+                <div class="stat-number">{{ $completedToday }}</div>
             </div>
         </div>
 
@@ -393,15 +393,15 @@
             <div class="stat-icon yellow">⏱</div>
             <div class="stat-info">
                 <h3>Pending</h3>
-                <div class="stat-number">4</div>
+                <div class="stat-number">{{ $pendingToday }}</div>
             </div>
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon blue">🚛</div>
+            <div class="stat-icon blue">📊</div>
             <div class="stat-info">
-                <h3>Active Vehicles</h3>
-                <div class="stat-number">6</div>
+                <h3>Total Pickups</h3>
+                <div class="stat-number">{{ $totalPickups }}</div>
             </div>
         </div>
     </div>
@@ -412,71 +412,35 @@
         <div class="card full-width">
             <div class="card-header">
                 <h2>Scheduled Today</h2>
-                <button class="btn-add">
-                    <span>+</span>
-                    Add Pickup
-                </button>
             </div>
 
-            <div class="pickup-item">
-                <div class="pickup-icon">📍</div>
-                <div class="pickup-details">
-                    <h3>Posko Soekarno-Hatta</h3>
-                    <div class="address">123 Business Street, City Center</div>
-                    <div class="pickup-meta">
-                        <div class="pickup-time">
-                            <span class="time-badge green"></span>
-                            <span>09:30 AM</span>
+            @if($todayPickups->count() > 0)
+                @foreach($todayPickups as $pickup)
+                <div class="pickup-item">
+                    <div class="pickup-icon">📍</div>
+                    <div class="pickup-details">
+                        <h3>{{ $pickup->dropPoint->nama_droppoint ?? 'Unknown Location' }}</h3>
+                        <div class="address">{{ $pickup->lokasi_droppoint ?? 'No address provided' }}</div>
+                        <div class="pickup-meta">
+                            <div class="pickup-time">
+                                <span class="time-badge {{ $pickup->status === 'Selesai' ? 'green' : ($pickup->status === 'Pending' ? 'yellow' : 'blue') }}"></span>
+                                <span>{{ $pickup->waktu_pengambilan->format('h:i A') }}</span>
+                            </div>
+                            <div class="pickup-contact">Contact: {{ $pickup->user->name ?? 'N/A' }}</div>
                         </div>
-                        <div class="pickup-contact">Contact: Sarah Johnson</div>
+                    </div>
+                    <div class="pickup-actions">
+                        <button class="action-btn" title="View Details">👁</button>
+                        <button class="action-btn" title="Edit">✏️</button>
+                        <button class="action-btn alert" title="Report Issue">⚠️</button>
                     </div>
                 </div>
-                <div class="pickup-actions">
-                    <button class="action-btn">👁</button>
-                    <button class="action-btn">✏️</button>
-                    <button class="action-btn alert">⚠️</button>
+                @endforeach
+            @else
+                <div style="padding: 2rem; text-align: center; color: #666;">
+                    <p>No pickups scheduled for today</p>
                 </div>
-            </div>
-
-            <div class="pickup-item">
-                <div class="pickup-icon">📍</div>
-                <div class="pickup-details">
-                    <h3>Posko Klojen</h3>
-                    <div class="address">456 Residential Ave, Suburb District</div>
-                    <div class="pickup-meta">
-                        <div class="pickup-time">
-                            <span class="time-badge yellow"></span>
-                            <span>11:15 AM</span>
-                        </div>
-                        <div class="pickup-contact">Contact: Mike Chen</div>
-                    </div>
-                </div>
-                <div class="pickup-actions">
-                    <button class="action-btn">👁</button>
-                    <button class="action-btn">✏️</button>
-                    <button class="action-btn alert">⚠️</button>
-                </div>
-            </div>
-
-            <div class="pickup-item">
-                <div class="pickup-icon">📍</div>
-                <div class="pickup-details">
-                    <h3>Posko Universitas Brawijaya</h3>
-                    <div class="address">789 Innovation Drive, Tech Park</div>
-                    <div class="pickup-meta">
-                        <div class="pickup-time">
-                            <span class="time-badge blue"></span>
-                            <span>02:00 PM</span>
-                        </div>
-                        <div class="pickup-contact">Contact: Emma Davis</div>
-                    </div>
-                </div>
-                <div class="pickup-actions">
-                    <button class="action-btn">👁</button>
-                    <button class="action-btn">✏️</button>
-                    <button class="action-btn alert">⚠️</button>
-                </div>
-            </div>
+            @endif
         </div>
 
         <!-- Recent Pick-Ups -->
@@ -485,41 +449,26 @@
                 <h2>Recent Pick-Ups</h2>
             </div>
 
-            <div class="history-item">
-                <div class="history-icon success">✓</div>
-                <div class="history-info">
-                    <h3>Metro Shopping Center</h3>
-                    <div class="date">Oct 25, 2024 - 10:45 AM</div>
+            @if($recentPickups->count() > 0)
+                @foreach($recentPickups as $pickup)
+                <div class="history-item">
+                    <div class="history-icon {{ $pickup->status === 'Selesai' ? 'success' : 'warning' }}">
+                        {{ $pickup->status === 'Selesai' ? '✓' : '!' }}
+                    </div>
+                    <div class="history-info">
+                        <h3>{{ $pickup->dropPoint->nama_droppoint ?? 'Unknown Location' }}</h3>
+                        <div class="date">{{ $pickup->waktu_pengambilan->format('M d, Y - h:i A') }}</div>
+                    </div>
+                    <div class="history-status {{ $pickup->status === 'Selesai' ? 'completed' : 'issue' }}">
+                        {{ $pickup->status }}
+                    </div>
                 </div>
-                <div class="history-status completed">Completed</div>
-            </div>
-
-            <div class="history-item">
-                <div class="history-icon success">✓</div>
-                <div class="history-info">
-                    <h3>University Campus</h3>
-                    <div class="date">Oct 25, 2024 - 08:30 AM</div>
+                @endforeach
+            @else
+                <div style="padding: 2rem; text-align: center; color: #666;">
+                    <p>No pickup history available</p>
                 </div>
-                <div class="history-status completed">Completed</div>
-            </div>
-
-            <div class="history-item">
-                <div class="history-icon success">✓</div>
-                <div class="history-info">
-                    <h3>Corporate Plaza</h3>
-                    <div class="date">Oct 24, 2024 - 03:15 PM</div>
-                </div>
-                <div class="history-status completed">Completed</div>
-            </div>
-
-            <div class="history-item">
-                <div class="history-icon warning">!</div>
-                <div class="history-info">
-                    <h3>Riverside Mall</h3>
-                    <div class="date">Oct 24, 2024 - 01:20 PM</div>
-                </div>
-                <div class="history-status issue">Issue Reported</div>
-            </div>
+            @endif
         </div>
 
         <!-- System Notifications -->

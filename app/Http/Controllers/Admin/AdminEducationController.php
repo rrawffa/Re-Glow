@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Education;
 use App\Models\StatistikEdukasi;
+use App\Models\ReaksiKonten;
+use App\Models\MediaKonten;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class AdminEducationController extends Controller
 {
@@ -94,14 +97,31 @@ class AdminEducationController extends Controller
     }
 
     /**
-     * Show detail (preview)
+     * Show detail (preview) - FIXED untuk menampilkan gambar
      */
     public function show($id)
     {
         $konten = Education::with(['statistik'])->findOrFail($id);
+        
+        // Format gambar cover URL
+        $gambarUrl = $konten->gambar_cover 
+            ? asset('storage/' . $konten->gambar_cover) 
+            : null;
+        
         return response()->json([
             'success' => true,
-            'data' => $konten
+            'data' => [
+                'id_konten' => $konten->id_konten,
+                'judul' => $konten->judul,
+                'ringkasan' => $konten->ringkasan,
+                'isi' => $konten->isi,
+                'konten' => $konten->konten,
+                'gambar_cover' => $gambarUrl,
+                'penulis' => $konten->penulis,
+                'tanggal_upload' => $konten->tanggal_upload->format('d M Y'),
+                'waktu_baca' => $konten->waktu_baca,
+                'statistik' => $konten->statistik
+            ]
         ]);
     }
 
@@ -168,19 +188,27 @@ class AdminEducationController extends Controller
     }
 
     /**
-     * Delete education content
+     * Delete education content - FIXED
      */
     public function destroy($id)
     {
+        DB::beginTransaction();
+        
         try {
             $konten = Education::findOrFail($id);
+            
+            // Delete related data
+            $this->deleteRelatedData($konten->id_konten);
 
             // Delete image
             if ($konten->gambar_cover) {
                 Storage::disk('public')->delete($konten->gambar_cover);
             }
 
+            // Delete the content
             $konten->delete();
+
+            DB::commit();
 
             return response()->json([
                 'success' => true,
@@ -188,11 +216,51 @@ class AdminEducationController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Education delete error: ' . $e->getMessage());
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Delete related data helper
+     */
+    private function deleteRelatedData($id_konten)
+    {
+        // Delete statistics
+        StatistikEdukasi::where('id_konten', $id_konten)->delete();
+        
+        // Delete reactions - check if class exists
+        if (class_exists(ReaksiKonten::class)) {
+            ReaksiKonten::where('id_konten', $id_konten)->delete();
+        }
+        
+        // Delete media records - check if class exists
+        if (class_exists(MediaKonten::class)) {
+            $this->deleteMediaFiles($id_konten);
+            MediaKonten::where('id_konten', $id_konten)->delete();
+        }
+    }
+
+    /**
+     * Delete media files from storage
+     */
+    private function deleteMediaFiles($id_konten)
+    {
+        if (!class_exists(MediaKonten::class)) {
+            return;
+        }
+        
+        $mediaFiles = MediaKonten::where('id_konten', $id_konten)->get();
+        
+        foreach ($mediaFiles as $media) {
+            if ($media->path_file) {
+                Storage::disk('public')->delete($media->path_file);
+            }
         }
     }
 }

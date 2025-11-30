@@ -4,12 +4,13 @@
 
 @section('styles')
     @vite(['resources/css/waste-exchange/show.css'])
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 @endsection
 
 @section('content')
 <div class="detail-container">
     <a href="{{ route('waste-exchange.history') }}" class="back-link">
-        ← Back to History
+        <i class="bi bi-arrow-left"></i> Back to History
     </a>
 
     <div class="page-header">
@@ -28,15 +29,19 @@
                 <h3>Transaction Progress</h3>
                 <div class="timeline">
                     @php
-                        $statuses = ['Menunggu' => 'Submitted', 'Diproses' => 'Dropped Off', 'Selesai' => 'Processing', 'Completed' => 'Completed'];
-                        $statusIcons = ['Menunggu' => '📦', 'Diproses' => '🚚', 'Selesai' => '♻️', 'Completed' => '✅'];
+                        $statusIcons = [
+                            'Menunggu' => 'bi-box-seam', 
+                            'Diproses' => 'bi-truck', 
+                            'Selesai' => 'bi-recycle', 
+                            'Completed' => 'bi-check-circle'
+                        ];
                         $currentStatus = $transaksi->status;
                     @endphp
 
                     @foreach($transaksi->riwayat as $index => $riwayat)
                     <div class="timeline-item">
                         <div class="timeline-icon {{ $riwayat->status == $currentStatus ? 'current' : 'active' }}">
-                            {{ $statusIcons[$riwayat->status] ?? '📌' }}
+                            <i class="bi {{ $statusIcons[$riwayat->status] ?? 'bi-pin' }}"></i>
                         </div>
                         <div class="timeline-content">
                             <h4>{{ $riwayat->status }}</h4>
@@ -58,7 +63,9 @@
 
                     @if($currentStatus != 'Selesai')
                     <div class="timeline-item">
-                        <div class="timeline-icon">⏳</div>
+                        <div class="timeline-icon">
+                            <i class="bi bi-clock"></i>
+                        </div>
                         <div class="timeline-content">
                             <h4 style="color: #999;">Completed</h4>
                             <div class="timeline-date">Pending</div>
@@ -70,7 +77,7 @@
             </div>
 
             <!-- Waste Items -->
-            <div class="detail-card" style="margin-top: 2rem;">
+            <div class="detail-card">
                 <h3>Waste Items Submitted</h3>
                 <table class="items-table">
                     <thead>
@@ -96,7 +103,7 @@
 
             <!-- Photo Proof -->
             @if($transaksi->foto_bukti)
-            <div class="detail-card" style="margin-top: 2rem;">
+            <div class="detail-card">
                 <h3>Photo Proof</h3>
                 <div class="photo-grid">
                     <div class="photo-item">
@@ -110,10 +117,10 @@
             @if($transaksi->status == 'Menunggu')
             <div class="action-buttons">
                 <a href="{{ route('waste-exchange.edit', $transaksi->id_tSampah) }}" class="btn-action btn-edit-transaction">
-                    Edit Transaction
+                    <i class="bi bi-pencil"></i> Edit
                 </a>
                 <button type="button" class="btn-action btn-cancel-transaction" onclick="confirmCancel()">
-                    Cancel Transaction
+                    <i class="bi bi-trash"></i> Delete
                 </button>
             </div>
             @endif
@@ -142,23 +149,16 @@
                     <div class="summary-label">{{ $transaksi->status == 'Selesai' ? 'Points Earned' : 'Estimated Points' }}</div>
                     <div class="points-highlight">+{{ $transaksi->total_poin }} points</div>
                 </div>
-
-                <!-- Help Box -->
-                <div class="help-box">
-                    <h4>Need Help?</h4>
-                    <p>If you have questions about your transaction or need to make changes, contact our support team.</p>
-                    <button class="btn-support">Contact Support</button>
-                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Cancel Modal (sama seperti delete modal di history) -->
+<!-- Cancel Modal -->
 <div class="modal-overlay" id="cancelModal" style="display:none;">
-    <div class="modal-content" style="background:white;padding:2rem;border-radius:20px;max-width:500px;text-align:center;">
+    <div class="modal-content">
         <div style="width:80px;height:80px;background:#ffebee;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:2.5rem;color:#dc3545;">
-            🗑️
+            <i class="bi bi-trash"></i>
         </div>
         <h3 style="color:var(--green-dark);margin-bottom:1rem;font-weight:700;">Cancel Transaction</h3>
         <p style="color:var(--text-gray);margin-bottom:2rem;">Are you sure you want to cancel this transaction? This action cannot be undone.</p>
@@ -178,37 +178,37 @@
 @section('scripts')
 <script>
     function confirmCancel() {
-    document.getElementById('cancelModal').style.display = 'flex';
-}
-
-function closeCancelModal() {
-    document.getElementById('cancelModal').style.display = 'none';
-}
-
-document.getElementById('confirmCancelBtn').addEventListener('click', async function() {
-    try {
-        const response = await fetch('/waste-exchange/{{ $transaksi->id_tSampah }}', {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json'
-            }
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            alert('Transaction cancelled successfully!');
-            window.location.href = '{{ route("waste-exchange.history") }}';
-        } else {
-            alert(data.message || 'Failed to cancel transaction');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred');
+        document.getElementById('cancelModal').style.display = 'flex';
     }
 
-    closeCancelModal();
-});
+    function closeCancelModal() {
+        document.getElementById('cancelModal').style.display = 'none';
+    }
+
+    document.getElementById('confirmCancelBtn').addEventListener('click', async function() {
+        try {
+            const response = await fetch('/waste-exchange/{{ $transaksi->id_tSampah }}', {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert('Transaction cancelled successfully!');
+                window.location.href = '{{ route("waste-exchange.history") }}';
+            } else {
+                alert(data.message || 'Failed to cancel transaction');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred');
+        }
+
+        closeCancelModal();
+    });
 </script>
 @endsection

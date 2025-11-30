@@ -9,6 +9,8 @@ use App\Http\Controllers\EducationController;
 use App\Http\Controllers\WasteExchangeController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\LogistikController;
 use App\Http\Controllers\Admin\AdminEducationController;
 use App\Http\Controllers\Admin\AdminWasteExchangeController;
 use App\Http\Controllers\Admin\AdminPointController;
@@ -23,12 +25,8 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-
-// =========================
-//  AUTHENTICATION
-// =========================
-Route::middleware('guest')->group(function () {
-
+// Authentication Routes
+Route::middleware(['guest'])->group(function () {
     // Login
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'processLogin'])->name('login.process');
@@ -60,8 +58,10 @@ Route::middleware(['auth.session'])->group(function () {
             return view('user.dashboard', compact('topArticles'));
         })->name('dashboard');
 
-        // User Profile
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update.post');
     });
 
     // ----- ADMIN DASHBOARD -----
@@ -73,9 +73,11 @@ Route::middleware(['auth.session'])->group(function () {
 
     // ----- LOGISTIK DASHBOARD -----
     Route::prefix('logistik')->name('logistik.')->middleware('check.role:tim_logistik')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('logistik.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [LogistikController::class, 'dashboard'])->name('dashboard');
+        Route::get('/schedule', [LogistikController::class, 'schedule'])->name('schedule');
+        Route::get('/api/stats', [LogistikController::class, 'getStats'])->name('api.stats');
+        Route::get('/pickup/{id}', [LogistikController::class, 'getPickupDetails'])->name('pickup.details');
+        Route::put('/pickup/{id}/status', [LogistikController::class, 'updatePickupStatus'])->name('pickup.update-status');
     });
 });
 

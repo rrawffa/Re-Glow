@@ -1,54 +1,86 @@
 @extends('layouts.app')
 
-@section('title', 'manajemen tukar sampah - Re-Glow')
-<!-- resources\admin\education\edit.blade.php -->
+@section('title', 'Manajemen Tukar Sampah - Re-Glow')
+
 @section('styles')
     @vite(['resources/css/admin/waste-exchange/index.css'])
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 @endsection
 
 @section('content')
     <div class="container">
-        <h1 class="page-title">Waste Exchange Management</h1>
+        <h1 class="page-title">
+            <i class="bi bi-recycle"></i> Waste Exchange Management
+        </h1>
 
         <div class="tabs">
-            <button class="tab active" data-tab="all">All</button>
-            <button class="tab" data-tab="droppoint" onclick="window.location.href='{{ route('admin.waste.droppoint.index') }}'">Drop Point</button>
-            <button class="tab" data-tab="transaksi" onclick="window.location.href='{{ route('admin.waste.transaksi.index') }}'">Transaksi Sampah</button>
-            <button class="tab" data-tab="logistik" onclick="window.location.href='{{ route('admin.waste.logistik.index') }}'">Tim Logistik</button>
+            <button class="tab active" data-tab="all">
+                <i class="bi bi-grid-3x3-gap"></i> All
+            </button>
+            <button class="tab" data-tab="droppoint" onclick="window.location.href='{{ route('admin.waste.droppoint.index') }}'">
+                <i class="bi bi-geo-alt"></i> Drop Point
+            </button>
+            <button class="tab" data-tab="transaksi" onclick="window.location.href='{{ route('admin.waste.transaksi.index') }}'">
+                <i class="bi bi-arrow-left-right"></i> Transaksi Sampah
+            </button>
+            <button class="tab" data-tab="logistik" onclick="window.location.href='{{ route('admin.waste.logistik.index') }}'">
+                <i class="bi bi-truck"></i> Tim Logistik
+            </button>
         </div>
 
         <!-- Statistics -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-label">Total Drop Points</div>
+                <div class="stat-label">
+                    <i class="bi bi-geo-alt"></i> Total Drop Points
+                </div>
                 <div class="stat-value">{{ $stats['total_droppoint'] }}</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Total Transaksi</div>
+                <div class="stat-label">
+                    <i class="bi bi-arrow-left-right"></i> Total Transaksi
+                </div>
                 <div class="stat-value">{{ $stats['total_transaksi'] }}</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Transaksi Pending</div>
+                <div class="stat-label">
+                    <i class="bi bi-clock"></i> Transaksi Pending
+                </div>
                 <div class="stat-value">{{ $stats['transaksi_pending'] }}</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Transaksi Diproses</div>
+                <div class="stat-label">
+                    <i class="bi bi-gear"></i> Transaksi Diproses
+                </div>
                 <div class="stat-value">{{ $stats['transaksi_diproses'] }}</div>
             </div>
         </div>
 
-        <!-- Drop Points Table with Capacity -->
+        <!-- Recent Drop Points Table -->
         <div class="table-container">
             <div class="table-header">
-                <h2 class="table-title">Daftar Drop Point</h2>
+                <div>
+                    <h2 class="table-title">
+                        <i class="bi bi-list-ul"></i> Recent Drop Points
+                    </h2>
+                    <div class="table-subtitle">Daftar drop point dengan status kapasitas terbaru</div>
+                </div>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th>Drop Point</th>
-                        <th>Kapasitas</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>
+                            <i class="bi bi-geo-alt"></i> Drop Point
+                        </th>
+                        <th>
+                            <i class="bi bi-speedometer2"></i> Kapasitas
+                        </th>
+                        <th>
+                            <i class="bi bi-info-circle"></i> Status
+                        </th>
+                        <th>
+                            <i class="bi bi-activity"></i> Actions
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,7 +88,9 @@
                     <tr>
                         <td>
                             <strong>{{ $dp->nama_lokasi }}</strong><br>
-                            <small style="color: #6c757d;">{{ $dp->alamat }}</small>
+                            <small style="color: #6c757d;">
+                                <i class="bi bi-geo"></i> {{ $dp->alamat }}
+                            </small>
                         </td>
                         <td>
                             <div>
@@ -72,22 +106,33 @@
                         </td>
                         <td>
                             @if($dp->is_full)
-                                <span class="badge badge-danger">Penuh</span>
+                                <span class="badge badge-danger">
+                                    <i class="bi bi-exclamation-triangle"></i> Penuh
+                                </span>
                             @elseif($percentage >= 70)
-                                <span class="badge badge-warning">Hampir Penuh</span>
+                                <span class="badge badge-warning">
+                                    <i class="bi bi-exclamation-circle"></i> Hampir Penuh
+                                </span>
                             @else
-                                <span class="badge badge-success">Tersedia</span>
+                                <span class="badge badge-success">
+                                    <i class="bi bi-check-circle"></i> Tersedia
+                                </span>
                             @endif
                         </td>
                         <td>
                             <button class="btn-action btn-detail" onclick="showDropPointDetail({{ $dp->id_drop_point }})">
-                                Detail
+                                <i class="bi bi-eye"></i> Detail
                             </button>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" style="text-align: center; padding: 2rem;">Belum ada drop point</td>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <i class="bi bi-inbox"></i>
+                                <p>Belum ada drop point</p>
+                            </div>
+                        </td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -100,7 +145,9 @@
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal()">&times;</button>
             <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">Detail Drop Point</h2>
+                <h2 class="modal-title">
+                    <i class="bi bi-info-circle"></i> Detail Drop Point
+                </h2>
             </div>
             <div class="modal-body" id="modalBody">
                 <!-- Content will be loaded dynamically -->
@@ -122,49 +169,82 @@
                         let html = `
                             <div class="detail-grid">
                                 <div class="detail-item">
-                                    <div class="detail-label">Nama Lokasi</div>
+                                    <div class="detail-label">
+                                        <i class="bi bi-geo-alt"></i> Nama Lokasi
+                                    </div>
                                     <div class="detail-value">${dp.nama_lokasi}</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Koordinat</div>
+                                    <div class="detail-label">
+                                        <i class="bi bi-geo"></i> Koordinat
+                                    </div>
                                     <div class="detail-value">${dp.koordinat}</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Kapasitas</div>
+                                    <div class="detail-label">
+                                        <i class="bi bi-speedometer2"></i> Kapasitas
+                                    </div>
                                     <div class="detail-value">${dp.kapasitas_sampah}kg</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Total Transaksi</div>
+                                    <div class="detail-label">
+                                        <i class="bi bi-arrow-left-right"></i> Total Transaksi
+                                    </div>
                                     <div class="detail-value">${transactions.length}</div>
                                 </div>
                                 <div class="detail-item" style="grid-column: 1 / -1;">
-                                    <div class="detail-label">Alamat</div>
+                                    <div class="detail-label">
+                                        <i class="bi bi-house"></i> Alamat
+                                    </div>
                                     <div class="detail-value">${dp.alamat}</div>
                                 </div>
                             </div>
 
-                            <h3 style="font-family: 'Bricolage Grotesque', sans-serif; margin-bottom: 1rem; color: #20413A;">Transaksi di Drop Point Ini</h3>
+                            <h3 style="font-family: 'Bricolage Grotesque', sans-serif; margin-bottom: 1rem; color: #20413A; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="bi bi-clock-history"></i> Transaksi di Drop Point Ini
+                            </h3>
                             <div class="transaction-list">
                         `;
 
                         if (transactions.length > 0) {
                             transactions.forEach(tr => {
                                 const totalItems = tr.details.reduce((sum, d) => sum + d.quantity, 0);
+                                const transactionDate = new Date(tr.tgl_tSampah).toLocaleDateString('id-ID', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                });
+                                
                                 html += `
                                     <div class="transaction-item">
                                         <div>
-                                            <strong>${tr.user ? tr.user.username : 'Unknown'}</strong><br>
-                                            <small style="color: #6c757d;">${new Date(tr.tgl_tSampah).toLocaleDateString('id-ID')}</small>
+                                            <strong>
+                                                <i class="bi bi-person"></i> ${tr.user ? tr.user.username : 'Unknown'}
+                                            </strong><br>
+                                            <small style="color: #6c757d;">
+                                                <i class="bi bi-calendar"></i> ${transactionDate}
+                                            </small>
                                         </div>
                                         <div style="text-align: right;">
-                                            <strong>${totalItems} item</strong><br>
-                                            <small style="color: #6c757d;">${tr.total_poin} poin</small>
+                                            <strong>
+                                                <i class="bi bi-box"></i> ${totalItems} item
+                                            </strong><br>
+                                            <small style="color: #6c757d;">
+                                                <i class="bi bi-star"></i> ${tr.total_poin} poin
+                                            </small>
                                         </div>
                                     </div>
                                 `;
                             });
                         } else {
-                            html += '<p style="text-align: center; color: #6c757d; padding: 2rem;">Belum ada transaksi</p>';
+                            html += `
+                                <div class="empty-state">
+                                    <i class="bi bi-inbox"></i>
+                                    <p>Belum ada transaksi di drop point ini</p>
+                                </div>
+                            `;
                         }
 
                         html += '</div>';
@@ -173,7 +253,10 @@
                         document.getElementById('detailModal').classList.add('active');
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat memuat data drop point');
+                });
         }
 
         function closeModal() {
@@ -185,5 +268,12 @@
                 closeModal();
             }
         }
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
     </script>
 @endsection

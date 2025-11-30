@@ -32,6 +32,11 @@
                 </a>
             @endif
         </li>
+<<<<<<< HEAD
+      <li><a href="{{ url('/riwayat-poin') }}" class="{{ request()->is('riwayat-poin') ? 'active' : '' }}">Points</a></li>
+        <li><a href="{{ route('vouchers.index') }}" class="{{ request()->is('vouchers') ? 'active' : '' }}">Vouchers</a></li>
+        <li><a href="#community">Community</a></li>
+=======
         <li><a href="{{ url('/riwayat-poin') }}" class="{{ request()->is('riwayat-poin') ? 'active' : '' }}">Points</a></li>
         @if(Session::get('user_role') === 'admin')
             <li>
@@ -47,6 +52,7 @@
             </li>
         @endif
         <li><a href="{{ route('community.index') }}" class="{{ request()->is('community') ? 'active' : '' }}">Community</a></li>
+>>>>>>> 72f0bd5e82efa32b42166520c9754ea941f28033
         <li><a href="{{ url('/education') }}" class="{{ request()->is('education') ? 'active' : '' }}">Education</a></li>
         <li><a href="{{ url('/faq') }}" class="{{ request()->is('faq') ? 'active' : '' }}">FAQ</a></li>
     </ul>

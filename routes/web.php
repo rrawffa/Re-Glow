@@ -147,14 +147,16 @@ Route::get('/riwayat-poin', [RiwayatPoinController::class, 'index'])->name('riwa
 Route::get('/faq', [FaqController::class, 'userIndex'])->name('faq.user');
 
 // FAQ untuk admin (CRUD)
-Route::middleware(['auth.session', 'check.role:admin'])->group(function () {
-    Route::get('/admin/faq', [FaqController::class, 'index'])->name('faq.index'); // list FAQ
-    Route::get('/admin/faq/create', [FaqController::class, 'create'])->name('faq.create');
-    Route::post('/admin/faq', [FaqController::class, 'store'])->name('faq.store');
-    Route::get('/admin/faq/{id}/edit', [FaqController::class, 'edit'])->name('faq.edit');
-    Route::put('/admin/faq/{id}', [FaqController::class, 'update'])->name('faq.update');
-    Route::delete('/admin/faq/{id}', [FaqController::class, 'destroy'])->name('faq.destroy');
-});
+Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/faq', [FaqController::class, 'index'])->name('faq.index'); // list FAQ
+        Route::get('/faq/create', [FaqController::class, 'create'])->name('faq.create');
+        Route::post('/faq', [FaqController::class, 'store'])->name('faq.store');
+        Route::get('/faq/{id}', [FaqController::class, 'show'])->name('faq.show'); // tambahkan show
+        Route::get('/faq/{id}/edit', [FaqController::class, 'edit'])->name('faq.edit');
+        Route::put('/faq/{id}', [FaqController::class, 'update'])->name('faq.update');
+        Route::delete('/faq/{id}', [FaqController::class, 'destroy'])->name('faq.destroy');
+    });
+
 
 
 // Admin Education Routes

@@ -7,9 +7,19 @@
 
     <ul class="nav-menu">
         <li>
+            @if(Session::get('user_role') === 'admin')
+                <a href="{{ route('admin.dashboard') }}" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
+                    Dashboard
+                </a>
+            @elseif(Session::get('user_role') === 'logistik')
+                <a href="{{ route('logistik.dashboard') }}" class="{{ request()->is('logistik/dashboard') ? 'active' : '' }}">
+                    Dashboard
+                </a>
+            @else
             <a href="{{ route('user.dashboard') }}" class="{{ request()->is('user/dashboard') ? 'active' : '' }}">
                 Dashboard
             </a>
+            @endif
         </li>
         <li>
             @if(Session::get('user_role') === 'admin')
@@ -22,18 +32,30 @@
                 </a>
             @endif
         </li>
-       <li>
-    <a href="{{ route('user.points.index') }}" class="{{ request()->routeIs('user.points.index') ? 'active' : '' }}"> Points</a></li>
-        <li><a href="{{ route('vouchers.index') }}" class="{{ request()->is('vouchers') ? 'active' : '' }}">Vouchers</a></li>
-        <li><a href="#community">Community</a></li>
+        <li><a href="{{ url('/riwayat-poin') }}" class="{{ request()->is('riwayat-poin') ? 'active' : '' }}">Points</a></li>
+        @if(Session::get('user_role') === 'admin')
+            <li>
+                <a href="{{ route('admin.vouchers.index') }}" class="{{ request()->is('admin/vouchers*') ? 'active' : '' }}">
+                    Vouchers
+                </a>
+            </li>
+        @else
+            <li>
+                <a href="{{ route('vouchers.index') }}" class="{{ request()->is('vouchers') ? 'active' : '' }}">
+                    Vouchers
+                </a>
+            </li>
+        @endif
+        <li><a href="#">Community</a></li>
         <li><a href="{{ url('/education') }}" class="{{ request()->is('education') ? 'active' : '' }}">Education</a></li>
         <li><a href="{{ url('/faq') }}" class="{{ request()->is('faq') ? 'active' : '' }}">FAQ</a></li>
     </ul>
 
     <div class="nav-icons">
-        <button class="icon-btn">🔔</button>
-        <a href="{{ route('user.profile.show') }}">
-            <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="profile-pic">
+        <a href="{{ route('user.profile.show') }}" class="profile-icon">
+            <div class="nav-avatar-container">
+                <i class="bi bi-person-fill"></i>
+            </div>
         </a>
         <form action="{{ route('logout') }}" method="POST" class="logout-form">
             @csrf

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 
+
 class User extends Authenticatable
 {
     use Notifiable;
@@ -95,6 +96,11 @@ class User extends Authenticatable
                 return route('user.dashboard');
         }
     }
+      public function pointTransactions()
+    {
+        return $this->hasMany(PointTransaction::class, 'user_id', 'id_user');
+    }
+
 
     /**
      * Validation rules untuk update profile

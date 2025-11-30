@@ -12,12 +12,16 @@ class DropPoint extends Model
     protected $fillable = [
         'nama_lokasi',
         'koordinat',
+        'latitude',
+        'longitude',
         'kapasitas_sampah',
         'alamat'
     ];
 
     protected $casts = [
         'kapasitas_sampah' => 'float',
+        'latitude' => 'float',    
+        'longitude' => 'float',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -25,7 +29,8 @@ class DropPoint extends Model
     /**
      * Relationships
      */
-    public function transactions()
+    // Tambahkan di model DropPoint
+    public function transaksi()
     {
         return $this->hasMany(TransaksiSampah::class, 'id_drop_point', 'id_drop_point');
     }
@@ -43,6 +48,21 @@ class DropPoint extends Model
     public function riwayatPengambilan()
     {
         return $this->hasMany(RiwayatPengambilan::class, 'id_drop_point', 'id_drop_point');
+    }
+    
+    /**
+     * Mutator: Otomatis parse koordinat ke latitude dan longitude
+     */
+    public function setKoordinatAttribute($value)
+    {
+        $this->attributes['koordinat'] = $value;
+        
+        // Otomatis parse koordinat ke latitude dan longitude
+        $coords = explode(',', $value);
+        if (count($coords) === 2) {
+            $this->attributes['latitude'] = trim($coords[0]);
+            $this->attributes['longitude'] = trim($coords[1]);
+        }
     }
 
     /**

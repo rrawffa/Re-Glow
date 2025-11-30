@@ -1,129 +1,71 @@
+@vite(['resources/css/layouts/navbar.css'])
 <nav class="navbar">
     <div class="logo" style="display:flex;align-items:center;gap:8px;">
         <img src="{{ asset('assets/re-glow.svg') }}" width="40" height="40" alt="Re-Glow logo">
         <span>Re-Glow</span>
     </div>
+
     <ul class="nav-menu">
         <li>
-            <a href="{{ url('user/dashboard') }}" 
-               class="{{ request()->is('user/dashboard') ? 'active' : '' }}">
-               Dashboard
+            @if(Session::get('user_role') === 'admin')
+                <a href="{{ route('admin.dashboard') }}" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
+                    Dashboard
+                </a>
+            @elseif(Session::get('user_role') === 'logistik')
+                <a href="{{ route('logistik.dashboard') }}" class="{{ request()->is('logistik/dashboard') ? 'active' : '' }}">
+                    Dashboard
+                </a>
+            @else
+            <a href="{{ route('user.dashboard') }}" class="{{ request()->is('user/dashboard') ? 'active' : '' }}">
+                Dashboard
             </a>
+            @endif
         </li>
-        <li><a href="{{ route('waste-exchange.index') }}">Exchange Waste</a></li>
-        <li><a href="#points">Points</a></li>
-        <li><a href="#vouchers">Vouchers</a></li>
+        <li>
+            @if(Session::get('user_role') === 'admin')
+                <a href="{{ route('admin.waste.index') }}" class="{{ request()->is('admin/waste-exchange*') ? 'active' : '' }}">
+                    Exchange Waste
+                </a>
+            @else
+                <a href="{{ route('waste-exchange.index') }}" class="{{ request()->is('waste-exchange') ? 'active' : '' }}">
+                    Exchange Waste
+                </a>
+            @endif
+        </li>
+<<<<<<< HEAD
+      <li><a href="{{ url('/riwayat-poin') }}" class="{{ request()->is('riwayat-poin') ? 'active' : '' }}">Points</a></li>
+        <li><a href="{{ route('vouchers.index') }}" class="{{ request()->is('vouchers') ? 'active' : '' }}">Vouchers</a></li>
         <li><a href="#community">Community</a></li>
+=======
+        <li><a href="{{ url('/riwayat-poin') }}" class="{{ request()->is('riwayat-poin') ? 'active' : '' }}">Points</a></li>
+        @if(Session::get('user_role') === 'admin')
+            <li>
+                <a href="{{ route('admin.vouchers.index') }}" class="{{ request()->is('admin/vouchers*') ? 'active' : '' }}">
+                    Vouchers
+                </a>
+            </li>
+        @else
+            <li>
+                <a href="{{ route('vouchers.index') }}" class="{{ request()->is('vouchers') ? 'active' : '' }}">
+                    Vouchers
+                </a>
+            </li>
+        @endif
+        <li><a href="{{ route('community.index') }}" class="{{ request()->is('community') ? 'active' : '' }}">Community</a></li>
+>>>>>>> 72f0bd5e82efa32b42166520c9754ea941f28033
         <li><a href="{{ url('/education') }}" class="{{ request()->is('education') ? 'active' : '' }}">Education</a></li>
-        <li><a href="#faq">FAQ</a></li>
+        <li><a href="{{ url('/faq') }}" class="{{ request()->is('faq') ? 'active' : '' }}">FAQ</a></li>
     </ul>
+
     <div class="nav-icons">
-        <button class="icon-btn">🔔</button>
-        <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="profile-pic">
+        <a href="{{ route('user.profile.show') }}" class="profile-icon">
+            <div class="nav-avatar-container">
+                <i class="bi bi-person-fill"></i>
+            </div>
+        </a>
         <form action="{{ route('logout') }}" method="POST" class="logout-form">
             @csrf
             <button type="submit" class="btn-logout">Logout</button>
         </form>
     </div>
 </nav>
-
-<style>
-    .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.5rem 5%;
-        background: white;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
-
-    .logo {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-family: 'Bricolage Grotesque', sans-serif;
-        font-weight: 700;
-        font-size: 1.25rem;
-        color: var(--green-dark);
-    }
-
-    .nav-menu {
-        display: flex;
-        gap: 2rem;
-        list-style: none;
-        align-items: center;
-    }
-
-    .nav-menu a {
-        text-decoration: none;
-        color: var(--text-gray);
-        font-weight: 500;
-        transition: color 0.3s;
-    }
-
-    .nav-menu a:hover,
-    .nav-menu a.active {
-        color: var(--green-dark);
-    }
-
-    .nav-menu a.active {
-        border-bottom: 2px solid var(--green-dark);
-        padding-bottom: 0.25rem;
-    }
-
-    .nav-icons {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-    }
-
-    .icon-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 1.25rem;
-        color: var(--text-gray);
-    }
-
-    .profile-pic {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    .logout-form {
-        margin: 0;
-    }
-
-    .btn-logout {
-        background: var(--green-dark);
-        color: white;
-        border: none;
-        padding: 0.5rem 1.25rem;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .btn-logout:hover {
-        background: #163026;
-        transform: translateY(-2px);
-    }
-
-    @media (max-width: 768px) {
-        .nav-menu {
-            display: none;
-        }
-
-        .btn-logout {
-            padding: 0.4rem 1rem;
-            font-size: 0.85rem;
-        }
-    }
-</style>

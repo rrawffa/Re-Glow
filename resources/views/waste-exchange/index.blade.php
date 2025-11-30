@@ -3,318 +3,15 @@
 @section('title', 'Close the Loop - Track Your Cosmetic Waste Journey')
 
 @section('styles')
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    :root {
-        --pink-base: #F9B6C7;
-        --green-dark: #20413A;
-        --green-light: #BAC2AB;
-        --pink-light: #FFF5F7;
-        --text-dark: #2D2D2D;
-        --text-gray: #666666;
-    }
-
-    body {
-        font-family: 'DM Sans', sans-serif;
-        color: var(--text-dark);
-        line-height: 1.6;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-        font-family: 'Bricolage Grotesque', sans-serif;
-    }
-
-    .exchange-hero {
-        background: linear-gradient(135deg, #F9B6C7 0%, #BAC2AB 100%);
-        padding: 4rem 5%;
-        text-align: center;
-        border-radius: 0 0 50px 50px;
-    }
-
-    .exchange-hero h1 {
-        font-size: 2.5rem;
-        color: var(--green-dark);
-        margin-bottom: 1rem;
-        font-weight: 700;
-    }
-
-    .exchange-hero h1 .highlight {
-        color: var(--pink-base);
-    }
-
-    .exchange-hero p {
-        font-size: 1.125rem;
-        color: var(--text-dark);
-        max-width: 700px;
-        margin: 0 auto 2rem;
-    }
-
-    .btn-primary {
-        background: var(--green-dark);
-        color: white;
-        padding: 1rem 2.5rem;
-        border: none;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 1.125rem;
-        cursor: pointer;
-        transition: all 0.3s;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .btn-primary:hover {
-        background: #163026;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-
-    .process-cards {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2rem;
-        padding: 4rem 5%;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .process-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 20px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        text-align: center;
-        transition: transform 0.3s;
-    }
-
-    .process-card:hover {
-        transform: translateY(-10px);
-    }
-
-    .process-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-    }
-
-    .process-card h3 {
-        color: var(--green-dark);
-        margin-bottom: 1rem;
-        font-size: 1.5rem;
-    }
-
-    .journey-section {
-        background: var(--pink-light);
-        padding: 4rem 5%;
-    }
-
-    .journey-title {
-        text-align: center;
-        margin-bottom: 3rem;
-    }
-
-    .journey-title h2 {
-        font-size: 2rem;
-        color: var(--green-dark);
-        margin-bottom: 0.5rem;
-        font-weight: 700;
-    }
-
-    .journey-timeline {
-        max-width: 800px;
-        margin: 0 auto;
-        position: relative;
-    }
-
-    .timeline-item {
-        display: flex;
-        gap: 2rem;
-        margin-bottom: 3rem;
-        align-items: center;
-    }
-
-    .timeline-icon {
-        width: 70px;
-        height: 70px;
-        background: var(--green-dark);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        flex-shrink: 0;
-    }
-
-    .timeline-content {
-        flex: 1;
-        background: white;
-        padding: 1.5rem;
-        border-radius: 15px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-
-    .timeline-content h4 {
-        color: var(--green-dark);
-        margin-bottom: 0.5rem;
-        font-size: 1.25rem;
-        font-weight: 600;
-    }
-
-    .location-section {
-        padding: 4rem 5%;
-    }
-
-    .location-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 3rem;
-        max-width: 1200px;
-        margin: 2rem auto 0;
-    }
-
-    .map-container {
-        background: #f0f0f0;
-        border-radius: 20px;
-        height: 400px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #999;
-    }
-
-    .nearby-locations {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .nearby-locations h3 {
-        color: var(--green-dark);
-        font-weight: 600;
-    }
-
-    .location-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 15px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .location-icon {
-        width: 50px;
-        height: 50px;
-        background: var(--pink-base);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        flex-shrink: 0;
-    }
-
-    .location-info h4 {
-        color: var(--green-dark);
-        margin-bottom: 0.25rem;
-        font-weight: 600;
-    }
-
-    .location-info p {
-        font-size: 0.9rem;
-        color: var(--text-gray);
-        margin-bottom: 0.25rem;
-    }
-
-    .distance {
-        color: var(--pink-base);
-        font-weight: 600;
-        font-size: 0.875rem;
-    }
-
-    .btn-view-all {
-        background: var(--pink-base);
-        color: white;
-        padding: 0.875rem 2rem;
-        border: none;
-        border-radius: 10px;
-        font-weight: 600;
-        cursor: pointer;
-        width: 100%;
-        margin-top: 1rem;
-    }
-
-    .cta-section {
-        background: var(--green-dark);
-        color: white;
-        padding: 4rem 5%;
-        text-align: center;
-    }
-
-    .cta-section h2 {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-        font-weight: 700;
-    }
-
-    .cta-stats {
-        display: flex;
-        justify-content: center;
-        gap: 4rem;
-        margin-top: 3rem;
-    }
-
-    .stat-item {
-        text-align: center;
-    }
-
-    .stat-number {
-        font-size: 2.5rem;
-        font-weight: 700;
-        display: block;
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-label {
-        color: rgba(255,255,255,0.8);
-    }
-
-    .btn-cta {
-        background: var(--pink-base);
-        color: white;
-        padding: 1rem 2.5rem;
-        border: none;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 1.125rem;
-        cursor: pointer;
-        margin-top: 2rem;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    @media (max-width: 768px) {
-        .process-cards {
-            grid-template-columns: 1fr;
-        }
-        
-        .location-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .cta-stats {
-            flex-direction: column;
-            gap: 2rem;
-        }
-    }
-</style>
+    @vite(['resources/css/waste-exchange/index.css'])
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 @endsection
 
 @section('content')
@@ -322,23 +19,29 @@
     <h1>Close the Loop: <span class="highlight">Track Your Cosmetic Waste Journey!</span></h1>
     <p>Transform your empty cosmetic containers into something beautiful. Join our transparent recycling process and watch your waste become part of the circular economy.</p>
     <a href="{{ route('waste-exchange.create') }}" class="btn-primary">
-        Explore the Process ➜
+        <i class="bi bi-arrow-right-circle me-2"></i>Explore the Process
     </a>
 </div>
 
 <div class="process-cards">
     <div class="process-card">
-        <div class="process-icon">📦</div>
+        <div class="process-icon">
+            <i class="bi bi-box-seam"></i>
+        </div>
         <h3>Drop Off</h3>
         <p>Bring your empty cosmetics to any Re-Glow point and earn reward points for each item.</p>
     </div>
     <div class="process-card">
-        <div class="process-icon">♻️</div>
+        <div class="process-icon">
+            <i class="bi bi-recycle"></i>
+        </div>
         <h3>Transform</h3>
         <p>We process and recycle into new materials with our verified recycling partners.</p>
     </div>
     <div class="process-card">
-        <div class="process-icon">🌱</div>
+        <div class="process-icon">
+            <i class="bi bi-tree"></i>
+        </div>
         <h3>Rebirth</h3>
         <p>New sustainable products are created, completing the circular journey.</p>
     </div>
@@ -352,7 +55,9 @@
     
     <div class="journey-timeline">
         <div class="timeline-item">
-            <div class="timeline-icon">💄</div>
+            <div class="timeline-icon">
+                <i class="bi bi-droplet"></i>
+            </div>
             <div class="timeline-content">
                 <h4>User Drop-off</h4>
                 <p>You bring your empty cosmetic containers to our designated drop points and earn reward points for each item.</p>
@@ -360,7 +65,9 @@
         </div>
 
         <div class="timeline-item">
-            <div class="timeline-icon">🚚</div>
+            <div class="timeline-icon">
+                <i class="bi bi-truck"></i>
+            </div>
             <div class="timeline-content">
                 <h4>Logistics Pick-up</h4>
                 <p>Our logistics team collects all waste from drop points using eco-friendly vehicles on scheduled routes.</p>
@@ -368,7 +75,9 @@
         </div>
 
         <div class="timeline-item">
-            <div class="timeline-icon">🏭</div>
+            <div class="timeline-icon">
+                <i class="bi bi-building-gear"></i>
+            </div>
             <div class="timeline-content">
                 <h4>Partner Processing</h4>
                 <p>Waste is sent to our verified recycling partners where it's carefully sorted, cleaned, and processed.</p>
@@ -376,7 +85,9 @@
         </div>
 
         <div class="timeline-item">
-            <div class="timeline-icon">🌿</div>
+            <div class="timeline-icon">
+                <i class="bi bi-flower1"></i>
+            </div>
             <div class="timeline-content">
                 <h4>New Sustainable Product</h4>
                 <p>The recycled materials are transformed into new eco-friendly cosmetic products, completing the circular journey.</p>
@@ -393,18 +104,17 @@
 
     <div class="location-grid">
         <div class="map-container">
-            <div style="text-align:center">
-                <span style="font-size:3rem">📍</span>
-                <p><strong>Interactive Map</strong><br>Drop points marked with pins</p>
-            </div>
+            <div id="map"></div>
         </div>
 
         <div class="nearby-locations">
-            <h3>Nearby Locations</h3>
+            <h3>All Drop Point Locations</h3>
             
-            @forelse($dropPoints->take(3) as $point)
-            <div class="location-card">
-                <div class="location-icon">📍</div>
+            @forelse($dropPoints as $point)
+            <div class="location-card" data-lat="{{ $point->latitude }}" data-lng="{{ $point->longitude }}" data-index="{{ $loop->index }}">
+                <div class="location-icon">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
                 <div class="location-info">
                     <h4>{{ $point->nama_lokasi }}</h4>
                     <p>{{ $point->alamat }}</p>
@@ -412,10 +122,23 @@
                 </div>
             </div>
             @empty
-            <p>Belum ada drop point tersedia.</p>
+            <div class="location-card">
+                <div class="location-icon">
+                    <i class="bi bi-info-circle"></i>
+                </div>
+                <div class="location-info">
+                    <h4>No Drop Points Available</h4>
+                    <p>Please check back later for new locations.</p>
+                </div>
+            </div>
             @endforelse
 
-            <a href="{{ route('waste-exchange.create') }}" class="btn-view-all">View All Locations</a>
+            @if($dropPoints->count() > 3)
+            <div class="scroll-indicator">
+                <i class="bi bi-chevron-double-down"></i>
+                <span>Scroll to see more locations</span>
+            </div>
+            @endif
         </div>
     </div>
 </div>
@@ -424,7 +147,9 @@
     <h2>Ready to Make an Impact?</h2>
     <p>Join thousands of eco-conscious individuals who are transforming waste into wonder. Start your exchange journey today.</p>
     
-    <a href="{{ route('waste-exchange.create') }}" class="btn-cta">🔄 Start My Exchange Now!</a>
+    <a href="{{ route('waste-exchange.create') }}" class="btn-cta">
+        <i class="bi bi-arrow-repeat me-2"></i>Start My Exchange Now!
+    </a>
 
     <div class="cta-stats">
         <div class="stat-item">
@@ -441,4 +166,151 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+<script>
+let map;
+let markers = [];
+
+// Drop points data dari server
+const dropPoints = @json($dropPoints);
+
+// Inisialisasi peta
+function initMap() {
+    // Center map di Jawa Timur (Surabaya)
+    const centerJawaTimur = [-7.2575, 112.7521];
+    
+    // Buat map dengan Leaflet
+    map = L.map('map', {
+        center: centerJawaTimur,
+        zoom: 10,
+        scrollWheelZoom: true,
+        zoomControl: true
+    });
+
+    // Tambahkan OpenStreetMap tile layer - GRATIS!
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+    }).addTo(map);
+
+    // Tambahkan semua markers
+    dropPoints.forEach((point, index) => {
+        addMarker(point, index);
+    });
+
+    // Fit bounds untuk menampilkan semua markers
+    if (markers.length > 0) {
+        const group = L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.1));
+        
+        // Prevent zoom terlalu dekat jika hanya 1 marker
+        if (markers.length === 1) {
+            map.setZoom(14);
+        }
+    }
+}
+
+function addMarker(point, index) {
+    const lat = parseFloat(point.latitude);
+    const lng = parseFloat(point.longitude);
+    
+    if (isNaN(lat) || isNaN(lng)) {
+        console.error(`Invalid coordinates for ${point.nama_lokasi}`);
+        return;
+    }
+
+    // Custom icon dengan DivIcon menggunakan Bootstrap icon
+    const customIcon = L.divIcon({
+        className: 'custom-div-icon',
+        html: '<div class="custom-marker"><i class="bi bi-geo-alt-fill"></i></div>',
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -40]
+    });
+
+    // Buat marker
+    const marker = L.marker([lat, lng], {
+        icon: customIcon,
+        title: point.nama_lokasi
+    }).addTo(map);
+
+    // Popup content
+    const popupContent = `
+        <div class="map-popup">
+            <h4>${point.nama_lokasi}</h4>
+            <p>${point.alamat}</p>
+            <span class="badge"><i class="bi bi-geo-alt-fill me-1"></i> Drop Point Available</span>
+        </div>
+    `;
+
+    marker.bindPopup(popupContent, {
+        maxWidth: 250,
+        className: 'custom-popup'
+    });
+
+    // Event: klik marker
+    marker.on('click', function() {
+        map.setView([lat, lng], 14, {
+            animate: true,
+            duration: 0.5
+        });
+    });
+
+    markers.push(marker);
+}
+
+// Event: klik location card
+document.querySelectorAll('.location-card').forEach((card) => {
+    card.addEventListener('click', function() {
+        const index = parseInt(this.dataset.index);
+        if (markers[index]) {
+            const marker = markers[index];
+            
+            // Remove active class from all cards
+            document.querySelectorAll('.location-card').forEach(c => {
+                c.classList.remove('active');
+            });
+            
+            // Add active class to clicked card
+            this.classList.add('active');
+            
+            // Buka popup dan zoom ke marker
+            marker.openPopup();
+            map.setView(marker.getLatLng(), 15, {
+                animate: true,
+                duration: 0.6
+            });
+            
+            // Bounce effect
+            const markerElement = marker.getElement();
+            if (markerElement) {
+                markerElement.style.animation = 'bounce 0.6s ease';
+                setTimeout(() => {
+                    markerElement.style.animation = '';
+                }, 600);
+            }
+        }
+    });
+});
+
+// Bounce animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+`;
+document.head.appendChild(style);
+
+// Initialize map setelah DOM ready
+document.addEventListener('DOMContentLoaded', initMap);
+</script>
 @endsection

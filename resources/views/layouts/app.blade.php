@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Re-Glow')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        window.Laravel = {!! json_encode([
+            'csrfToken' => csrf_token(),
+        ]) !!};
+    </script>
     <style>
         * {
             margin: 0;
@@ -36,8 +42,12 @@
     @yield('styles')
 </head>
 <body>
-    @include('layouts.navbar')
-    
+    @if (request()->is('logistik/*'))
+        @include('layouts.logistik-navbar.logistik-navbar')
+    @else
+        @include('layouts.navbar')
+    @endif
+
     <main>
         @yield('content')
     </main>

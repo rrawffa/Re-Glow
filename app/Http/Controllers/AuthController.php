@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
@@ -68,7 +69,7 @@ class AuthController extends Controller
 
         if ($request->has('remember')) {
             Cookie::queue('remember_email', $request->email, 43200);
-            Cookie::queue('remember_password', $request->password, 43200);
+            Cookie::queue(Cookie::forget('remember_password'));
         } else {
             Cookie::queue(Cookie::forget('remember_email'));
             Cookie::queue(Cookie::forget('remember_password'));
@@ -77,8 +78,7 @@ class AuthController extends Controller
         $user->updated_at = now();
         $user->save();
 
-        // return redirect($user->getDashboardRoute()); nanti ganti lagi 
-        return redirect()->route('faq.index');
+        return $this->redirectToDashboard($user->role);
 
     }
 
@@ -120,7 +120,7 @@ class AuthController extends Controller
         ]);
 
         // Cek username dan email yang sudah ada
-        $existingUser = User::where('username', $request->name)
+        $existingUser = User::where('username', $request->username) // <- gunakan username
             ->orWhere('email', $request->email)
             ->first();
 

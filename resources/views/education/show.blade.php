@@ -3,379 +3,8 @@
 @section('title', $konten->judul . ' - Re-Glow')
 
 @section('styles')
-<style>
-    /* Article Container */
-    .article-container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 2rem 1rem;
-    }
-
-    /* Back Button - Now at Top */
-    .back-nav {
-        margin-bottom: 2rem;
-    }
-
-    .back-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: var(--green-dark);
-        text-decoration: none;
-        font-weight: 600;
-        padding: 0.5rem 0;
-        transition: all 0.3s;
-    }
-
-    .back-btn:hover {
-        gap: 0.75rem;
-        color: var(--pink-base);
-    }
-
-    .back-btn svg {
-        width: 20px;
-        height: 20px;
-    }
-
-    /* Article Header */
-    .article-header {
-        margin-bottom: 3rem;
-        border-bottom: 2px solid var(--border-light);
-        padding-bottom: 2rem;
-    }
-
-    .article-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: var(--green-dark);
-        margin-bottom: 1.5rem;
-        line-height: 1.2;
-    }
-
-    .article-meta {
-        display: flex;
-        gap: 1.5rem;
-        color: var(--text-gray);
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .article-summary {
-        color: var(--text-gray);
-        font-size: 1.125rem;
-        line-height: 1.7;
-        background: var(--pink-light);
-        padding: 1.5rem;
-        border-radius: 8px;
-        border-left: 4px solid var(--pink-base);
-        margin-top: 1.5rem;
-    }
-
-    /* Cover Image */
-    .article-cover {
-        width: 100%;
-        max-height: 400px;
-        object-fit: cover;
-        border-radius: 12px;
-        margin: 1.5rem 0;
-    }
-
-    /* Article Content */
-    .article-content {
-        line-height: 1.8;
-        font-size: 1.05rem;
-        margin-bottom: 3rem;
-    }
-
-    .article-content h2 {
-        font-size: 1.75rem;
-        color: var(--green-dark);
-        margin: 2.5rem 0 1rem 0;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--pink-light);
-    }
-
-    .article-content h3 {
-        font-size: 1.375rem;
-        color: var(--green-dark);
-        margin: 2rem 0 1rem 0;
-    }
-
-    .article-content h4 {
-        font-size: 1.125rem;
-        color: var(--green-dark);
-        margin: 1.5rem 0 0.75rem 0;
-    }
-
-    .article-content p {
-        margin-bottom: 1.5rem;
-        color: var(--text-dark);
-    }
-
-    .article-content ul, .article-content ol {
-        margin: 1.5rem 0;
-        padding-left: 2rem;
-    }
-
-    .article-content li {
-        margin-bottom: 0.75rem;
-        color: var(--text-dark);
-    }
-
-    .article-content strong {
-        color: var(--green-dark);
-        font-weight: 600;
-    }
-
-    /* Reactions Section */
-    .reactions-section {
-        margin: 3rem 0;
-        padding: 2rem;
-        background: var(--pink-light);
-        border-radius: 12px;
-        text-align: center;
-    }
-
-    .reactions-title {
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: var(--green-dark);
-        margin-bottom: 1.5rem;
-    }
-
-    .reactions-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .reaction-btn {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 1rem 1.5rem;
-        border: 2px solid transparent;
-        border-radius: 12px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.3s;
-        min-width: 100px;
-    }
-
-    .reaction-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .reaction-btn.active {
-        border-color: var(--pink-base);
-        background: #fff5f7;
-        transform: translateY(-2px);
-    }
-
-    .reaction-emoji {
-        font-size: 2rem;
-    }
-
-    .reaction-label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--green-dark);
-    }
-
-    .reaction-count-display {
-        font-size: 0.75rem;
-        color: var(--text-gray);
-    }
-
-    /* Admin Actions */
-    .admin-actions {
-        display: flex;
-        gap: 1rem;
-        margin: 2rem 0;
-        padding: 1rem;
-        background: #f8f9fa;
-        border-radius: 8px;
-    }
-
-    .btn-admin {
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transition: all 0.3s;
-        border: none;
-        cursor: pointer;
-    }
-
-    .btn-edit {
-        background: var(--green-light);
-        color: var(--green-dark);
-    }
-
-    .btn-edit:hover {
-        background: #A8B399;
-    }
-
-    .btn-delete {
-        background: #ffc4c4;
-        color: #c41e3a;
-    }
-
-    .btn-delete:hover {
-        background: #ffaaaa;
-    }
-
-    /* Statistics Display */
-    .stats-display {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        margin: 1.5rem 0;
-        padding: 1rem;
-        background: white;
-        border-radius: 8px;
-    }
-
-    .stat-item {
-        text-align: center;
-    }
-
-    .stat-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--green-dark);
-    }
-
-    .stat-label {
-        font-size: 0.85rem;
-        color: var(--text-gray);
-    }
-
-    /* Related Articles */
-    .related-section {
-        margin-top: 4rem;
-        padding-top: 3rem;
-        border-top: 2px solid var(--border-light);
-    }
-
-    .related-title {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: var(--green-dark);
-        margin-bottom: 2rem;
-    }
-
-    .related-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-    }
-
-    .related-card {
-        background: white;
-        border-radius: 8px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        transition: transform 0.3s;
-        text-decoration: none;
-        display: block;
-    }
-
-    .related-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    }
-
-    .related-card h4 {
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: var(--green-dark);
-        margin-bottom: 0.75rem;
-    }
-
-    .related-card p {
-        font-size: 0.9rem;
-        color: var(--text-gray);
-        line-height: 1.5;
-    }
-
-    :root {
-        --border-light: #E5E5E5;
-    }
-
-    /* Notification Toast */
-    .notification-toast {
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        padding: 1rem 1.5rem;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        z-index: 9999;
-        display: none;
-        animation: slideIn 0.3s ease-out;
-    }
-
-    .notification-toast.show {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .notification-toast.success {
-        border-left: 4px solid #28a745;
-    }
-
-    .notification-toast.error {
-        border-left: 4px solid #dc3545;
-    }
-
-    @keyframes slideIn {
-        from {
-            transform: translateX(400px);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .article-title {
-            font-size: 2rem;
-        }
-
-        .article-meta {
-            gap: 1rem;
-        }
-
-        .reactions-buttons {
-            gap: 0.5rem;
-        }
-
-        .reaction-btn {
-            min-width: 80px;
-            padding: 0.75rem 1rem;
-        }
-
-        .related-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
+    @vite(['resources/css/education/show.css'])
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -383,9 +12,7 @@
     <!-- Back Navigation - NOW AT TOP -->
     <div class="back-nav">
         <a href="{{ route('education.index') }}" class="back-btn">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-            </svg>
+            <i class="bi bi-arrow-left"></i>
             Kembali ke Katalog Edukasi
         </a>
     </div>
@@ -396,22 +23,22 @@
         
         <div class="article-meta">
             <div class="meta-item">
-                <span>📅</span>
+                <i class="bi bi-calendar3"></i>
                 <span>{{ \Carbon\Carbon::parse($konten->tanggal_upload)->format('F d, Y') }}</span>
             </div>
             <div class="meta-item">
-                <span>✏️</span>
+                <i class="bi bi-pencil"></i>
                 <span>{{ $konten->penulis ?? 'Re-Glow Team' }}</span>
             </div>
             @if($konten->waktu_baca)
             <div class="meta-item">
-                <span>⏱️</span>
+                <i class="bi bi-clock"></i>
                 <span>{{ $konten->waktu_baca }} min read</span>
             </div>
             @endif
             @if($konten->statistik)
             <div class="meta-item">
-                <span>👁️</span>
+                <i class="bi bi-eye"></i>
                 <span>{{ number_format($konten->statistik->total_view) }} views</span>
             </div>
             @endif
@@ -434,7 +61,7 @@
     @if(Session::has('user_id') && Session::get('user_role') === 'admin')
     <div class="admin-actions">
         <a href="{{ route('education.edit', $konten->id_konten) }}" class="btn-admin btn-edit">
-            ✏️ Edit Konten
+            <i class="bi bi-pencil-square"></i> Edit Konten
         </a>
         <form action="{{ route('education.destroy', $konten->id_konten) }}" 
               method="POST" 
@@ -442,7 +69,9 @@
               onsubmit="return confirm('Yakin ingin menghapus konten ini?')">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn-admin btn-delete">🗑️ Hapus Konten</button>
+            <button type="submit" class="btn-admin btn-delete">
+                <i class="bi bi-trash"></i> Hapus Konten
+            </button>
         </form>
     </div>
     @endif
@@ -510,12 +139,17 @@
     <!-- Related Articles -->
     @if($related->count() > 0)
     <div class="related-section">
-        <h3 class="related-title">Artikel Terkait</h3>
+        <h3 class="related-title">
+            <i class="bi bi-link-45deg"></i> Artikel Terkait
+        </h3>
         <div class="related-grid">
             @foreach($related as $item)
             <a href="{{ route('education.show', $item->id_konten) }}" class="related-card">
                 <h4>{{ $item->judul }}</h4>
                 <p>{{ Str::limit($item->ringkasan, 100) }}</p>
+                <div class="related-meta">
+                    <i class="bi bi-clock"></i> {{ $item->waktu_baca }} min read
+                </div>
             </a>
             @endforeach
         </div>
@@ -534,114 +168,5 @@
 @endsection
 
 @section('scripts')
-<script>
-console.log('Reaction script loaded');
-
-document.addEventListener('DOMContentLoaded', function() {
-    const reactionButtons = document.querySelectorAll('.reaction-btn');
-    const toast = document.getElementById('notificationToast');
-    const toastEmoji = document.getElementById('toastEmoji');
-    const toastMessage = document.getElementById('toastMessage');
-
-    console.log('Found reaction buttons:', reactionButtons.length);
-
-    // Emoji mapping
-    const emojiMap = {
-        'suka': '❤️',
-        'membantu': '👍',
-        'menarik': '🔥',
-        'inspiratif': '✨'
-    };
-
-    function showToast(emoji, message, type = 'success') {
-        toastEmoji.textContent = emoji;
-        toastMessage.textContent = message;
-        toast.className = `notification-toast ${type} show`;
-        
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    }
-
-    reactionButtons.forEach(button => {
-        button.addEventListener('click', async function() {
-            const reactionType = this.dataset.reaction;
-            const kontenId = this.dataset.konten;
-
-            console.log('Button clicked:', {
-                reactionType,
-                kontenId
-            });
-
-            try {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-                
-                if (!csrfToken) {
-                    console.error('CSRF token not found!');
-                    showToast('❌', 'Error: CSRF token tidak ditemukan', 'error');
-                    return;
-                }
-
-                console.log('Sending request with CSRF:', csrfToken);
-
-                const response = await fetch(`/education/${kontenId}/reaction`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        tipe_reaksi: reactionType
-                    })
-                });
-
-                console.log('Response status:', response.status);
-                const data = await response.json();
-                console.log('Response data:', data);
-
-                if (data.success) {
-                    // Update UI based on action
-                    if (data.action === 'removed') {
-                        this.classList.remove('active');
-                        showToast(emojiMap[reactionType], 'Reaksi dihapus', 'success');
-                    } else if (data.action === 'added') {
-                        reactionButtons.forEach(btn => btn.classList.remove('active'));
-                        this.classList.add('active');
-                        showToast(emojiMap[reactionType], 'Terima kasih atas reaksinya!', 'success');
-                    } else if (data.action === 'updated') {
-                        reactionButtons.forEach(btn => btn.classList.remove('active'));
-                        this.classList.add('active');
-                        showToast(emojiMap[reactionType], 'Reaksi diperbarui', 'success');
-                    }
-
-                    // Update counts
-                    if (data.counts) {
-                        console.log('Updating counts:', data.counts);
-                        
-                        // Update individual counts
-                        document.querySelectorAll('.reaction-count-display').forEach(el => {
-                            const type = el.dataset.type;
-                            if (data.counts[type] !== undefined) {
-                                el.textContent = data.counts[type];
-                            }
-                        });
-
-                        // Update total
-                        const totalEl = document.getElementById('totalReactions');
-                        if (totalEl && data.counts.total !== undefined) {
-                            totalEl.textContent = data.counts.total;
-                        }
-                    }
-                } else {
-                    showToast('❌', data.message || 'Terjadi kesalahan', 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showToast('❌', 'Terjadi kesalahan saat mengirim reaksi', 'error');
-            }
-        });
-    });
-});
-</script>
+    @vite(['resources/js/education/show.js'])
 @endsection

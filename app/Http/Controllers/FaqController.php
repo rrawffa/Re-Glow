@@ -6,7 +6,7 @@ use App\Models\Faq;
 
 class FaqController extends Controller
 {
-    public function userIndex()
+    public function Index()
     {
         $faqs = Faq::all();
         return view('faq.index', compact('faqs'));

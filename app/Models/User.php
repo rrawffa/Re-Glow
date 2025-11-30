@@ -92,6 +92,11 @@ class User extends Authenticatable
                 return route('user.dashboard');
         }
     }
+      public function pointTransactions()
+    {
+        return $this->hasMany(PointTransaction::class, 'user_id', 'id_user');
+    }
+
 
     /**
      * Validation rules

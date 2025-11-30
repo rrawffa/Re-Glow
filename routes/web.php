@@ -144,14 +144,14 @@ Route::get('/riwayat-poin', function (Request $request) {
 
 // Admin (CRUD)
 Route::middleware(['auth.session', 'check.role:admin'])
-    ->prefix('admin/riwayat-poin')
+    ->prefix('admin/riwayat_poin')
     ->name('admin.riwayat_poin.')
     ->group(function () {
         Route::get('/', [AdminPointController::class, 'index'])->name('index');
         Route::get('/create', [AdminPointController::class, 'create'])->name('create');
         Route::post('/', [AdminPointController::class, 'store'])->name('store');
         Route::get('/{id}/edit', [AdminPointController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [AdminPointController::class, 'update'])->name('update');
+        Route::put('/update/{id}', [AdminPointController::class, 'update'])->name('update');
         Route::delete('/{id}', [AdminPointController::class, 'destroy'])->name('destroy');
     });
 

@@ -15,22 +15,34 @@
         <div class="col-md-6 col-sm-12">
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <form action="{{ route('admin.riwayat_poin.update', $transaction->id) }}" method="POST">
+
+                    {{-- Error Message --}}
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                   <form action="{{ route('admin.riwayat_poin.update', $transaction->id) }}" method="POST">
+
                         @csrf
                         @method('PUT')
-                        
 
                         <!-- User -->
                         <div class="mb-3">
-                            <label for="id_user" class="form-label">User</label>
-                           <select name="user_id" id="user_id" class="form-select" required>
-    @foreach($users as $user)
-        <option value="{{ $user->id }}" @if($user->id == $transaction->user_id) selected @endif>
-            {{ $user->username }}
-        </option>
-    @endforeach
-</select>
-
+                            <label for="user_id" class="form-label">User</label>
+                            <select name="user_id" id="user_id" class="form-select" required>
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id }}" 
+                                        @if($user->id == $transaction->user_id) selected @endif>
+                                        {{ $user->username }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <!-- Type -->
@@ -46,13 +58,15 @@
                         <!-- Points -->
                         <div class="mb-3">
                             <label for="points" class="form-label">Points</label>
-                            <input type="number" name="points" id="points" class="form-control" value="{{ $transaction->points }}" required>
+                            <input type="number" name="points" id="points" class="form-control" 
+                                   value="{{ $transaction->points }}" required>
                         </div>
 
                         <!-- Description -->
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
-                            <input type="text" name="description" id="description" class="form-control" value="{{ $transaction->description }}">
+                            <input type="text" name="description" id="description" class="form-control" 
+                                   value="{{ $transaction->description }}">
                         </div>
 
                         <!-- Buttons -->

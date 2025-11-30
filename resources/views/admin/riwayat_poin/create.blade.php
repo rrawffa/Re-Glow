@@ -9,24 +9,35 @@
 
 @section('content')
 <div class="container py-5 mt-4">
-    <h1 class="fw-bold mb-4">Add Point Transaction</h1>
+    <h1 class="fw-bold mb-2">Add Point Transaction</h1>
 
+    @if(auth()->check())
+        <p class="text-end text-muted small mb-4">
+            Logged in as: <strong>{{ auth()->user()->username }}</strong>
+        </p>
+    @endif
+    
     <div class="row justify-content-center">
         <div class="col-md-6 col-sm-12">
+
+            {{-- Error Message --}}
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div class="card shadow-sm border-0">
                 <div class="card-body">
+
                     <form action="{{ route('admin.riwayat_poin.store') }}" method="POST">
                         @csrf
 
-                        <div class="mb-3">
-                            <label for="id_user" class="form-label">User</label>
-                            <select name="id_user" id="id_user" class="form-select" required>
-                                @foreach($users as $user)
-                                    <option value="{{ $user->id }}">{{ $user->username }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
+                        <!-- Type -->
                         <div class="mb-3">
                             <label for="type" class="form-label">Type</label>
                             <select name="type" id="type" class="form-select" required>
@@ -36,24 +47,29 @@
                             </select>
                         </div>
 
+                        <!-- Points -->
                         <div class="mb-3">
                             <label for="points" class="form-label">Points</label>
                             <input type="number" name="points" id="points" class="form-control" required>
                         </div>
 
+                        <!-- Description -->
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
                             <input type="text" name="description" id="description" class="form-control">
                         </div>
 
-                        <div class="d-flex justify-content-between">
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between mt-3">
                             <a href="{{ route('admin.riwayat_poin.index') }}" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary">Add Transaction</button>
                         </div>
 
                     </form>
+
                 </div>
             </div>
+
         </div>
     </div>
 </div>

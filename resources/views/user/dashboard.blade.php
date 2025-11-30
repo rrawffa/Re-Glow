@@ -403,7 +403,7 @@
             <div class="stat-icon pink">♻</div>
             <div class="stat-info">
                 <h3>Waste Collected</h3>
-                <div class="number">247</div>
+                <div class="number" id="wasteCollected">{{ $wasteCollected ?? 0 }}</div>
                 <div class="subtext">containers recycled</div>
             </div>
         </div>
@@ -411,16 +411,8 @@
             <div class="stat-icon green">⭐</div>
             <div class="stat-info">
                 <h3>Points Earned</h3>
-                <div class="number">1,235</div>
+                <div class="number" id="pointsEarned">{{ number_format($pointsEarned ?? 0) }}</div>
                 <div class="subtext">Redeem Points</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon yellow">🏆</div>
-            <div class="stat-info">
-                <h3>Achievements</h3>
-                <div class="number">8</div>
-                <div class="subtext">badges unlocked</div>
             </div>
         </div>
     </section>
@@ -428,42 +420,25 @@
     <section class="learning-section">
         <h2>Recommended Learning</h2>
         <div class="learning-grid">
+            @forelse($topArticles as $article)
             <div class="learning-card">
-                <h3>The Impact of Microplastics</h3>
-                <p>Learn how cosmetic packaging contributes to microplastic pollution and what we can do about it.</p>
-                <div class="meta">📅 Posted 2 days ago</div>
+                <h3>{{ $article->judul }}</h3>
+                <p>{{ Str::limit($article->ringkasan, 150) }}</p>
+                <div class="meta">📅 Posted {{ $article->tanggal_upload->format('d M Y') }}</div>
                 <div class="card-footer">
-                    <a href="{{ route('education.index') }}" class="btn-read">Read More →</a>
+                    <a href="{{ route('education.show', $article->id_konten) }}" class="btn-read">Read More →</a>
                     <div class="card-actions">
                         <span title="Love">❤</span>
                         <span title="Hot">🔥</span>
                     </div>
                 </div>
             </div>
-            <div class="learning-card">
-                <h3>Sustainable Beauty Brands</h3>
-                <p>Discover beauty brands leading the way in sustainable packaging and eco-friendly practices.</p>
-                <div class="meta">Posted 1 week ago</div>
-                <div class="card-footer">
-                    <a href="{{ route('education.index') }}" class="btn-read">Read More →</a>
-                    <div class="card-actions">
-                        <span title="Love">❤</span>
-                        <span title="Hot">🔥</span>
-                    </div>
-                </div>
+            @empty
+            <div class="learning-card" style="grid-column: 1 / -1;">
+                <h3>No Articles Yet</h3>
+                <p>Check back soon for educational content about sustainable waste management.</p>
             </div>
-            <div class="learning-card">
-                <h3>DIY Upcycling Ideas</h3>
-                <p>Creative ways to repurpose your empty cosmetic containers before recycling them.</p>
-                <div class="meta">Posted 3 days ago</div>
-                <div class="card-footer">
-                    <a href="{{ route('education.index') }}" class="btn-read">Read More →</a>
-                    <div class="card-actions">
-                        <span title="Love">❤</span>
-                        <span title="Hot">🔥</span>
-                    </div>
-                </div>
-            </div>
+            @endforelse
         </div>
     </section>
 
@@ -498,7 +473,34 @@
             // Start local time updater
             updateLocalTime();
             setInterval(updateLocalTime, 60 * 1000);
+
+            // Fetch real-time stats
+            fetchStats();
+            // Update stats every 30 seconds for semi-real-time effect
+            setInterval(fetchStats, 30000);
         });
+
+        /**
+         * Fetch real-time stats from API
+         */
+        function fetchStats() {
+            fetch('{{ route("user.api.stats") }}')
+                .then(response => response.json())
+                .then(data => {
+                    // Update waste collected
+                    const wasteEl = $('#wasteCollected');
+                    if (wasteEl) {
+                        wasteEl.textContent = data.wasteCollected;
+                    }
+
+                    // Update points earned
+                    const pointsEl = $('#pointsEarned');
+                    if (pointsEl) {
+                        pointsEl.textContent = new Intl.NumberFormat('id-ID').format(data.pointsEarned);
+                    }
+                })
+                .catch(error => console.error('Error fetching stats:', error));
+        }
 
         function showToast(message, ms = 3500) {
             const t = $('#dashboardToast');

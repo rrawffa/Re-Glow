@@ -128,43 +128,6 @@
         margin-bottom: 1.5rem;
     }
 
-    /* Bar Chart */
-    .bar-chart {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        height: 200px;
-        gap: 1rem;
-        padding: 0 0.5rem;
-    }
-
-    .bar-group {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .bar {
-        width: 100%;
-        background: var(--pink-base);
-        border-radius: 6px 6px 0 0;
-        transition: all 0.3s;
-        position: relative;
-    }
-
-    .bar:hover {
-        opacity: 0.8;
-        transform: translateY(-2px);
-    }
-
-    .bar-label {
-        font-size: 0.75rem;
-        color: var(--text-light);
-        font-weight: 500;
-    }
-
     /* Donut Chart */
     .donut-chart-container {
         display: flex;
@@ -219,23 +182,6 @@
     }
 
     /* Quick Actions */
-    .quick-actions {
-        margin-bottom: 2rem;
-    }
-
-    .quick-actions h3 {
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: #1f2937;
-        margin-bottom: 1rem;
-    }
-
-    .actions-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-    }
-
     .action-card {
         background: white;
         padding: 1.25rem;
@@ -278,6 +224,10 @@
     }
 
     /* Recent Activities */
+    .recent-activities {
+        margin-top: 2rem;
+    }
+
     .recent-activities h3 {
         font-size: 1.125rem;
         font-weight: 600;
@@ -323,6 +273,9 @@
     .activity-icon.pink { background: #fef5f8; color: var(--pink-base); }
     .activity-icon.green { background: #e8f5f0; color: var(--green-dark); }
     .activity-icon.yellow { background: #fef9e6; color: #d4a843; }
+    .activity-icon.waste { background: #e8f5f0; color: var(--green-dark); }
+    .activity-icon.user { background: #fef5f8; color: var(--pink-base); }
+    .activity-icon.voucher { background: #fef9e6; color: #d4a843; }
 
     .activity-content {
         flex: 1;
@@ -344,6 +297,19 @@
         font-size: 0.875rem;
         color: var(--text-light);
         white-space: nowrap;
+    }
+
+    .quick-actions-section {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .quick-actions-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
     }
 
     @media (max-width: 1024px) {
@@ -373,11 +339,6 @@
         .donut-chart-container {
             flex-direction: column;
         }
-
-        .bar-chart {
-            gap: 0.5rem;
-            height: 180px;
-        }
     }
 </style>
 @endsection
@@ -396,42 +357,42 @@
                 <span class="stat-label">Total Users</span>
                 <div class="stat-icon pink">👥</div>
             </div>
-            <div class="stat-value">12,847</div>
+            <div class="stat-value">{{ number_format($totalUsers) }}</div>
             <div class="stat-change positive">
-                ↑ 8.2% from last month
+                ↑ Active users on platform
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" style="cursor: pointer;" onclick="window.location.href='{{ route('admin.waste.index') }}'">
             <div class="stat-card-header">
-                <span class="stat-label">Total Transactions</span>
-                <div class="stat-icon gray">⇄</div>
+            <span class="stat-label">Total Transactions</span>
+            <div class="stat-icon gray">⇄</div>
             </div>
-            <div class="stat-value">3,294</div>
+            <div class="stat-value">{{ number_format($totalTransactions) }}</div>
             <div class="stat-change positive">
-                ↑ 12.5% from last month
+            ↑ Waste exchanges completed
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" style="cursor: pointer;" onclick="window.location.href='{{ route('admin.vouchers.index') }}'">
             <div class="stat-card-header">
                 <span class="stat-label">Active Vouchers</span>
                 <div class="stat-icon yellow">🎫</div>
             </div>
-            <div class="stat-value">1,856</div>
-            <div class="stat-change negative">
-                ↓ 2.1% from last month
+            <div class="stat-value">{{ number_format($activeVouchers) }}</div>
+            <div class="stat-change positive">
+                Total stock available
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" style="cursor: pointer;" onclick="window.location.href='{{ route('admin.education.index') }}'">
             <div class="stat-card-header">
                 <span class="stat-label">Educational Posts</span>
                 <div class="stat-icon pink">📚</div>
             </div>
-            <div class="stat-value">247</div>
+            <div class="stat-value">{{ number_format($educationalPosts) }}</div>
             <div class="stat-change positive">
-                ↑ 15.3% engagement
+                ↑ Published content
             </div>
         </div>
     </section>
@@ -439,73 +400,33 @@
     <!-- Charts Section -->
     <section class="charts-container">
         <div class="charts-grid">
-            <!-- User Growth Chart -->
-            <div class="chart-card">
-                <h3>User Growth</h3>
-                <div class="bar-chart">
-                    <div class="bar-group">
-                        <div class="bar" style="height: 35%;"></div>
-                        <span class="bar-label">Jan</span>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 55%;"></div>
-                        <span class="bar-label">Feb</span>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 72%;"></div>
-                        <span class="bar-label">Mar</span>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 48%;"></div>
-                        <span class="bar-label">Apr</span>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 78%;"></div>
-                        <span class="bar-label">May</span>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 62%;"></div>
-                        <span class="bar-label">Jun</span>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 88%;"></div>
-                        <span class="bar-label">Jul</span>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height: 95%;"></div>
-                        <span class="bar-label">Aug</span>
-                    </div>
-                </div>
-            </div>
-
             <!-- Transaction Types Chart -->
             <div class="chart-card">
-                <h3>Transaction Types</h3>
+                <h3>Transaction Distribution</h3>
                 <div class="donut-chart-container">
                     <div class="donut-chart">
+                        @php
+                            $wasteRecycling = $transactionTypes['wasteRecycling'];
+                            $voucherRedemption = $transactionTypes['voucherRedemption'];
+                            $circumference = 502; // 2 * π * 80
+                            $voucherOffset = ($wasteRecycling / 100) * $circumference;
+                        @endphp
                         <svg width="200" height="200" viewBox="0 0 200 200">
                             <!-- Background circle -->
                             <circle cx="100" cy="100" r="80" fill="none" stroke="#f3f4f6" stroke-width="30"/>
                             
-                            <!-- Waste Recycling - 65% -->
+                            <!-- Waste Recycling -->
                             <circle cx="100" cy="100" r="80" fill="none" 
                                     stroke="#F9B6C7" stroke-width="30"
-                                    stroke-dasharray="326 502"
+                                    stroke-dasharray="{{ ($wasteRecycling / 100) * $circumference }} {{ $circumference }}"
                                     stroke-dashoffset="0"
                                     transform="rotate(-90 100 100)"/>
                             
-                            <!-- Voucher Redemption - 25% -->
+                            <!-- Voucher Redemption -->
                             <circle cx="100" cy="100" r="80" fill="none" 
                                     stroke="#1f2937" stroke-width="30"
-                                    stroke-dasharray="126 502"
-                                    stroke-dashoffset="-326"
-                                    transform="rotate(-90 100 100)"/>
-                            
-                            <!-- Educational Rewards - 10% -->
-                            <circle cx="100" cy="100" r="80" fill="none" 
-                                    stroke="#d1c4b0" stroke-width="30"
-                                    stroke-dasharray="50 502"
-                                    stroke-dashoffset="-452"
+                                    stroke-dasharray="{{ ($voucherRedemption / 100) * $circumference }} {{ $circumference }}"
+                                    stroke-dashoffset="-{{ $voucherOffset }}"
                                     transform="rotate(-90 100 100)"/>
                         </svg>
                     </div>
@@ -515,43 +436,36 @@
                                 <span class="legend-dot pink"></span>
                                 Waste Recycling
                             </div>
-                            <span class="legend-value">65%</span>
+                            <span class="legend-value">{{ $wasteRecycling }}%</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-label">
                                 <span class="legend-dot dark"></span>
                                 Voucher Redemption
                             </div>
-                            <span class="legend-value">25%</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-label">
-                                <span class="legend-dot beige"></span>
-                                Educational Rewards
-                            </div>
-                            <span class="legend-value">10%</span>
+                            <span class="legend-value">{{ $voucherRedemption }}%</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-            <h3>Quick Actions</h3>
-            <div class="actions-grid">
-                <a href="{{ route('admin.vouchers.index') }}" class="action-card">
-                    <div class="action-icon gray">🎫</div>
-                    <span class="action-label">Voucher Management</span>
-                </a>
-                <a href="{{ route('admin.education.index') }}" class="action-card">
-                    <div class="action-icon yellow">📚</div>
-                    <span class="action-label">Education Content</span>
-                </a>
-                <a href="#" class="action-card">
-                    <div class="action-icon pink">❓</div>
-                    <span class="action-label">FAQ Management</span>
-                </a>
+            <!-- Quick Actions -->
+            <div>
+                <h3 class="quick-actions-title">Quick Actions</h3>
+                <div class="quick-actions-section">
+                    <a href="{{ route('admin.vouchers.index') }}" class="action-card">
+                        <div class="action-icon gray">🎫</div>
+                        <span class="action-label">Voucher Management</span>
+                    </a>
+                    <a href="{{ route('admin.education.index') }}" class="action-card">
+                        <div class="action-icon yellow">📚</div>
+                        <span class="action-label">Education Content</span>
+                    </a>
+                    <a href="#" class="action-card">
+                        <div class="action-icon pink">❓</div>
+                        <span class="action-label">FAQ Management</span>
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -559,30 +473,23 @@
         <div class="recent-activities">
             <h3>Recent Activities</h3>
             <div class="activity-card">
+                @forelse($recentActivities as $activity)
                 <div class="activity-item">
-                    <div class="activity-icon pink">👤</div>
+                    <div class="activity-icon {{ $activity['type'] }}">{{ $activity['icon'] }}</div>
                     <div class="activity-content">
-                        <div class="activity-title">New user registration</div>
-                        <div class="activity-description">Sarah Johnson joined the platform</div>
+                        <div class="activity-title">{{ $activity['title'] }}</div>
+                        <div class="activity-description">{{ $activity['description'] }}</div>
                     </div>
-                    <div class="activity-time">2 min ago</div>
+                    <div class="activity-time">{{ $activity['time'] }}</div>
                 </div>
+                @empty
                 <div class="activity-item">
-                    <div class="activity-icon green">♻️</div>
                     <div class="activity-content">
-                        <div class="activity-title">Waste transaction completed</div>
-                        <div class="activity-description">15kg plastic bottles recycled</div>
+                        <div class="activity-title">No recent activities</div>
+                        <div class="activity-description">Check back soon for updates</div>
                     </div>
-                    <div class="activity-time">5 min ago</div>
                 </div>
-                <div class="activity-item">
-                    <div class="activity-icon yellow">🎫</div>
-                    <div class="activity-content">
-                        <div class="activity-title">Voucher redeemed</div>
-                        <div class="activity-description">$10 eco-friendly store voucher</div>
-                    </div>
-                    <div class="activity-time">12 min ago</div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>

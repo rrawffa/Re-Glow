@@ -32,7 +32,15 @@
                 </a>
             @endif
         </li>
-        <li><a href="{{ url('/riwayat-poin') }}" class="{{ request()->is('riwayat-poin') ? 'active' : '' }}">Points</a></li>
+        @if(Session::get('user_role') === 'admin')
+            <li>
+                <a href="{{ route('admin.riwayat_poin.index') }}" class="{{ request()->is('admin/riwayat_poin*') ? 'active' : '' }}">
+                    Points
+                </a>
+            </li>
+        @else
+            <li><a href="{{ url('/riwayat-poin') }}" class="{{ request()->is('riwayat-poin') ? 'active' : '' }}">Points</a></li>
+        @endif
         @if(Session::get('user_role') === 'admin')
             <li>
                 <a href="{{ route('admin.vouchers.index') }}" class="{{ request()->is('admin/vouchers*') ? 'active' : '' }}">
@@ -46,7 +54,9 @@
                 </a>
             </li>
         @endif
-        <li><a href="{{ route('community.index') }}" class="{{ request()->is('community') ? 'active' : '' }}">Community</a></li>
+        @if(Session::get('user_role') !== 'admin')
+            <li><a href="{{ route('community.index') }}" class="{{ request()->is('community') ? 'active' : '' }}">Community</a></li>
+        @endif
         <li><a href="{{ url('/education') }}" class="{{ request()->is('education') ? 'active' : '' }}">Education</a></li>
         <li><a href="{{ url('/faq') }}" class="{{ request()->is('faq') ? 'active' : '' }}">FAQ</a></li>
     </ul>

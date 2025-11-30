@@ -10,6 +10,7 @@ use App\Http\Controllers\WasteExchangeController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\LogistikController;
 use App\Http\Controllers\Admin\AdminEducationController;
 use App\Http\Controllers\Admin\AdminWasteExchangeController;
 use App\Http\Controllers\RiwayatPoinController;
@@ -69,9 +70,11 @@ Route::middleware(['auth.session'])->group(function () {
     
     // Dashboard Tim Logistik
     Route::prefix('logistik')->name('logistik.')->middleware('check.role:tim_logistik')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('logistik.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [LogistikController::class, 'dashboard'])->name('dashboard');
+        Route::get('/schedule', [LogistikController::class, 'schedule'])->name('schedule');
+        Route::get('/api/stats', [LogistikController::class, 'getStats'])->name('api.stats');
+        Route::get('/pickup/{id}', [LogistikController::class, 'getPickupDetails'])->name('pickup.details');
+        Route::put('/pickup/{id}/status', [LogistikController::class, 'updatePickupStatus'])->name('pickup.update-status');
     });
 });
 

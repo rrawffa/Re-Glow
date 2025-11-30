@@ -540,15 +540,11 @@
         <div class="quick-actions">
             <h3>Quick Actions</h3>
             <div class="actions-grid">
-                <a href="#" class="action-card">
-                    <div class="action-icon pink">👥</div>
-                    <span class="action-label">Manage Users</span>
-                </a>
-                <a href="#" class="action-card">
+                <a href="{{ route('admin.vouchers.index') }}" class="action-card">
                     <div class="action-icon gray">🎫</div>
                     <span class="action-label">Voucher Management</span>
                 </a>
-                <a href="#" class="action-card">
+                <a href="{{ route('admin.education.index') }}" class="action-card">
                     <div class="action-icon yellow">📚</div>
                     <span class="action-label">Education Content</span>
                 </a>

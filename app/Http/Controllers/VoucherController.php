@@ -94,5 +94,4 @@ class VoucherController extends Controller
 
     return view('vouchers.favorites', compact('favorites'));
 }
-
 }

@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
+<<<<<<< Updated upstream
 @section('title', 'Manage User Points - Re-Glow')
+=======
+@section('title', 'Manage Point Transactions - Re-Glow')
+>>>>>>> Stashed changes
 
 @section('styles')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,11 +16,19 @@
 
     <div class="row align-items-center mb-5">
         <div class="col-md-8 col-sm-12">
+<<<<<<< Updated upstream
             <h1 class="fw-bold mb-1">Manage User Points</h1>
             <p class="text-muted">View and edit user point transactions here.</p>
         </div>
         <div class="col-md-4 text-end">
             <a href="{{ route('admin.riwayat_poin.create') }}" class="btn btn-primary fw-bold">+ Add Point</a>
+=======
+            <h1 class="fw-bold mb-1">Manage Point Transactions</h1>
+            <p class="text-muted">View and manage user point transactions for Re-Glow.</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ route('admin.riwayat_poin.create') }}" class="btn btn-primary fw-bold">+ Add Transaction</a>
+>>>>>>> Stashed changes
         </div>
     </div>
 
@@ -40,6 +52,7 @@
                 </tr>
             </thead>
             <tbody>
+<<<<<<< Updated upstream
                 @foreach($transactions as $index => $tx)
                 <tr>
                     <td>{{ $index + 1 + ($transactions->currentPage() - 1) * $transactions->perPage() }}</td>
@@ -51,6 +64,27 @@
                     <td>
                         <a href="{{ route('admin.riwayat_poin.edit', $tx->id) }}" class="btn btn-sm btn-warning me-1">Edit</a>
                         <form action="{{ route('admin.riwayat_poin.destroy', $tx->id) }}" method="POST" class="d-inline">
+=======
+                @foreach($transactions as $index => $transaction)
+                <tr>
+                    <td>{{ $index + 1 + ($transactions->currentPage() - 1) * $transactions->perPage() }}</td>
+                    <td class="fw-semibold">{{ $transaction->user->name ?? 'N/A' }}</td>
+                    <td>
+                        <span class="badge bg-{{ $transaction->type === 'earn' ? 'success' : ($transaction->type === 'redeem' ? 'warning' : 'info') }}">
+                            {{ ucfirst($transaction->type) }}
+                        </span>
+                    </td>
+                    <td>{{ $transaction->points }}</td>
+                    <td>{{ Str::limit($transaction->description, 50) ?? '-' }}</td>
+                    <td>{{ $transaction->created_at->format('M d, Y') }}</td>
+                    <td>
+                        <a href="{{ route('admin.riwayat_poin.edit', $transaction->id) }}" class="btn btn-sm btn-warning me-1">Edit</a>
+
+                        <form action="{{ route('admin.riwayat_poin.destroy', $transaction->id) }}"
+                              method="POST"
+                              class="d-inline"
+                              onsubmit="return confirm('Are you sure?')">
+>>>>>>> Stashed changes
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>

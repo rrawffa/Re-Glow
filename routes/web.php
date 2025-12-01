@@ -61,6 +61,8 @@ Route::middleware(['auth.session'])->group(function () {
 Route::middleware(['auth.session'])->group(function () {
     
     // ----- USER DASHBOARD & PROFILE -----
+    
+    // ----- USER DASHBOARD & PROFILE -----
     Route::prefix('user')->name('user.')->group(function () {
         Route::get('/dashboard', function () {
             $topArticles = Education::where('status', 'published')
@@ -90,6 +92,9 @@ Route::middleware(['auth.session'])->group(function () {
         Route::get('/dashboard', function () {
             return view('admin.dashboard');
         })->name('dashboard');
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     });
 
@@ -107,6 +112,9 @@ Route::middleware(['auth.session'])->group(function () {
         Route::get('/dashboard', function () {
             return view('logistik.dashboard');
         })->name('dashboard');
+        Route::get('/dashboard', function () {
+            return view('logistik.dashboard');
+        })->name('dashboard');
         Route::get('/dashboard', [LogistikController::class, 'dashboard'])->name('dashboard');
         Route::get('/schedule', [LogistikController::class, 'schedule'])->name('schedule');
         Route::get('/history', [LogistikController::class, 'history'])->name('history');
@@ -117,12 +125,15 @@ Route::middleware(['auth.session'])->group(function () {
 
     // API routes (accessible to all authenticated users)
     Route::get('/api/droppoint/{id}', [\App\Http\Controllers\Admin\AdminWasteExchangeController::class, 'dropPointShow']);
+    // API routes (accessible to all authenticated users)
+    Route::get('/api/droppoint/{id}', [\App\Http\Controllers\Admin\AdminWasteExchangeController::class, 'dropPointShow']);
 });
 
 <<<<<<< Updated upstream
 //  Fallback Route 
 =======
 // =========================
+//  FALLBACK ROUTE
 //  FALLBACK ROUTE
 // =========================
 >>>>>>> Stashed changes
@@ -140,7 +151,9 @@ Route::fallback(function () {
 >>>>>>> Stashed changes
 Route::get('/education', function (Request $request) {
     // Cek apakah user sedang login dan memiliki role 'admin'
+    // Cek apakah user sedang login dan memiliki role 'admin'
     if (Session::has('user_role') && Session::get('user_role') === 'admin') {
+        // Jika admin, redirect ke halaman management admin
         // Jika admin, redirect ke halaman management admin
         return redirect()->route('admin.education.index');
     }
@@ -159,6 +172,7 @@ Route::get('/education/{id}', [EducationController::class, 'show'])->name('educa
 Route::get('/education/{id}', [EducationController::class, 'show'])->name('education.show');
 >>>>>>> Stashed changes
 
+// Reaction Route (requires authentication or guest with IP tracking)
 // Reaction Route (requires authentication or guest with IP tracking)
 Route::post('/education/{id}/reaction', [EducationController::class, 'addReaction'])
     ->name('education.reaction');
@@ -342,7 +356,23 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
     Route::get('/waste-exchange/droppoint/{id}/edit', [AdminWasteExchangeController::class, 'dropPointEdit'])->name('waste.droppoint.edit');
     Route::put('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointUpdate'])->name('waste.droppoint.update');
     Route::delete('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointDestroy'])->name('waste.droppoint.destroy');
+    // Waste Exchange Management
+    Route::get('/waste-exchange', [AdminWasteExchangeController::class, 'index'])->name('waste.index');
+    
+    // Drop Point
+    Route::get('/waste-exchange/droppoint', [AdminWasteExchangeController::class, 'dropPointIndex'])->name('waste.droppoint.index');
+    Route::get('/waste-exchange/droppoint/create', [AdminWasteExchangeController::class, 'dropPointCreate'])->name('waste.droppoint.create');
+    Route::post('/waste-exchange/droppoint', [AdminWasteExchangeController::class, 'dropPointStore'])->name('waste.droppoint.store');
+    Route::get('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointShow'])->name('waste.droppoint.show');
+    Route::get('/waste-exchange/droppoint/{id}/edit', [AdminWasteExchangeController::class, 'dropPointEdit'])->name('waste.droppoint.edit');
+    Route::put('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointUpdate'])->name('waste.droppoint.update');
+    Route::delete('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointDestroy'])->name('waste.droppoint.destroy');
 
+    // Transaksi
+    Route::get('/waste-exchange/transaksi', [AdminWasteExchangeController::class, 'transaksiIndex'])->name('waste.transaksi.index');
+    Route::get('/waste-exchange/transaksi/{id}', [AdminWasteExchangeController::class, 'transaksiShow'])->name('waste.transaksi.show');
+    Route::patch('/waste-exchange/transaksi/{id}/status', [AdminWasteExchangeController::class, 'transaksiUpdateStatus'])->name('waste.transaksi.status');
+    Route::delete('/waste-exchange/transaksi/{id}', [AdminWasteExchangeController::class, 'transaksiDestroy'])->name('waste.transaksi.destroy');
     // Transaksi
     Route::get('/waste-exchange/transaksi', [AdminWasteExchangeController::class, 'transaksiIndex'])->name('waste.transaksi.index');
     Route::get('/waste-exchange/transaksi/{id}', [AdminWasteExchangeController::class, 'transaksiShow'])->name('waste.transaksi.show');

@@ -18,16 +18,11 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\RiwayatPoinController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminPointController;
-<<<<<<< Updated upstream
-
-// Welcome/Landing Page
-=======
 use App\Http\Controllers\Admin\AdminFaqController;
 
 // =========================
 //  WELCOME / LANDING PAGE
 // =========================
->>>>>>> Stashed changes
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
@@ -48,19 +43,10 @@ Route::middleware(['guest'])->group(function () {
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-<<<<<<< Updated upstream
-// Protected Routes - Requires Authentication
-Route::middleware(['auth.session'])->group(function () {
-    
-    // Dashboard & Profile Pengguna (DIGABUNGKAN JADI SATU GRUP)
-    Route::prefix('user')->name('user.')->group(function () {
-=======
 // =========================
 //  PROTECTED ROUTES
 // =========================
 Route::middleware(['auth.session'])->group(function () {
-    
-    // ----- USER DASHBOARD & PROFILE -----
     
     // ----- USER DASHBOARD & PROFILE -----
     Route::prefix('user')->name('user.')->group(function () {
@@ -73,7 +59,6 @@ Route::middleware(['auth.session'])->group(function () {
 
             return view('user.dashboard', compact('topArticles'));
         })->name('dashboard');
->>>>>>> Stashed changes
         Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
         Route::get('/api/stats', [UserDashboardController::class, 'getStats'])->name('api.stats');
 
@@ -83,15 +68,8 @@ Route::middleware(['auth.session'])->group(function () {
         Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update.post');
     });
     
-<<<<<<< Updated upstream
-    // Dashboard Admin
-=======
     // ----- ADMIN DASHBOARD -----
->>>>>>> Stashed changes
     Route::prefix('admin')->name('admin.')->middleware('check.role:admin')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
         Route::get('/dashboard', function () {
             return view('admin.dashboard');
         })->name('dashboard');
@@ -103,15 +81,8 @@ Route::middleware(['auth.session'])->group(function () {
         return redirect()->route('admin.dashboard')->with('info', 'User management feature coming soon!');
     })->name('users');
     
-<<<<<<< Updated upstream
-    // Dashboard Tim Logistik
-=======
     // ----- LOGISTIK DASHBOARD -----
->>>>>>> Stashed changes
     Route::prefix('logistik')->name('logistik.')->middleware('check.role:tim_logistik')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('logistik.dashboard');
-        })->name('dashboard');
         Route::get('/dashboard', function () {
             return view('logistik.dashboard');
         })->name('dashboard');
@@ -125,107 +96,35 @@ Route::middleware(['auth.session'])->group(function () {
 
     // API routes (accessible to all authenticated users)
     Route::get('/api/droppoint/{id}', [\App\Http\Controllers\Admin\AdminWasteExchangeController::class, 'dropPointShow']);
-    // API routes (accessible to all authenticated users)
-    Route::get('/api/droppoint/{id}', [\App\Http\Controllers\Admin\AdminWasteExchangeController::class, 'dropPointShow']);
 });
 
-<<<<<<< Updated upstream
-//  Fallback Route 
-=======
 // =========================
 //  FALLBACK ROUTE
-//  FALLBACK ROUTE
 // =========================
->>>>>>> Stashed changes
 Route::fallback(function () {
     return redirect()->route('welcome');
 });
 
-<<<<<<< Updated upstream
-// Public Education Routes
-// Rute ini sekarang akan mengecek role admin dan me-redirect jika perlu.
-=======
 // =========================
 //  PUBLIC EDUCATION ROUTES
 // =========================
->>>>>>> Stashed changes
 Route::get('/education', function (Request $request) {
     // Cek apakah user sedang login dan memiliki role 'admin'
-    // Cek apakah user sedang login dan memiliki role 'admin'
     if (Session::has('user_role') && Session::get('user_role') === 'admin') {
-        // Jika admin, redirect ke halaman management admin
         // Jika admin, redirect ke halaman management admin
         return redirect()->route('admin.education.index');
     }
     
     // Jika bukan admin atau belum login, jalankan index method dari EducationController
-<<<<<<< Updated upstream
-    // Kita panggil controller secara langsung karena kita mengambil alih rute aslinya.
-=======
->>>>>>> Stashed changes
     return app(EducationController::class)->index($request);
 })->name('education.index');
+
 Route::get('/education/{id}', [EducationController::class, 'show'])->name('education.show');
 
-<<<<<<< Updated upstream
-=======
-Route::get('/education/{id}', [EducationController::class, 'show'])->name('education.show');
->>>>>>> Stashed changes
-
-// Reaction Route (requires authentication or guest with IP tracking)
 // Reaction Route (requires authentication or guest with IP tracking)
 Route::post('/education/{id}/reaction', [EducationController::class, 'addReaction'])
     ->name('education.reaction');
 
-<<<<<<< Updated upstream
-// Admin Only Routes
-// Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('admin.')->group(function () {
-//    Route::get('/education', [AdminEducationController::class, 'index'])->name('education.index');
-//    Route::get('/education', [AdminEducationController::class, 'index'])->name('education.index');
-//    Route::get('/education/create', [AdminEducationController::class, 'create'])->name('education.create');
-//    Route::post('/education', [AdminEducationController::class, 'store'])->name('education.store');
-//    Route::get('/education/{id}', [AdminEducationController::class, 'show'])->name('education.show');
-//    Route::get('/education/{id}/edit', [AdminEducationController::class, 'edit'])->name('education.edit');
-//    Route::put('/education/{id}', [AdminEducationController::class, 'update'])->name('education.update');
-//    Route::delete('/education/{id}', [AdminEducationController::class, 'destroy'])->name('education.destroy');});
-
-Route::get('/test-db', function () {
-    try {
-        $db   = DB::select("SELECT DATABASE() as db");
-        $tbl  = DB::select('SHOW TABLES');
-        return [
-            'database' => $db,
-            'tables'   => $tbl,
-        ];
-    } catch (\Exception $e) {
-        return $e->getMessage();
-    }
-});
-
-Route::get('/env-test', function () {
-    return env('DB_DATABASE');
-});
-
-
-// Waste Exchange Routes (pengguna)
-Route::middleware(['auth.session','check.role:pengguna'])->group(function () {
-    Route::prefix('waste-exchange')->name('waste-exchange.')->group(function () {
-        Route::get('/', [WasteExchangeController::class, 'index'])->name('index');
-        Route::get('/create', [WasteExchangeController::class, 'create'])->name('create');
-        Route::post('/store', [WasteExchangeController::class, 'store'])->name('store');
-        Route::get('/history', [WasteExchangeController::class, 'history'])->name('history');
-        Route::get('/{id}', [WasteExchangeController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [WasteExchangeController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [WasteExchangeController::class, 'update'])->name('update');
-        Route::delete('/{id}', [WasteExchangeController::class, 'destroy'])->name('destroy');
-        
-        // API endpoint
-        Route::get('/api/drop-points', [WasteExchangeController::class, 'getDropPoints'])->name('api.drop-points');
-    });
-});
-
-// Waste Exchange Routes (admin)
-=======
 // =========================
 //  DEBUG/TEST ROUTES
 // =========================
@@ -249,7 +148,6 @@ Route::get('/env-test', function () {
 // =========================
 //  WASTE EXCHANGE (PENGGUNA)
 // =========================
->>>>>>> Stashed changes
 Route::middleware(['auth.session','check.role:pengguna'])->group(function () {
     Route::prefix('waste-exchange')->name('waste-exchange.')->group(function () {
         Route::get('/', [WasteExchangeController::class, 'index'])->name('index');
@@ -266,28 +164,6 @@ Route::middleware(['auth.session','check.role:pengguna'])->group(function () {
     });
 });
 
-<<<<<<< Updated upstream
-//Riwayat Poin
-//belum pake login 
-Route::get('/riwayat-poin', [RiwayatPoinController::class, 'index'])->name('riwayat poin.poinhistory');
-// Admin (CRUD)
-Route::middleware(['auth.session', 'check.role:admin'])
-    ->prefix('admin/riwayat_poin')
-    ->name('admin.riwayat_poin.')
-    ->group(function () {
-        Route::get('/', [AdminPointController::class, 'index'])->name('index');
-        Route::get('/create', [AdminPointController::class, 'create'])->name('create');
-        Route::post('/', [AdminPointController::class, 'store'])->name('store');
-        Route::get('/{id}/edit', [AdminPointController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [AdminPointController::class, 'update'])->name('update');
-        Route::delete('/{id}', [AdminPointController::class, 'destroy'])->name('destroy');
-    });
-
-// FAQ Page
-Route::get('/faq', [FaqController::class, 'index'])->name('faq.faq');
-
-//////// ADMIN ADMIN ADMIN ////////////////////////
-=======
 // =========================
 //  RIWAYAT POIN
 // =========================
@@ -311,7 +187,6 @@ Route::middleware(['auth.session', 'check.role:admin'])
         Route::put('/update/{id}', [AdminPointController::class, 'update'])->name('update');
         Route::delete('/{id}', [AdminPointController::class, 'destroy'])->name('destroy');
     });
->>>>>>> Stashed changes
 
 // =========================
 //  FAQ ROUTES
@@ -356,23 +231,7 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
     Route::get('/waste-exchange/droppoint/{id}/edit', [AdminWasteExchangeController::class, 'dropPointEdit'])->name('waste.droppoint.edit');
     Route::put('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointUpdate'])->name('waste.droppoint.update');
     Route::delete('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointDestroy'])->name('waste.droppoint.destroy');
-    // Waste Exchange Management
-    Route::get('/waste-exchange', [AdminWasteExchangeController::class, 'index'])->name('waste.index');
-    
-    // Drop Point
-    Route::get('/waste-exchange/droppoint', [AdminWasteExchangeController::class, 'dropPointIndex'])->name('waste.droppoint.index');
-    Route::get('/waste-exchange/droppoint/create', [AdminWasteExchangeController::class, 'dropPointCreate'])->name('waste.droppoint.create');
-    Route::post('/waste-exchange/droppoint', [AdminWasteExchangeController::class, 'dropPointStore'])->name('waste.droppoint.store');
-    Route::get('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointShow'])->name('waste.droppoint.show');
-    Route::get('/waste-exchange/droppoint/{id}/edit', [AdminWasteExchangeController::class, 'dropPointEdit'])->name('waste.droppoint.edit');
-    Route::put('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointUpdate'])->name('waste.droppoint.update');
-    Route::delete('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointDestroy'])->name('waste.droppoint.destroy');
 
-    // Transaksi
-    Route::get('/waste-exchange/transaksi', [AdminWasteExchangeController::class, 'transaksiIndex'])->name('waste.transaksi.index');
-    Route::get('/waste-exchange/transaksi/{id}', [AdminWasteExchangeController::class, 'transaksiShow'])->name('waste.transaksi.show');
-    Route::patch('/waste-exchange/transaksi/{id}/status', [AdminWasteExchangeController::class, 'transaksiUpdateStatus'])->name('waste.transaksi.status');
-    Route::delete('/waste-exchange/transaksi/{id}', [AdminWasteExchangeController::class, 'transaksiDestroy'])->name('waste.transaksi.destroy');
     // Transaksi
     Route::get('/waste-exchange/transaksi', [AdminWasteExchangeController::class, 'transaksiIndex'])->name('waste.transaksi.index');
     Route::get('/waste-exchange/transaksi/{id}', [AdminWasteExchangeController::class, 'transaksiShow'])->name('waste.transaksi.show');
@@ -381,10 +240,7 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
 
     // Logistik
     Route::get('/waste-exchange/logistik', [AdminWasteExchangeController::class, 'logistikIndex'])->name('waste.logistik.index');
-<<<<<<< Updated upstream
-=======
     
->>>>>>> Stashed changes
     // Admin Voucher Management
     Route::get('/vouchers', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'index'])->name('vouchers.index');
     Route::get('/vouchers/create', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'create'])->name('vouchers.create');
@@ -424,51 +280,6 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/community/{post}/report', [CommunityController::class,'report'])->name('community.report');
 });
 
-<<<<<<< Updated upstream
-// // 🔓 Community Sharing (Halaman dan Melihat Postingan)
-// Route::get('/', function(){ return redirect()->route('community.index'); });
-
-// Halaman utama Community (bisa diakses publik)
-Route::get('/community', [CommunityController::class,'index'])->name('community.index');
-
-// // API endpoints (AJAX) untuk mengambil/menampilkan postingan (bisa diakses publik)
-// Route::get('/community/posts', [CommunityController::class,'fetchPosts'])->name('community.posts');
-
-
-// ===========================================
-// 🔐 Protected Routes (Perlu Login/Auth)
-// ===========================================
-
-Route::middleware(['auth'])->group(function(){
-    // Voucher Redemption (hanya user yang login yang bisa redeem)
-    Route::post('/vouchers/{voucher}/redeem', [VoucherController::class,'redeem'])->name('vouchers.redeem');
-
-    // Favorite Vouchers (hanya user yang login yang punya favorit)
-    Route::get('/vouchers/favorites', [VoucherController::class, 'favorites'])->name('vouchers.favorites');
-
-    // Community Actions (Aksi Modifikasi dan Pelaporan hanya untuk user yang login)
-
-    // Membuat Postingan Baru
-    Route::post('/community', [CommunityController::class,'store'])->name('community.store');
-    
-    // Mengubah dan Menghapus Postingan
-    Route::post('/community/{post}/update', [CommunityController::class,'update'])->name('community.update');
-    Route::post('/community/{post}/delete', [CommunityController::class,'destroy'])->name('community.delete');
-    
-    // Melaporkan Postingan (penting: hanya user terautentikasi yang bisa report)
-    Route::post('/community/{post}/report', [CommunityController::class,'report'])->name('community.report');
-});
-
-// 🔓 Katalog Voucher — sekarang publik (tanpa login)
-Route::get('/vouchers', [VoucherController::class,'index'])->name('vouchers.index');
-Route::get('/vouchers/{voucher}', [VoucherController::class,'show'])->name('vouchers.show');
-Route::post('/vouchers/{voucher}/redeem', [VoucherController::class,'redeem'])->name('vouchers.redeem');
-Route::get('/api/vouchers', [VoucherController::class,'apiIndex'])->name('vouchers.apiIndex');
-
-// Favorite Vouchers (sementara kosong dulu)
-Route::get('/vouchers/favorites', [App\Http\Controllers\VoucherController::class, 'favorites'])
-    ->name('vouchers.favorites');
-=======
 // =========================
 //  VOUCHER PUBLIC ROUTES
 // =========================
@@ -476,4 +287,3 @@ Route::get('/vouchers/favorites', [App\Http\Controllers\VoucherController::class
 Route::get('/vouchers', [VoucherController::class,'index'])->name('vouchers.index');
 Route::get('/vouchers/{voucher}', [VoucherController::class,'show'])->name('vouchers.show');
 Route::get('/api/vouchers', [VoucherController::class,'apiIndex'])->name('vouchers.apiIndex');
->>>>>>> Stashed changes

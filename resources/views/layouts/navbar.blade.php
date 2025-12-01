@@ -57,8 +57,21 @@
         @if(Session::get('user_role') !== 'admin')
             <li><a href="{{ route('community.index') }}" class="{{ request()->is('community') ? 'active' : '' }}">Community</a></li>
         @endif
-        <li><a href="{{ url('/education') }}" class="{{ request()->is('education') ? 'active' : '' }}">Education</a></li>
-        <li><a href="{{ url('/faq') }}" class="{{ request()->is('faq') ? 'active' : '' }}">FAQ</a></li>
+        @if(Session::get('user_role') === 'admin')
+            <li>
+                <a href="{{ route('admin.education.index') }}" class="{{ request()->is('admin/education*') ? 'active' : '' }}">
+                    Education
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.faq.index') }}" class="{{ request()->is('admin/faq*') ? 'active' : '' }}">
+                    FAQ
+                </a>
+            </li>
+        @else
+            <li><a href="{{ url('/education') }}" class="{{ request()->is('education') ? 'active' : '' }}">Education</a></li>
+            <li><a href="{{ url('/faq') }}" class="{{ request()->is('faq') ? 'active' : '' }}">FAQ</a></li>
+        @endif
     </ul>
 
     <div class="nav-icons">

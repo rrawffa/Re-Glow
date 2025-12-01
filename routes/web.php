@@ -14,6 +14,9 @@ use App\Http\Controllers\LogistikController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\Admin\AdminEducationController;
 use App\Http\Controllers\Admin\AdminWasteExchangeController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminFaqController;
+use App\Http\Controllers\Admin\AdminVoucherController;
 use App\Http\Controllers\RiwayatPoinController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminPointController;
@@ -134,33 +137,12 @@ Route::middleware(['auth.session', 'check.role:pengguna'])
         // API endpoint
         Route::get('/api/drop-points', [WasteExchangeController::class, 'getDropPoints'])->name('api.drop-points');
     });
-});
 
-// Waste Exchange Routes (admin)
-Route::middleware(['auth.session','check.role:pengguna'])->group(function () {
-    Route::prefix('waste-exchange')->name('waste-exchange.')->group(function () {
-        Route::get('/', [WasteExchangeController::class, 'index'])->name('index');
-        Route::get('/create', [WasteExchangeController::class, 'create'])->name('create');
-        Route::post('/store', [WasteExchangeController::class, 'store'])->name('store');
-        Route::get('/history', [WasteExchangeController::class, 'history'])->name('history');
-        Route::get('/{id}', [WasteExchangeController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [WasteExchangeController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [WasteExchangeController::class, 'update'])->name('update');
-        Route::delete('/{id}', [WasteExchangeController::class, 'destroy'])->name('destroy');
-        
-        // API endpoint
-        Route::get('/api/drop-points', [WasteExchangeController::class, 'getDropPoints'])->name('api.drop-points');
-    });
-});
+// Riwayat Poin
+Route::get('/riwayat-poin', [RiwayatPoinController::class, 'index'])->name('riwayat.poin');
 
-//Riwayat Poin
-//belum pake login 
-Route::get('/riwayat-poin', [RiwayatPoinController::class, 'index'])->name('riwayat poin.poinhistory');
-
-// FAQ Page
-Route::get('/faq', [FaqController::class, 'index'])->name('faq.faq');//////// ADMIN ADMIN ADMIN ////////////////////////
-
-// Admin Education Routes
+// FAQ Page (Public)
+Route::get('/faq', [FaqController::class, 'index'])->name('faq.user');// Admin Education Routes
 Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // Education Management
     Route::get('/education', [AdminEducationController::class, 'index'])->name('education.index');
@@ -171,26 +153,51 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
     Route::put('/education/{id}', [AdminEducationController::class, 'update'])->name('education.update');
     Route::delete('/education/{id}', [AdminEducationController::class, 'destroy'])->name('education.destroy');
 
-        // Waste Exchange Management
-        Route::get('/waste-exchange', [AdminWasteExchangeController::class, 'index'])->name('waste.index');
+    // Waste Exchange Management
+    Route::get('/waste-exchange', [AdminWasteExchangeController::class, 'index'])->name('waste.index');
 
-        // Drop Point
-        Route::get('/waste-exchange/droppoint', [AdminWasteExchangeController::class, 'dropPointIndex'])->name('waste.droppoint.index');
-        Route::get('/waste-exchange/droppoint/create', [AdminWasteExchangeController::class, 'dropPointCreate'])->name('waste.droppoint.create');
-        Route::post('/waste-exchange/droppoint', [AdminWasteExchangeController::class, 'dropPointStore'])->name('waste.droppoint.store');
-        Route::get('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointShow'])->name('waste.droppoint.show');
-        Route::get('/waste-exchange/droppoint/{id}/edit', [AdminWasteExchangeController::class, 'dropPointEdit'])->name('waste.droppoint.edit');
-        Route::put('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointUpdate'])->name('waste.droppoint.update');
-        Route::delete('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointDestroy'])->name('waste.droppoint.destroy');
+    // Drop Point
+    Route::get('/waste-exchange/droppoint', [AdminWasteExchangeController::class, 'dropPointIndex'])->name('waste.droppoint.index');
+    Route::get('/waste-exchange/droppoint/create', [AdminWasteExchangeController::class, 'dropPointCreate'])->name('waste.droppoint.create');
+    Route::post('/waste-exchange/droppoint', [AdminWasteExchangeController::class, 'dropPointStore'])->name('waste.droppoint.store');
+    Route::get('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointShow'])->name('waste.droppoint.show');
+    Route::get('/waste-exchange/droppoint/{id}/edit', [AdminWasteExchangeController::class, 'dropPointEdit'])->name('waste.droppoint.edit');
+    Route::put('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointUpdate'])->name('waste.droppoint.update');
+    Route::delete('/waste-exchange/droppoint/{id}', [AdminWasteExchangeController::class, 'dropPointDestroy'])->name('waste.droppoint.destroy');
 
-        // Transaksi
-        Route::get('/waste-exchange/transaksi', [AdminWasteExchangeController::class, 'transaksiIndex'])->name('waste.transaksi.index');
-        Route::get('/waste-exchange/transaksi/{id}', [AdminWasteExchangeController::class, 'transaksiShow'])->name('waste.transaksi.show');
-        Route::patch('/waste-exchange/transaksi/{id}/status', [AdminWasteExchangeController::class, 'transaksiUpdateStatus'])->name('waste.transaksi.status');
-        Route::delete('/waste-exchange/transaksi/{id}', [AdminWasteExchangeController::class, 'transaksiDestroy'])->name('waste.transaksi.destroy');
+    // Transaksi
+    Route::get('/waste-exchange/transaksi', [AdminWasteExchangeController::class, 'transaksiIndex'])->name('waste.transaksi.index');
+    Route::get('/waste-exchange/transaksi/{id}', [AdminWasteExchangeController::class, 'transaksiShow'])->name('waste.transaksi.show');
+    Route::patch('/waste-exchange/transaksi/{id}/status', [AdminWasteExchangeController::class, 'transaksiUpdateStatus'])->name('waste.transaksi.status');
+    Route::delete('/waste-exchange/transaksi/{id}', [AdminWasteExchangeController::class, 'transaksiDestroy'])->name('waste.transaksi.destroy');
 
-        // Logistik
-        Route::get('/waste-exchange/logistik', [AdminWasteExchangeController::class, 'logistikIndex'])->name('waste.logistik.index');
+    // Logistik
+    Route::get('/waste-exchange/logistik', [AdminWasteExchangeController::class, 'logistikIndex'])->name('waste.logistik.index');
+
+    // Point Transaction Management
+    Route::get('/riwayat_poin', [AdminPointController::class, 'index'])->name('riwayat_poin.index');
+    Route::get('/riwayat_poin/create', [AdminPointController::class, 'create'])->name('riwayat_poin.create');
+    Route::post('/riwayat_poin', [AdminPointController::class, 'store'])->name('riwayat_poin.store');
+    Route::get('/riwayat_poin/{id}/edit', [AdminPointController::class, 'edit'])->name('riwayat_poin.edit');
+    Route::put('/riwayat_poin/{id}', [AdminPointController::class, 'update'])->name('riwayat_poin.update');
+    Route::delete('/riwayat_poin/{id}', [AdminPointController::class, 'destroy'])->name('riwayat_poin.destroy');
+
+    // FAQ Management
+    Route::get('/faq', [AdminFaqController::class, 'index'])->name('faq.index');
+    Route::get('/faq/create', [AdminFaqController::class, 'create'])->name('faq.create');
+    Route::post('/faq', [AdminFaqController::class, 'store'])->name('faq.store');
+    Route::get('/faq/{id}/edit', [AdminFaqController::class, 'edit'])->name('faq.edit');
+    Route::put('/faq/{id}', [AdminFaqController::class, 'update'])->name('faq.update');
+    Route::delete('/faq/{id}', [AdminFaqController::class, 'destroy'])->name('faq.destroy');
+
+    // Vouchers Management
+    Route::get('/vouchers', [AdminVoucherController::class, 'index'])->name('vouchers.index');
+    Route::get('/vouchers/create', [AdminVoucherController::class, 'create'])->name('vouchers.create');
+    Route::post('/vouchers', [AdminVoucherController::class, 'store'])->name('vouchers.store');
+    Route::get('/vouchers/{voucher}', [AdminVoucherController::class, 'show'])->name('vouchers.show');
+    Route::get('/vouchers/{voucher}/edit', [AdminVoucherController::class, 'edit'])->name('vouchers.edit');
+    Route::put('/vouchers/{voucher}', [AdminVoucherController::class, 'update'])->name('vouchers.update');
+    Route::delete('/vouchers/{voucher}', [AdminVoucherController::class, 'destroy'])->name('vouchers.destroy');
 });
 
 
@@ -204,9 +211,6 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
 
 // Favorite Vouchers (sementara)
 // Route::get('/vouchers/favorites', [VoucherController::class, 'favorites'])->name('vouchers.favorites');
-Route::get('/admin/vouchers', function () {
-    return 'Admin Vouchers Page (Placeholder)';
-})->name('admin.vouchers.index');
 
 Route::get('/community', function () {
     return 'Community Page (placeholder)';

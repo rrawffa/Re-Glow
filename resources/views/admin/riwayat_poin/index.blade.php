@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Manage FAQs - Re-Glow')
+@section('title', 'Point Transactions - Re-Glow')
 
 @section('styles')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,11 +12,11 @@
 
     <div class="row align-items-center mb-5">
         <div class="col-md-8 col-sm-12">
-            <h1 class="fw-bold mb-1">Manage FAQs</h1>
-            <p class="text-muted">Manage frequently asked questions for Re-Glow.</p>
+            <h1 class="fw-bold mb-1">Point Transactions</h1>
+            <p class="text-muted">Manage user point transactions and history.</p>
         </div>
         <div class="col-md-4 text-end">
-            <a href="{{ route('admin.faq.create') }}" class="btn btn-primary fw-bold">+ Add FAQ</a>
+            <a href="{{ route('admin.riwayat_poin.create') }}" class="btn btn-primary fw-bold">+ Add Transaction</a>
         </div>
     </div>
 
@@ -25,27 +25,37 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    @if($faqs->count() > 0)
+    @if($transactions->count() > 0)
     <div class="table-responsive">
         <table class="table table-hover align-middle">
             <thead class="table-light">
                 <tr>
                     <th>#</th>
-                    <th>Question</th>
-                    <th>Answer Preview</th>
+                    <th>User</th>
+                    <th>Type</th>
+                    <th>Points</th>
+                    <th>Description</th>
+                    <th>Date</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($faqs as $index => $faq)
+                @foreach($transactions as $index => $transaction)
                 <tr>
-                    <td>{{ $index + 1 + ($faqs->currentPage() - 1) * $faqs->perPage() }}</td>
-                    <td class="fw-semibold">{{ $faq->question }}</td>
-                    <td>{{ Str::limit($faq->answer, 70) }}</td>
+                    <td>{{ $index + 1 + ($transactions->currentPage() - 1) * $transactions->perPage() }}</td>
+                    <td class="fw-semibold">{{ $transaction->user->name ?? 'Unknown' }}</td>
                     <td>
-                        <a href="{{ route('admin.faq.edit', $faq->id) }}" class="btn btn-sm btn-warning me-1">Edit</a>
+                        <span class="badge bg-{{ $transaction->type === 'earn' ? 'success' : ($transaction->type === 'redeem' ? 'warning' : 'info') }}">
+                            {{ ucfirst($transaction->type) }}
+                        </span>
+                    </td>
+                    <td>{{ $transaction->points }}</td>
+                    <td>{{ $transaction->description ?? '-' }}</td>
+                    <td>{{ $transaction->created_at->format('M d, Y') }}</td>
+                    <td>
+                        <a href="{{ route('admin.riwayat_poin.edit', $transaction->id) }}" class="btn btn-sm btn-warning me-1">Edit</a>
 
-                        <form action="{{ route('admin.faq.destroy', $faq->id) }}"
+                        <form action="{{ route('admin.riwayat_poin.destroy', $transaction->id) }}"
                               method="POST"
                               class="d-inline"
                               onsubmit="return confirm('Are you sure?')">
@@ -59,11 +69,11 @@
             </tbody>
         </table>
 
-        {{ $faqs->links() }}
+        {{ $transactions->links() }}
     </div>
     @else
         <div class="text-center py-5">
-            <h4 class="text-muted">No FAQs added yet.</h4>
+            <h4 class="text-muted">No transactions added yet.</h4>
         </div>
     @endif
 

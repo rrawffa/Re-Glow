@@ -21,7 +21,6 @@ use App\Http\Controllers\RiwayatPoinController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminPointController;
 
-
 // =========================
 //  WELCOME / LANDING PAGE
 // =========================
@@ -29,7 +28,9 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-// Authentication Routes
+// =========================
+//  AUTHENTICATION ROUTES
+// =========================
 Route::middleware(['guest'])->group(function () {
     // Login
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -42,7 +43,6 @@ Route::middleware(['guest'])->group(function () {
 
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
 
 // =========================
 //  PROTECTED ROUTES
@@ -66,14 +66,19 @@ Route::middleware(['auth.session'])->group(function () {
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update.post');
     });
-
     // ----- ADMIN DASHBOARD -----
     Route::prefix('admin')->name('admin.')->middleware('check.role:admin')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     });
 
     // ----- LOGISTIK DASHBOARD -----
     Route::prefix('logistik')->name('logistik.')->middleware('check.role:tim_logistik')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('logistik.dashboard');
+        })->name('dashboard');
         Route::get('/dashboard', [LogistikController::class, 'dashboard'])->name('dashboard');
         Route::get('/schedule', [LogistikController::class, 'schedule'])->name('schedule');
         Route::get('/history', [LogistikController::class, 'history'])->name('history');
@@ -82,8 +87,8 @@ Route::middleware(['auth.session'])->group(function () {
         Route::put('/pickup/{id}/status', [LogistikController::class, 'updatePickupStatus'])->name('pickup.update-status');
     });
 
-// API routes (accessible to all)
-Route::get('/api/droppoint/{id}', [\App\Http\Controllers\Admin\AdminWasteExchangeController::class, 'dropPointShow']);
+    // API routes (accessible to all authenticated users)
+    Route::get('/api/droppoint/{id}', [\App\Http\Controllers\Admin\AdminWasteExchangeController::class, 'dropPointShow']);
 });
 
 
@@ -94,7 +99,6 @@ Route::fallback(function () {
     return redirect()->route('welcome');
 });
 
-
 // =========================
 //  PUBLIC EDUCATION ROUTES
 // =========================
@@ -104,7 +108,6 @@ Route::get('/education', function (Request $request) {
     if (Session::has('user_role') && Session::get('user_role') === 'admin') {
         return redirect()->route('admin.education.index');
     }
-
     return app(EducationController::class)->index($request);
 
 })->name('education.index');

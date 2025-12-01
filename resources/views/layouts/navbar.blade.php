@@ -43,7 +43,7 @@
                     Points
                 </a>
             @else
-                <a href="{{ url('/riwayat-poin') }}" class="{{ request()->is('riwayat-poin') ? 'active' : '' }}">
+                <a href="{{ route('user.riwayat.poin') }}" class="{{ request()->is('user/riwayat-poin') ? 'active' : '' }}">
                     Points
                 </a>
             @endif

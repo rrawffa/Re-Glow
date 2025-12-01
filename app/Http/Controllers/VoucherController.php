@@ -51,40 +51,42 @@ class VoucherController extends Controller
         return view('vouchers.show', compact('voucher', 'user'));
     }
 
-    public function redeem(Request $request, Voucher $voucher)
-    {
-        $user = Auth::user();
+   public function redeem(Request $request, Voucher $voucher)
+{
+    $user = auth()->user();
 
-        if (!$user) {
-            return redirect()->route('login')->with('error', 'Silakan login untuk menukarkan voucher.');
-        }
-
-        if ($voucher->expiration_date && Carbon::parse($voucher->expiration_date)->isPast()) {
-            return back()->with('error', 'Voucher sudah kadaluarsa.');
-        }
-
-        if ($voucher->stock <= 0) {
-            return back()->with('error', 'Voucher habis.');
-        }
-
-        if ($user->points < $voucher->required_points) {
-            return back()->with('error', 'Poin tidak mencukupi.');
-        }
-
-        DB::transaction(function () use ($user, $voucher) {
-            $voucher->decrement('stock');
-            $user->decrement('points', $voucher->required_points);
-
-            DB::table('voucher_redemptions')->insert([
-                'user_id' => $user->id,
-                'voucher_id' => $voucher->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        });
-
-        return back()->with('success', 'Redemption successful. Voucher has been redeemed!');
+    // Cek poin cukup
+    if ($user->poin < $voucher->points_required) {
+        return redirect()->back()->with('error', 'Poin Anda tidak mencukupi!');
     }
+
+    // Kurangi poin user
+    $user->poin -= $voucher->points_required;
+    $user->save();
+
+    // Kurangi stok voucher
+    if ($voucher->stock > 0) {
+        $voucher->stock -= 1;
+        $voucher->save();
+    }
+
+    // Simpan riwayat redeem voucher
+    DB::table('voucher_user')->insert([
+        'user_id' => $user->id_user,
+        'voucher_id' => $voucher->id,
+        'redeemed_at' => now(),
+    ]);
+
+    // Simpan ke point_transactions untuk sejarah poin
+    \App\Models\PointTransaction::create([
+        'user_id' => $user->id_user,
+        'points' => -$voucher->points_required,
+        'type' => 'redeem',
+        'description' => 'Redeem voucher: '.$voucher->title,
+    ]);
+
+    return redirect()->back()->with('success', 'Voucher berhasil diredeem!');
+}
 
     public function favorites()
 {

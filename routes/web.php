@@ -211,13 +211,12 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
 // =========================
 //  VOUCHER PUBLIC ROUTES
 // =========================
-// Route::get('/vouchers', [VoucherController::class,'index'])->name('vouchers.index');
-// Route::get('/vouchers/{voucher}', [VoucherController::class,'show'])->name('vouchers.show');
-// Route::post('/vouchers/{voucher}/redeem', [VoucherController::class,'redeem'])->name('vouchers.redeem');
-// Route::get('/api/vouchers', [VoucherController::class,'apiIndex'])->name('vouchers.apiIndex');
-
-Route::get('/vouchers', [VoucherController::class, 'index'])
-    ->name('vouchers.index'); //DUMMY
+Route::get('/vouchers', [VoucherController::class,'index'])->name('vouchers.index');
+Route::get('/vouchers/{voucher}', [VoucherController::class,'show'])->name('vouchers.show');
+Route::post('/vouchers/{voucher}/redeem', [VoucherController::class,'redeem'])
+    ->middleware('auth.session')
+    ->name('vouchers.redeem');
+Route::get('/api/vouchers', [VoucherController::class,'apiIndex'])->name('vouchers.api.index');
 
 Route::get('/community', function () {
     return 'Community Page (placeholder)';

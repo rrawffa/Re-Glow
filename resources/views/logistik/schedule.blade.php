@@ -511,6 +511,150 @@
         font-weight: 600;
     }
 
+    /* Drop Points Grid */
+    .droppoints-section {
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--green-dark);
+        margin-bottom: 1.5rem;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .droppoints-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto 2rem;
+    }
+
+    .droppoint-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        border-top: 4px solid var(--pink-base);
+        cursor: pointer;
+    }
+
+    .droppoint-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .droppoint-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1rem;
+    }
+
+    .droppoint-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        flex: 1;
+        margin-right: 0.5rem;
+    }
+
+    .pickup-badge {
+        background: var(--pink-base);
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.8rem;
+        min-width: 32px;
+        text-align: center;
+    }
+
+    .droppoint-address {
+        font-size: 0.85rem;
+        color: var(--text-gray);
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+
+    .droppoint-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    .meta-item {
+        text-align: center;
+    }
+
+    .meta-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--green-dark);
+        margin-bottom: 0.25rem;
+    }
+
+    .meta-label {
+        font-size: 0.8rem;
+        color: var(--text-gray);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .capacity-bar {
+        width: 100%;
+        height: 6px;
+        background: #e0e0e0;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 0.5rem;
+    }
+
+    .capacity-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--pink-base) 0%, #ffc9d4 100%);
+    }
+
+    .capacity-text {
+        font-size: 0.75rem;
+        color: var(--text-gray);
+        font-weight: 600;
+    }
+
+    .droppoint-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .btn-view-droppoint {
+        flex: 1;
+        padding: 0.6rem;
+        border: 1px solid var(--pink-base);
+        background: white;
+        color: var(--pink-base);
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+    }
+
+    .btn-view-droppoint:hover {
+        background: var(--pink-base);
+        color: white;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .schedule-container {
@@ -593,6 +737,48 @@
         <div class="stat-box">
             <div class="stat-value" id="stat-total">{{ $totalPickups }}</div>
             <div class="stat-label">Total</div>
+        </div>
+    </div>
+
+    <!-- Drop Points Section (from Admin Management) -->
+    <div class="droppoints-section">
+        <h2 class="section-title">📍 Drop Points - Lokasi Penjemputan</h2>
+        <div class="droppoints-grid">
+            @forelse($dropPoints as $point)
+            <div class="droppoint-card">
+                <div class="droppoint-header">
+                    <div class="droppoint-name">{{ $point->nama_lokasi }}</div>
+                    <div class="pickup-badge">
+                        {{ $pickupsByDropPoint->contains($point->id_drop_point) ? $todayPickups->where('id_drop_point', $point->id_drop_point)->count() : 0 }}
+                    </div>
+                </div>
+                
+                <div class="droppoint-address">
+                    📮 {{ $point->alamat ?? 'Alamat tidak tersedia' }}
+                </div>
+
+                <div class="droppoint-meta">
+                    <div class="meta-item">
+                        <div class="meta-value">{{ $point->kapasitas_sampah }}</div>
+                        <div class="meta-label">Kapasitas (kg)</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-value">{{ $point->transaksi_count ?? 0 }}</div>
+                        <div class="meta-label">Transaksi</div>
+                    </div>
+                </div>
+
+                <div class="droppoint-actions">
+                    <button class="btn-view-droppoint" onclick="viewDropPointDetails('{{ $point->id_drop_point }}', '{{ $point->nama_lokasi }}')">
+                        📋 Lihat Detail
+                    </button>
+                </div>
+            </div>
+            @empty
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                <p style="color: var(--text-gray); font-size: 1rem;">Belum ada drop point yang dibuat oleh admin</p>
+            </div>
+            @endforelse
         </div>
     </div>
 
@@ -824,5 +1010,72 @@
             }
         });
     });
+
+    // View drop point details
+    function viewDropPointDetails(dropPointId, dropPointName) {
+        fetch(`/api/droppoint/${dropPointId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const dropPoint = data.data.dropPoint;
+                    const transactions = data.data.transactions || [];
+                    
+                    let detailHTML = `
+                        <div style="padding: 2rem;">
+                            <h2 style="color: var(--green-dark); margin-bottom: 1rem;">${dropPoint.nama_lokasi}</h2>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                                <div>
+                                    <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Alamat</p>
+                                    <p style="font-weight: 600;">${dropPoint.alamat}</p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Kapasitas</p>
+                                    <p style="font-weight: 600;">${dropPoint.kapasitas_sampah} kg</p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Koordinat</p>
+                                    <p style="font-weight: 600;">${dropPoint.koordinat}</p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 0.5rem;">Total Transaksi</p>
+                                    <p style="font-weight: 600;">${transactions.length}</p>
+                                </div>
+                            </div>
+                            
+                            <h3 style="color: var(--green-dark); margin-bottom: 1rem;">Transaksi Terbaru</h3>
+                            <div style="max-height: 400px; overflow-y: auto;">
+                                ${transactions.length > 0 ? `
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <thead style="background: var(--green-dark); color: white;">
+                                            <tr>
+                                                <th style="padding: 0.75rem; text-align: left;">Tanggal</th>
+                                                <th style="padding: 0.75rem; text-align: left;">User</th>
+                                                <th style="padding: 0.75rem; text-align: left;">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${transactions.slice(0, 5).map(tx => `
+                                                <tr style="border-bottom: 1px solid var(--border-light);">
+                                                    <td style="padding: 0.75rem;">${new Date(tx.tgl_tSampah).toLocaleDateString('id-ID')}</td>
+                                                    <td style="padding: 0.75rem;">${tx.user?.name || 'N/A'}</td>
+                                                    <td style="padding: 0.75rem;"><span style="background: var(--pink-base); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.85rem;">${tx.status}</span></td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                ` : '<p style="color: var(--text-gray);">Tidak ada transaksi</p>'}
+                            </div>
+                        </div>
+                    `;
+                    
+                    alert(detailHTML);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Gagal memuat detail drop point');
+            });
+    }
+
 </script>
 @endsection

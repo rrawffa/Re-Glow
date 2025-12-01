@@ -461,7 +461,7 @@
                         <div class="action-icon yellow">📚</div>
                         <span class="action-label">Education Content</span>
                     </a>
-                    <a href="#" class="action-card">
+                    <a href="{{ route('admin.faq.index') }}" class="action-card">
                         <div class="action-icon pink">❓</div>
                         <span class="action-label">FAQ Management</span>
                     </a>

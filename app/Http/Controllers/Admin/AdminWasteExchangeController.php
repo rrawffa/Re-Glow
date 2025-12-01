@@ -219,6 +219,27 @@ class AdminWasteExchangeController extends Controller
                 'updated_at' => now()
             ]);
 
+          if ($request->status === 'Selesai') {
+
+    // Hitung poin dari total_poin atau detail
+    $pointsEarned = $transaksi->total_poin ?? 0;
+
+    DB::table('point_transactions')->insert([
+        'user_id'     => $transaksi->id_user, // <-- FIX DISINI
+        'points'      => $pointsEarned,
+        'type'        => 'earn', // <-- WAJIB pakai string!
+        'description' => 'Reward dari transaksi sampah #' . $transaksi->id_tSampah,
+        'created_at'  => now(),
+        'updated_at'  => now()
+    ]);
+
+    // Update poin user juga
+    DB::table('pengguna')
+        ->where('id_user', $transaksi->id_user)
+        ->increment('poin', $pointsEarned);
+}
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Status transaksi berhasil diperbarui'

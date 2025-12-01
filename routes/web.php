@@ -15,21 +15,27 @@ use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\Admin\AdminEducationController;
 use App\Http\Controllers\Admin\AdminWasteExchangeController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminFaqController;
+use App\Http\Controllers\Admin\AdminVoucherController;
 use App\Http\Controllers\RiwayatPoinController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminPointController;
 
-// Welcome/Landing Page
+// =========================
+//  WELCOME / LANDING PAGE
+// =========================
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-// Authentication Routes
+// =========================
+//  AUTHENTICATION ROUTES
+// =========================
 Route::middleware(['guest'])->group(function () {
     // Login
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'processLogin'])->name('login.process');
-    
+
     // Register
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'processRegister'])->name('register.process');
@@ -38,32 +44,47 @@ Route::middleware(['guest'])->group(function () {
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Protected Routes - Requires Authentication
+// =========================
+//  PROTECTED ROUTES
+// =========================
 Route::middleware(['auth.session'])->group(function () {
     
     // Dashboard & Profile Pengguna
+
+    // ----- USER DASHBOARD -----
     Route::prefix('user')->name('user.')->group(function () {
-        Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/api/stats', [UserDashboardController::class, 'getStats'])->name('api.stats');
+        Route::get('/dashboard', function () {
+            $topArticles = Education::where('status', 'published')
+                ->with('statistik')
+                ->orderBy('tanggal_upload', 'desc')
+                ->limit(3)
+                ->get();
+
+            return view('user.dashboard', compact('topArticles'));
+        })->name('dashboard');
+
+        Route::get('/stats', [UserDashboardController::class, 'getStats'])
+        ->name('api.stats');
+        
 
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update.post');
     });
-    
-    // Dashboard Admin
+    // ----- ADMIN DASHBOARD -----
     Route::prefix('admin')->name('admin.')->middleware('check.role:admin')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     });
 
-    Route::get('/users', function () {
-        // Sementara redirect ke dashboard dulu
-        return redirect()->route('admin.dashboard')->with('info', 'User management feature coming soon!');
-    })->name('users');
-    
-    // Dashboard Tim Logistik
+    // ----- LOGISTIK DASHBOARD -----
     Route::prefix('logistik')->name('logistik.')->middleware('check.role:tim_logistik')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('logistik.dashboard');
+        })->name('dashboard');
         Route::get('/dashboard', [LogistikController::class, 'dashboard'])->name('dashboard');
         Route::get('/schedule', [LogistikController::class, 'schedule'])->name('schedule');
         Route::get('/history', [LogistikController::class, 'history'])->name('history');
@@ -72,29 +93,37 @@ Route::middleware(['auth.session'])->group(function () {
         Route::put('/pickup/{id}/status', [LogistikController::class, 'updatePickupStatus'])->name('pickup.update-status');
     });
 
-// API routes (accessible to all)
-Route::get('/api/droppoint/{id}', [\App\Http\Controllers\Admin\AdminWasteExchangeController::class, 'dropPointShow']);
+    // API routes (accessible to all authenticated users)
+    Route::get('/api/droppoint/{id}', [\App\Http\Controllers\Admin\AdminWasteExchangeController::class, 'dropPointShow']);
 });
 
-//  Fallback Route 
+
+// =========================
+//  FALLBACK
+// =========================
 Route::fallback(function () {
     return redirect()->route('welcome');
 });
 
-// FITUR EDUKASIII
-// cek role
+// =========================
+//  PUBLIC EDUCATION ROUTES
+// =========================
 Route::get('/education', function (Request $request) {
-    // Cek apakah user sedang login dan memiliki role 'admin'
+
+    // jika admin → redirect ke halaman admin education
     if (Session::has('user_role') && Session::get('user_role') === 'admin') {
-        // Jika admin, redirect ke halaman management admin
         return redirect()->route('admin.education.index');
     }
     
     return app(EducationController::class)->index($request);
+
 })->name('education.index');
-Route::get('/education/{id}', [EducationController::class, 'show'])->name('education.show');
 
 // reaksi
+Route::get('/education/{id}', [EducationController::class, 'show'])
+    ->name('education.show');
+
+// Reaction
 Route::post('/education/{id}/reaction', [EducationController::class, 'addReaction'])
     ->name('education.reaction');
 
@@ -123,21 +152,15 @@ Route::get('/riwayat-poin', [RiwayatPoinController::class, 'index'])->name('riwa
 Route::middleware(['auth.session', 'check.role:admin'])
     ->prefix('admin/riwayat_poin')
     ->name('admin.riwayat_poin.')
-    ->group(function () {
-        Route::get('/', [AdminPointController::class, 'index'])->name('index');
-        Route::get('/create', [AdminPointController::class, 'create'])->name('create');
-        Route::post('/', [AdminPointController::class, 'store'])->name('store');
-        Route::get('/{id}/edit', [AdminPointController::class, 'edit'])->name('edit');
-        Route::put('/update/{id}', [AdminPointController::class, 'update'])->name('update');
-        Route::delete('/{id}', [AdminPointController::class, 'destroy'])->name('destroy');
-    });
+// =========================
+//  WASTE EXCHANGE (PENGGUNA)
+// =========================
 
-// FAQ Page
-Route::get('/faq', [FaqController::class, 'index'])->name('faq.faq');
+// Riwayat Poin
+Route::get('/riwayat-poin',[RiwayatPoinController::class, 'index'])->name('riwayat.poin');
 
-//////// ADMIN ADMIN ADMIN ////////////////////////
-
-// Admin Education Routes
+// FAQ Page (Public)
+Route::get('/faq', [FaqController::class, 'index'])->name('faq.user');// Admin Education Routes
 Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // Education Management
     Route::get('/education', [AdminEducationController::class, 'index'])->name('education.index');
@@ -150,7 +173,7 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
 
     // Waste Exchange Management
     Route::get('/waste-exchange', [AdminWasteExchangeController::class, 'index'])->name('waste.index');
-    
+
     // Drop Point
     Route::get('/waste-exchange/droppoint', [AdminWasteExchangeController::class, 'dropPointIndex'])->name('waste.droppoint.index');
     Route::get('/waste-exchange/droppoint/create', [AdminWasteExchangeController::class, 'dropPointCreate'])->name('waste.droppoint.create');
@@ -168,17 +191,31 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
 
     // Logistik
     Route::get('/waste-exchange/logistik', [AdminWasteExchangeController::class, 'logistikIndex'])->name('waste.logistik.index');
-    // Admin Voucher Management
-    Route::get('/vouchers', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'index'])->name('vouchers.index');
-    Route::get('/vouchers/create', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'create'])->name('vouchers.create');
-    Route::post('/vouchers', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'store'])->name('vouchers.store');
-    Route::get('/vouchers/{id}', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'show'])->name('vouchers.show');
-    Route::get('/vouchers/{id}/edit', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'edit'])->name('vouchers.edit');
-    Route::put('/vouchers/{id}', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'update'])->name('vouchers.update');
-    Route::delete('/vouchers/{id}', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'destroy'])->name('vouchers.destroy');
 
-    // Optional: view voucher redemptions
-    Route::get('/vouchers/{id}/redemptions', [\App\Http\Controllers\Admin\AdminVoucherController::class, 'redemptions'])->name('vouchers.redemptions');
+    // Point Transaction Management
+    Route::get('/riwayat_poin', [AdminPointController::class, 'index'])->name('riwayat_poin.index');
+    Route::get('/riwayat_poin/create', [AdminPointController::class, 'create'])->name('riwayat_poin.create');
+    Route::post('/riwayat_poin', [AdminPointController::class, 'store'])->name('riwayat_poin.store');
+    Route::get('/riwayat_poin/{id}/edit', [AdminPointController::class, 'edit'])->name('riwayat_poin.edit');
+    Route::put('/riwayat_poin/{id}', [AdminPointController::class, 'update'])->name('riwayat_poin.update');
+    Route::delete('/riwayat_poin/{id}', [AdminPointController::class, 'destroy'])->name('riwayat_poin.destroy');
+
+    // FAQ Management
+    Route::get('/faq', [AdminFaqController::class, 'index'])->name('faq.index');
+    Route::get('/faq/create', [AdminFaqController::class, 'create'])->name('faq.create');
+    Route::post('/faq', [AdminFaqController::class, 'store'])->name('faq.store');
+    Route::get('/faq/{id}/edit', [AdminFaqController::class, 'edit'])->name('faq.edit');
+    Route::put('/faq/{id}', [AdminFaqController::class, 'update'])->name('faq.update');
+    Route::delete('/faq/{id}', [AdminFaqController::class, 'destroy'])->name('faq.destroy');
+
+    // Vouchers Management
+    Route::get('/vouchers', [AdminVoucherController::class, 'index'])->name('vouchers.index');
+    Route::get('/vouchers/create', [AdminVoucherController::class, 'create'])->name('vouchers.create');
+    Route::post('/vouchers', [AdminVoucherController::class, 'store'])->name('vouchers.store');
+    Route::get('/vouchers/{voucher}', [AdminVoucherController::class, 'show'])->name('vouchers.show');
+    Route::get('/vouchers/{voucher}/edit', [AdminVoucherController::class, 'edit'])->name('vouchers.edit');
+    Route::put('/vouchers/{voucher}', [AdminVoucherController::class, 'update'])->name('vouchers.update');
+    Route::delete('/vouchers/{voucher}', [AdminVoucherController::class, 'destroy'])->name('vouchers.destroy');
 });
 
 
@@ -223,8 +260,14 @@ Route::middleware(['auth'])->group(function(){
 // 🔓 Katalog Voucher — sekarang publik (tanpa login)
 Route::get('/vouchers', [VoucherController::class,'index'])->name('vouchers.index');
 Route::get('/vouchers/{voucher}', [VoucherController::class,'show'])->name('vouchers.show');
-Route::post('/vouchers/{voucher}/redeem', [VoucherController::class,'redeem'])->name('vouchers.redeem');
-Route::get('/api/vouchers', [VoucherController::class,'apiIndex'])->name('vouchers.apiIndex');
+Route::post('/vouchers/{voucher}/redeem', [VoucherController::class,'redeem'])
+    ->middleware('auth.session')
+    ->name('vouchers.redeem');
+Route::get('/api/vouchers', [VoucherController::class,'apiIndex'])->name('vouchers.api.index');
+
+Route::get('/community', function () {
+    return 'Community Page (placeholder)';
+})->name('community.index');
 
 // Favorite Vouchers (sementara)
 Route::get('/vouchers/favorites', [VoucherController::class, 'favorites'])->name('vouchers.favorites');

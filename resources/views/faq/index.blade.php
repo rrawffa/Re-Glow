@@ -119,8 +119,44 @@
                 <button type="button" class="btn btn-outline-secondary">Returns</button>
                 <button type="button" class="btn btn-outline-secondary">Account</button>
             </section>
-
             <section class="faq-list">
+    <div class="accordion" id="faqAccordion">
+
+        <?php foreach ($faqs as $index => $faq): ?>
+            <?php $collapseId = "faq_" . $faq['id']; ?>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+
+                    <button class="accordion-button collapsed" 
+                        type="button" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#<?= $collapseId ?>" 
+                        aria-expanded="false">
+
+                        <?= htmlspecialchars($faq['question']) ?>
+                    </button>
+                </h2>
+
+                <div id="<?= $collapseId ?>" 
+                    class="accordion-collapse collapse"
+                    data-bs-parent="#faqAccordion">
+
+                    <div class="accordion-body">
+                        <?= nl2br(htmlspecialchars($faq['answer'])) ?>
+
+                      
+                    </div>
+                </div>
+            </div>
+
+        <?php endforeach; ?>
+
+    </div>
+</section>
+
+
+            <!-- <section class="faq-list">
                 <div class="accordion" id="faqAccordion">
                     <div class="accordion-item">
                         <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false">What makes Re-Glow products sustainable?</button></h2>
@@ -154,7 +190,7 @@
                         <i class="fas fa-comment-dots me-2"></i> Live Chat
                     </a>
                 </div>
-            </section>
+            </section> -->
         </div>
     </main>
 

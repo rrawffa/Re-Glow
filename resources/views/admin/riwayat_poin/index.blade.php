@@ -65,7 +65,11 @@
     </div>
     @else
         <div class="text-center py-5">
+<<<<<<< HEAD
             <h4 class="text-muted">No transactions yet.</h4>
+=======
+            <h4 class="text-muted">No transactions added yet.</h4>
+>>>>>>> 9fb237021504994d55de4aa389fdb953b24e5b63
         </div>
     @endif
 </div>

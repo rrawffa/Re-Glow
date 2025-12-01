@@ -1,0 +1,110 @@
+:root {
+    --reglow-pink: #d85f8c;
+    --reglow-green-dark: #20413a;
+
+    --pink-base: var(--reglow-pink);
+    --green-dark: var(--reglow-green-dark);
+}
+
+/* Heading */
+.faq-page-content h2 {
+    color: var(--reglow-green-dark);
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+}
+
+/* Accordion Style */
+.accordion-button {
+    font-weight: 500;
+    padding: 1rem 1.25rem;
+    font-family: "DM Sans", sans-serif;
+    color: var(--green-dark);
+}
+
+.accordion-button:not(.collapsed) {
+    color: var(--reglow-pink);
+    background-color: #fce4ec;
+    box-shadow: none;
+    font-weight: 700;
+}
+
+.accordion-item {
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+/* Search Bar */
+.faq-page-content {
+    padding: 40px 0;
+}
+
+.faq-search-bar {
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+/* Categories Button */
+.faq-categories .btn {
+    margin: 5px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+.faq-categories .btn-outline-secondary.active {
+    background-color: var(--reglow-pink);
+    border-color: var(--reglow-pink);
+    color: white;
+}
+
+/* Support Section */
+.support-contact {
+    background-color: #f8f9fa;
+    padding: 40px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.btn-support-email {
+    background-color: var(--reglow-pink);
+    border-color: var(--reglow-pink);
+    color: white;
+    margin: 5px;
+}
+
+.btn-support-chat {
+    background-color: white;
+    border: 1px solid var(--reglow-pink);
+    color: var(--reglow-pink);
+    margin: 5px;
+}
+
+/* Footer */
+footer {
+    background: var(--green-dark);
+    color: white;
+    padding: 3rem 5% 1.5rem;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 2rem;
+}
+
+.footer-links a:hover,
+.social-icons a:hover {
+    color: var(--pink-base);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}

@@ -1,0 +1,81 @@
+:root {
+    --reglow-pink: #d85f8c;
+    --reglow-green-dark: #20413a;
+}
+
+.faq-admin-container h2 {
+    font-family: "Bricolage Grotesque", sans-serif;
+    font-weight: 700;
+    color: var(--reglow-green-dark);
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-add {
+    background-color: var(--reglow-pink);
+    border: none;
+    padding: 8px 18px;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.btn-add:hover {
+    background-color: #bf4f7a;
+}
+
+.table thead {
+    background-color: var(--reglow-green-dark);
+    color: #fff;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f3f6;
+}
+
+.btn-edit {
+    background-color: #ffc107;
+    color: #fff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: #fff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+.btn-edit:hover {
+    background-color: #e0a800;
+}
+
+.btn-delete:hover {
+    background-color: #bb2d3b;
+}
+
+.fade-alert {
+    border-radius: 10px;
+    animation: fadeOut 4s forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.card {
+    overflow: hidden;
+}

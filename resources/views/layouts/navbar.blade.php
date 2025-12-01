@@ -6,6 +6,7 @@
     </div>
 
     <ul class="nav-menu">
+        {{-- Dashboard --}}
         <li>
             @if(Session::get('user_role') === 'admin')
                 <a href="{{ route('admin.dashboard') }}" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
@@ -16,11 +17,13 @@
                     Dashboard
                 </a>
             @else
-            <a href="{{ route('user.dashboard') }}" class="{{ request()->is('user/dashboard') ? 'active' : '' }}">
-                Dashboard
-            </a>
+                <a href="{{ route('user.dashboard') }}" class="{{ request()->is('user/dashboard') ? 'active' : '' }}">
+                    Dashboard
+                </a>
             @endif
         </li>
+
+        {{-- Exchange Waste --}}
         <li>
             @if(Session::get('user_role') === 'admin')
                 <a href="{{ route('admin.waste.index') }}" class="{{ request()->is('admin/waste-exchange*') ? 'active' : '' }}">
@@ -32,33 +35,51 @@
                 </a>
             @endif
         </li>
-        @if(Session::get('user_role') === 'admin')
-            <li>
+
+        {{-- Riwayat Poin / Points --}}
+        <li>
+            @if(Session::get('user_role') === 'admin')
                 <a href="{{ route('admin.riwayat_poin.index') }}" class="{{ request()->is('admin/riwayat_poin*') ? 'active' : '' }}">
                     Points
                 </a>
-            </li>
-        @else
-            <li><a href="{{ url('/riwayat-poin') }}" class="{{ request()->is('riwayat-poin') ? 'active' : '' }}">Points</a></li>
-        @endif
-        @if(Session::get('user_role') === 'admin')
-            <li>
+            @else
+                <a href="{{ url('/riwayat-poin') }}" class="{{ request()->is('riwayat-poin') ? 'active' : '' }}">
+                    Points
+                </a>
+            @endif
+        </li>
+
+        {{-- Vouchers --}}
+        <li>
+            @if(Session::get('user_role') === 'admin')
                 <a href="{{ route('admin.vouchers.index') }}" class="{{ request()->is('admin/vouchers*') ? 'active' : '' }}">
                     Vouchers
                 </a>
-            </li>
-        @else
-            <li>
+            @else
                 <a href="{{ route('vouchers.index') }}" class="{{ request()->is('vouchers') ? 'active' : '' }}">
                     Vouchers
                 </a>
-            </li>
-        @endif
-        @if(Session::get('user_role') !== 'admin')
-            <li><a href="{{ route('community.index') }}" class="{{ request()->is('community') ? 'active' : '' }}">Community</a></li>
-        @endif
+            @endif
+        </li>
+        
+        
+
+        {{-- Community, Education, FAQ (Selalu sama untuk semua role) --}}
+        <li><a href="{{ route('community.index') }}" class="{{ request()->is('community') ? 'active' : '' }}">Community</a></li>
         <li><a href="{{ url('/education') }}" class="{{ request()->is('education') ? 'active' : '' }}">Education</a></li>
-        <li><a href="{{ url('/faq') }}" class="{{ request()->is('faq') ? 'active' : '' }}">FAQ</a></li>
+       {{-- FAQ --}}
+         <li>
+             @if(Session::get('user_role') === 'admin')
+                <a href="{{ route('admin.faq.index') }}" class="{{ request()->is('admin/faq*') ? 'active' : '' }}">
+            FAQ
+         </a>
+              @else
+                <a href="{{ route('faq.user') }}" class="{{ request()->is('faq') ? 'active' : '' }}">
+            FAQ
+         </a>
+              @endif
+         </li>
+
     </ul>
 
     <div class="nav-icons">

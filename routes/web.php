@@ -217,7 +217,7 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
 // Route::get('/api/vouchers', [VoucherController::class,'apiIndex'])->name('vouchers.apiIndex');
 
 Route::get('/vouchers', [VoucherController::class, 'index'])
-    ->name('vouchers.index');
+    ->name('vouchers.index'); //DUMMY
 
 Route::get('/community', function () {
     return 'Community Page (placeholder)';

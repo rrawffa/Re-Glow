@@ -94,4 +94,9 @@ class VoucherController extends Controller
 
     return view('vouchers.favorites', compact('favorites'));
 }
+<<<<<<< HEAD
 }
+=======
+
+}
+>>>>>>> 79484a7d69a9d21d11a823b3d95cd4b5f3fd3768

@@ -41,7 +41,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Protected Routes - Requires Authentication
 Route::middleware(['auth.session'])->group(function () {
     
-    // Dashboard & Profile Pengguna (DIGABUNGKAN JADI SATU GRUP)
+    // Dashboard & Profile Pengguna
     Route::prefix('user')->name('user.')->group(function () {
         Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
         Route::get('/api/stats', [UserDashboardController::class, 'getStats'])->name('api.stats');
@@ -81,8 +81,8 @@ Route::fallback(function () {
     return redirect()->route('welcome');
 });
 
-// Public Education Routes
-// Rute ini sekarang akan mengecek role admin dan me-redirect jika perlu.
+// FITUR EDUKASIII
+// cek role
 Route::get('/education', function (Request $request) {
     // Cek apakah user sedang login dan memiliki role 'admin'
     if (Session::has('user_role') && Session::get('user_role') === 'admin') {
@@ -90,64 +90,16 @@ Route::get('/education', function (Request $request) {
         return redirect()->route('admin.education.index');
     }
     
-    // Jika bukan admin atau belum login, jalankan index method dari EducationController
-    // Kita panggil controller secara langsung karena kita mengambil alih rute aslinya.
     return app(EducationController::class)->index($request);
 })->name('education.index');
 Route::get('/education/{id}', [EducationController::class, 'show'])->name('education.show');
 
-
-// Reaction Route (requires authentication or guest with IP tracking)
+// reaksi
 Route::post('/education/{id}/reaction', [EducationController::class, 'addReaction'])
     ->name('education.reaction');
 
-// Admin Only Routes
-// Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('admin.')->group(function () {
-//    Route::get('/education', [AdminEducationController::class, 'index'])->name('education.index');
-//    Route::get('/education', [AdminEducationController::class, 'index'])->name('education.index');
-//    Route::get('/education/create', [AdminEducationController::class, 'create'])->name('education.create');
-//    Route::post('/education', [AdminEducationController::class, 'store'])->name('education.store');
-//    Route::get('/education/{id}', [AdminEducationController::class, 'show'])->name('education.show');
-//    Route::get('/education/{id}/edit', [AdminEducationController::class, 'edit'])->name('education.edit');
-//    Route::put('/education/{id}', [AdminEducationController::class, 'update'])->name('education.update');
-//    Route::delete('/education/{id}', [AdminEducationController::class, 'destroy'])->name('education.destroy');});
-
-Route::get('/test-db', function () {
-    try {
-        $db   = DB::select("SELECT DATABASE() as db");
-        $tbl  = DB::select('SHOW TABLES');
-        return [
-            'database' => $db,
-            'tables'   => $tbl,
-        ];
-    } catch (\Exception $e) {
-        return $e->getMessage();
-    }
-});
-
-Route::get('/env-test', function () {
-    return env('DB_DATABASE');
-});
-
 
 // Waste Exchange Routes (pengguna)
-Route::middleware(['auth.session','check.role:pengguna'])->group(function () {
-    Route::prefix('waste-exchange')->name('waste-exchange.')->group(function () {
-        Route::get('/', [WasteExchangeController::class, 'index'])->name('index');
-        Route::get('/create', [WasteExchangeController::class, 'create'])->name('create');
-        Route::post('/store', [WasteExchangeController::class, 'store'])->name('store');
-        Route::get('/history', [WasteExchangeController::class, 'history'])->name('history');
-        Route::get('/{id}', [WasteExchangeController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [WasteExchangeController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [WasteExchangeController::class, 'update'])->name('update');
-        Route::delete('/{id}', [WasteExchangeController::class, 'destroy'])->name('destroy');
-        
-        // API endpoint
-        Route::get('/api/drop-points', [WasteExchangeController::class, 'getDropPoints'])->name('api.drop-points');
-    });
-});
-
-// Waste Exchange Routes (admin)
 Route::middleware(['auth.session','check.role:pengguna'])->group(function () {
     Route::prefix('waste-exchange')->name('waste-exchange.')->group(function () {
         Route::get('/', [WasteExchangeController::class, 'index'])->name('index');
@@ -283,3 +235,21 @@ Route::get('/community', [CommunityController::class, 'index'])->name('community
 // Favorite Vouchers (sementara kosong dulu)
 Route::get('/vouchers/favorites', [App\Http\Controllers\VoucherController::class, 'favorites'])
     ->name('vouchers.favorites');
+
+
+Route::get('/test-db', function () {
+    try {
+        $db   = DB::select("SELECT DATABASE() as db");
+        $tbl  = DB::select('SHOW TABLES');
+        return [
+            'database' => $db,
+            'tables'   => $tbl,
+        ];
+    } catch (\Exception $e) {
+        return $e->getMessage();
+    }
+});
+
+Route::get('/env-test', function () {
+    return env('DB_DATABASE');
+});

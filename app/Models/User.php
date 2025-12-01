@@ -34,7 +34,7 @@ class User extends Authenticatable
         'updated_at' => 'datetime',
     ];
 
-    // Boot function untuk auto-hash password
+    // auto-hash password
     protected static function boot()
     {
         parent::boot();

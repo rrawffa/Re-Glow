@@ -548,10 +548,14 @@
                     <div class="action-icon yellow">📚</div>
                     <span class="action-label">Education Content</span>
                 </a>
-                <a href="#" class="action-card">
-                    <div class="action-icon pink">❓</div>
-                    <span class="action-label">FAQ Management</span>
-                </a>
+              <a href="{{ route('admin.faq.index') }}" class="action-card">
+        <div class="action-icon pink">❓</div>
+        <span class="action-label">FAQ Management</span>
+    </a>
+    <a href="{{ route('admin.riwayat_poin.index') }}" class="action-card">
+        <div class="action-icon green">📊</div>
+        <span class="action-label">Points</span>
+    </a>
             </div>
         </div>
 

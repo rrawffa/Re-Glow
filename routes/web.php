@@ -61,6 +61,10 @@ Route::middleware(['auth.session'])->group(function () {
             return view('user.dashboard', compact('topArticles'));
         })->name('dashboard');
 
+        Route::get('/stats', [UserDashboardController::class, 'getStats'])
+        ->name('api.stats');
+        
+
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -212,8 +216,8 @@ Route::middleware(['auth.session', 'check.role:admin'])->prefix('admin')->name('
 // Route::post('/vouchers/{voucher}/redeem', [VoucherController::class,'redeem'])->name('vouchers.redeem');
 // Route::get('/api/vouchers', [VoucherController::class,'apiIndex'])->name('vouchers.apiIndex');
 
-// Favorite Vouchers (sementara)
-// Route::get('/vouchers/favorites', [VoucherController::class, 'favorites'])->name('vouchers.favorites');
+Route::get('/vouchers', [VoucherController::class, 'index'])
+    ->name('vouchers.index');
 
 Route::get('/community', function () {
     return 'Community Page (placeholder)';

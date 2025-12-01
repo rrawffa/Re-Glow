@@ -449,6 +449,28 @@
                 </div>
             </div>
 
+<<<<<<< HEAD
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h3>Quick Actions</h3>
+            <div class="actions-grid">
+                <a href="{{ route('admin.vouchers.index') }}" class="action-card">
+                    <div class="action-icon gray">🎫</div>
+                    <span class="action-label">Voucher Management</span>
+                </a>
+                <a href="{{ route('admin.education.index') }}" class="action-card">
+                    <div class="action-icon yellow">📚</div>
+                    <span class="action-label">Education Content</span>
+                </a>
+              <a href="{{ route('admin.faq.index') }}" class="action-card">
+        <div class="action-icon pink">❓</div>
+        <span class="action-label">FAQ Management</span>
+    </a>
+    <a href="{{ route('admin.riwayat_poin.index') }}" class="action-card">
+        <div class="action-icon green">📊</div>
+        <span class="action-label">Points</span>
+    </a>
+=======
             <!-- Quick Actions -->
             <div>
                 <h3 class="quick-actions-title">Quick Actions</h3>
@@ -466,6 +488,7 @@
                         <span class="action-label">FAQ Management</span>
                     </a>
                 </div>
+>>>>>>> 9fb237021504994d55de4aa389fdb953b24e5b63
             </div>
         </div>
 

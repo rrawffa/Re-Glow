@@ -6,19 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Voucher extends Model
 {
+    protected $table = 'vouchers';
+    protected $primaryKey = 'id';
+
     protected $fillable = [
-        'name','brand','description','required_points','expiration_date','stock','image_url'
+        'name',
+        'brand',
+        'description',
+        'required_points',
+        'expiration_date',
+        'stock',
+        'image_url'
     ];
 
-    protected $dates = ['expiration_date'];
-
-    public function isExpired()
+    public function users()
     {
-        return $this->expiration_date && $this->expiration_date->isPast();
-    }
-
-    public function isOutOfStock()
-    {
-        return $this->stock <= 0;
+        return $this->belongsToMany(User::class, 'user_voucher', 'voucher_id', 'id_user')
+                    ->withPivot('status')
+                    ->withTimestamps();
     }
 }

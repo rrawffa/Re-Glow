@@ -13,22 +13,20 @@
 
     <div class="row justify-content-center">
         <div class="col-md-6 col-sm-12">
+            {{-- Error Message --}}
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-
-                    {{-- Error Message --}}
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                   <form action="{{ route('admin.riwayat_poin.update', $transaction->id) }}" method="POST">
-
+                    <form action="{{ route('admin.riwayat_poin.update', $transaction->id) }}" method="POST">
                         @csrf
                         @method('PUT')
 
@@ -37,8 +35,8 @@
                             <label for="user_id" class="form-label">User</label>
                             <select name="user_id" id="user_id" class="form-select" required>
                                 @foreach($users as $user)
-                                    <option value="{{ $user->id }}" 
-                                        @if($user->id == $transaction->user_id) selected @endif>
+                                    <option value="{{ $user->id_user }}" 
+                                        @if($user->id_user == $transaction->user_id) selected @endif>
                                         {{ $user->username }}
                                     </option>
                                 @endforeach
@@ -70,11 +68,10 @@
                         </div>
 
                         <!-- Buttons -->
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between mt-4">
                             <a href="{{ route('admin.riwayat_poin.index') }}" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary">Update Transaction</button>
                         </div>
-
                     </form>
                 </div>
             </div>

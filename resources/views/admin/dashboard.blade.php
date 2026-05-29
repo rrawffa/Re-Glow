@@ -365,12 +365,12 @@
 
         <div class="stat-card" style="cursor: pointer;" onclick="window.location.href='{{ route('admin.waste.index') }}'">
             <div class="stat-card-header">
-            <span class="stat-label">Total Transactions</span>
-            <div class="stat-icon gray">⇄</div>
+                <span class="stat-label">Total Transactions</span>
+                <div class="stat-icon gray">⇄</div>
             </div>
             <div class="stat-value">{{ number_format($totalTransactions) }}</div>
             <div class="stat-change positive">
-            ↑ Waste exchanges completed
+                ↑ Waste exchanges completed
             </div>
         </div>
 
@@ -449,28 +449,6 @@
                 </div>
             </div>
 
-<<<<<<< HEAD
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-            <h3>Quick Actions</h3>
-            <div class="actions-grid">
-                <a href="{{ route('admin.vouchers.index') }}" class="action-card">
-                    <div class="action-icon gray">🎫</div>
-                    <span class="action-label">Voucher Management</span>
-                </a>
-                <a href="{{ route('admin.education.index') }}" class="action-card">
-                    <div class="action-icon yellow">📚</div>
-                    <span class="action-label">Education Content</span>
-                </a>
-              <a href="{{ route('admin.faq.index') }}" class="action-card">
-        <div class="action-icon pink">❓</div>
-        <span class="action-label">FAQ Management</span>
-    </a>
-    <a href="{{ route('admin.riwayat_poin.index') }}" class="action-card">
-        <div class="action-icon green">📊</div>
-        <span class="action-label">Points</span>
-    </a>
-=======
             <!-- Quick Actions -->
             <div>
                 <h3 class="quick-actions-title">Quick Actions</h3>
@@ -487,8 +465,11 @@
                         <div class="action-icon pink">❓</div>
                         <span class="action-label">FAQ Management</span>
                     </a>
+                    <a href="{{ route('admin.riwayat_poin.index') }}" class="action-card">
+                        <div class="action-icon gray">📊</div>
+                        <span class="action-label">Points History</span>
+                    </a>
                 </div>
->>>>>>> 9fb237021504994d55de4aa389fdb953b24e5b63
             </div>
         </div>
 
@@ -497,21 +478,21 @@
             <h3>Recent Activities</h3>
             <div class="activity-card">
                 @forelse($recentActivities as $activity)
-                <div class="activity-item">
-                    <div class="activity-icon {{ $activity['type'] }}">{{ $activity['icon'] }}</div>
-                    <div class="activity-content">
-                        <div class="activity-title">{{ $activity['title'] }}</div>
-                        <div class="activity-description">{{ $activity['description'] }}</div>
+                    <div class="activity-item">
+                        <div class="activity-icon {{ $activity['type'] }}">{{ $activity['icon'] }}</div>
+                        <div class="activity-content">
+                            <div class="activity-title">{{ $activity['title'] }}</div>
+                            <div class="activity-description">{{ $activity['description'] }}</div>
+                        </div>
+                        <div class="activity-time">{{ $activity['time'] }}</div>
                     </div>
-                    <div class="activity-time">{{ $activity['time'] }}</div>
-                </div>
                 @empty
-                <div class="activity-item">
-                    <div class="activity-content">
-                        <div class="activity-title">No recent activities</div>
-                        <div class="activity-description">Check back soon for updates</div>
+                    <div class="activity-item">
+                        <div class="activity-content">
+                            <div class="activity-title">No recent activities</div>
+                            <div class="activity-description">Check back soon for updates</div>
+                        </div>
                     </div>
-                </div>
                 @endforelse
             </div>
         </div>

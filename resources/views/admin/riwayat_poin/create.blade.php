@@ -9,17 +9,10 @@
 
 @section('content')
 <div class="container py-5 mt-4">
-    <h1 class="fw-bold mb-2">Add Point Transaction</h1>
+    <h1 class="fw-bold mb-4">Add Point Transaction</h1>
 
-    @if(auth()->check())
-        <p class="text-end text-muted small mb-4">
-            Logged in as: <strong>{{ auth()->user()->username }}</strong>
-        </p>
-    @endif
-    
     <div class="row justify-content-center">
         <div class="col-md-6 col-sm-12">
-
             {{-- Error Message --}}
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -33,14 +26,25 @@
 
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-
                     <form action="{{ route('admin.riwayat_poin.store') }}" method="POST">
                         @csrf
+
+                        <!-- User -->
+                        <div class="mb-3">
+                            <label for="user_id" class="form-label">User</label>
+                            <select name="user_id" id="user_id" class="form-select" required>
+                                <option value="" disabled selected>Select a user</option>
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id_user }}">{{ $user->username }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
                         <!-- Type -->
                         <div class="mb-3">
                             <label for="type" class="form-label">Type</label>
                             <select name="type" id="type" class="form-select" required>
+                                <option value="">Select type</option>
                                 <option value="earn">Earn</option>
                                 <option value="redeem">Redeem</option>
                                 <option value="adjust">Adjust</option>
@@ -60,16 +64,13 @@
                         </div>
 
                         <!-- Buttons -->
-                        <div class="d-flex justify-content-between mt-3">
+                        <div class="d-flex justify-content-between mt-4">
                             <a href="{{ route('admin.riwayat_poin.index') }}" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary">Add Transaction</button>
                         </div>
-
                     </form>
-
                 </div>
             </div>
-
         </div>
     </div>
 </div>

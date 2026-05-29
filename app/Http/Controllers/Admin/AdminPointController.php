@@ -21,37 +21,30 @@ class AdminPointController extends Controller
     // Form tambah transaksi
     public function create()
     {
-        return view('admin.riwayat_poin.create');
+        $users = User::all();
+        return view('admin.riwayat_poin.create', compact('users'));
     }
 
     // Simpan transaksi baru
-  public function store(Request $request)
-{
-     $userId = session('user_id'); // Jika admin login sebagai user biasa
+    public function store(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:pengguna,id_user',
+            'type' => 'required|in:earn,redeem,adjust',
+            'points' => 'required|integer|min:1',
+            'description' => 'nullable|string|max:255',
+        ]);
 
-    // Jika admin pakai guard khusus, pakai ini:
-    // $userId = auth('admin')->id();
+        $transaction = PointTransaction::create([
+            'user_id' => $request->user_id,
+            'type' => $request->type,
+            'points' => $request->points,
+            'description' => $request->description,
+        ]);
 
-    if (!$userId) {
-        return back()->withErrors(['error' => 'No logged-in user found!']);
+        return redirect()->route('admin.riwayat_poin.index')
+                        ->with('success', 'Point transaction added successfully for user! Points are automatically synced.');
     }
-
-    $request->validate([
-        'type' => 'required|in:earn,redeem,adjust',
-        'points' => 'required|integer',
-        'description' => 'nullable|string',
-    ]);
-
-    PointTransaction::create([
-        'user_id' => $userId,
-        'type' => $request->type,
-        'points' => $request->points,
-        'description' => $request->description,
-    ]);
-
-    return redirect()->route('admin.riwayat_poin.index')
-                     ->with('success', 'Point transaction added successfully!');
-}
 
 
     // Form edit transaksi
@@ -63,32 +56,31 @@ class AdminPointController extends Controller
     }
 
     // Update transaksi
- public function update(Request $request, $id)
-{
-    $transaction = PointTransaction::findOrFail($id);
+    public function update(Request $request, $id)
+    {
+        $transaction = PointTransaction::findOrFail($id);
 
-    // Validasi semua field
-    $request->validate([
+        $request->validate([
+            'user_id' => 'required|exists:pengguna,id_user',
+            'type' => 'required|in:earn,redeem,adjust',
+            'points' => 'required|integer|min:1',
+            'description' => 'nullable|string|max:255',
+        ]);
 
-        'type' => 'required|in:earn,redeem,adjust',
-        'points' => 'required|integer',
-        'description' => 'nullable|string',
-    ]);
+        $transaction->update($request->only(['user_id', 'type', 'points', 'description']));
 
-    // Update semua field sekaligus
-    $transaction->update($request->only(['type','points','description']));
-
-    return redirect()->route('admin.riwayat_poin.index')
-                     ->with('success', 'Point transaction updated successfully!');
-}
+        return redirect()->route('admin.riwayat_poin.index')
+                        ->with('success', 'Point transaction updated successfully! Points are automatically synced.');
+    }
 
 
-    // Hapus transaksi (optional)
+    // Hapus transaksi
     public function destroy($id)
     {
         $transaction = PointTransaction::findOrFail($id);
         $transaction->delete();
 
-        return redirect()->route('admin.riwayat_poin.index')->with('success', 'Point transaction deleted!');
+        return redirect()->route('admin.riwayat_poin.index')
+                        ->with('success', 'Point transaction deleted! User points are automatically updated.');
     }
 }
